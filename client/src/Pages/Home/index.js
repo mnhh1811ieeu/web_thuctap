@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import HomeBanner from '../../Components/HomeBanner'
 import img1 from '../../assets/images/img1.png'
 import anvat1 from '../../assets/images/anvat1.png'
@@ -14,16 +14,39 @@ import HomeCat from '../../Components/HomeCat/HomeCat'
 import banner2 from '../../assets/images/banner2.png'
 import banner3 from '../../assets/images/banner3.png'
 import discountSec from '../../assets/images/discountSec.png'
+import { fetchDataFromApi } from '../../utils/api'
+
 
 
 
 const Home = () => {
+
+  const [catData, setCatData ] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [productsData, setProductsData] = useState([]); 
+  useEffect( () => {
+    fetchDataFromApi("/api/category/").then( (res) => {
+      setCatData(res);
+    })
+
+    fetchDataFromApi(`/api/products/featured`).then( (res ) => {
+      setFeaturedProducts(res)
+    })
+
+    fetchDataFromApi("/api/products/").then( (res) => {
+      setProductsData(res);
+
+    })
+  }, [])
+
   
   return (
     <>
       <HomeBanner/>
 
-      <HomeCat/>
+      {
+        catData?.length!==0 && <HomeCat catData={catData}/>
+      }
 
       <section className='homeProducts'>
         <div className='container'>
@@ -59,21 +82,15 @@ const Home = () => {
                   modules={[Navigation]}
                   className="mySwiper"
                 >
-                  <SwiperSlide>
-                    <ProductItem/>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem/>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem/>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem/>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem/>
-                  </SwiperSlide>                  
+                {
+                  featuredProducts?.length!==0 && featuredProducts?.map(( item, index) => {
+                    return(
+                      <SwiperSlide key={index}>
+                      <ProductItem item={item}/>
+                      </SwiperSlide>
+                    )
+                  })
+                }
                 </Swiper>
               </div>
 
@@ -87,14 +104,13 @@ const Home = () => {
                 <Button className='viewAllBtn ml-auto'> View all <TfiAngleDoubleRight/></Button>
               </div>
               <div className='product_row productRow2 w-100 mt-4 d-flex'>
-                <ProductItem/>
-                <ProductItem/>
-                <ProductItem/>
-                <ProductItem/>
-                <ProductItem/>
-                <ProductItem/>
-                <ProductItem/>
-                <ProductItem/> 
+                {
+                  productsData?.products?.length!==0 && productsData?.products?.map(( item, index) => {
+                    return(
+                      <ProductItem key={index} item={item}/>
+                    )
+                  })
+                }
 
               </div>
 

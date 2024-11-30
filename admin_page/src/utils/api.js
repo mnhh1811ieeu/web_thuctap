@@ -1,4 +1,6 @@
 import axios from "axios";
+
+
 //require('dotenv/config');
 export const fetchDataFromApi=async(url)=>{
     try{
@@ -26,8 +28,8 @@ export const postDataProduct = async (url, formData) => {
         throw error; // Ném lỗi để xử lý bên ngoài nếu cần
     }
 };
-export const editData= async(url, updateData)=>{
-    const {res}= await axios.put(`http://localhost:4000${url}`,updateData)
+export const editData= async(url, updatedData)=>{
+    const {res}= await axios.put(`http://localhost:4000${url}`,updatedData)
     return res;
 }
 export const deleteData= async(url)=>{

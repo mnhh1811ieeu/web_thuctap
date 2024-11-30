@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 
-const HomeCat = () => {
+const HomeCat = (props) => {
 
-    const [itemBg,  setItemBg] = useState(['#fffceb','#f2fce4','#feefea', '#fff3eb', '#ecffec', '#f2fce4', '#fffceb','#f2fce4','#feefea','#fffceb','#f2fce4','#feefea']);
   return (
     <div>
         <section className='homeCat'>
@@ -23,18 +22,18 @@ const HomeCat = () => {
                     className="mySwiper"
                 >
                 {
-                    itemBg?.map( (item, index) => {
+                    props.catData?.categoryList?.length!==0 &&  props.catData?.categoryList?.map( (cat, index) => {
                         return(
                             <SwiperSlide key={index}>
-                                <div className='item text-center cursor' style={{ background:item}}>
-                                    <img src="https://nest-frontend-v6.vercel.app/assets/imgs/shop/cat-9.png" alt=""/>
+                                <div className='item text-center cursor' style={{ background:cat.color}}>
+                                    <img src={ cat.images[0]} alt=""/>
                                 </div>
 
-                                <h6>Red Apple</h6>
+                                <h6 style={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: "bold"}}>{cat.name}</h6>
                             </SwiperSlide>
                         )
                     })
-                }    
+                }
 
                 </Swiper>
             

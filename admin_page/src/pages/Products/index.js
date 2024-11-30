@@ -18,8 +18,9 @@ import { MdDelete } from "react-icons/md";
 import Pagination from '@mui/material/Pagination';
 import { Link } from "react-router-dom";
 import { deleteData, fetchDataFromApi } from '../../utils/api';
-import { CheckBox } from '@mui/icons-material';
+
 import { MyContext } from '../../App';
+import Rating from '@mui/material/Rating';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
@@ -49,7 +50,6 @@ const Products = () => {
     const [showBy, setshowBy] = React.useState('');
     const [showBysetCatBy, setCatBy] = React.useState('');
     const open = Boolean(anchorEl);
-    const [catData, setCatData] = useState([]);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -207,6 +207,8 @@ const Products = () => {
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Rating</th>
+                                    <th>Discount</th>
+                                    <th>Size</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -231,11 +233,14 @@ const Products = () => {
                                                 <td>{item.category.name}</td>
                                                 <td>{item.brand}</td>
                                                 <td>
-                                                    <del className="old">{item.oldPrice}</del>
-                                                    <span className="new text-danger">{item.price}</span>
+                                                    <del className="old">{item.oldPrice}đ</del>
+                                                    <span className="new text-danger">{item.price}đ</span>
                                                 </td>
                                                 <td>{item.countInStock}</td>
+                                                {/* <td><Rating name="read-only" defaultValue={item?.rating} precision={0.5} size="small" readOnly/></td> */}
                                                 <td>{item.rating}</td>
+                                                <td>{item.discount}</td>
+                                                <td>{item?.productSIZE}</td>
 
                                                 <td>
                                                     <div className="actions d-flex align-items-center">

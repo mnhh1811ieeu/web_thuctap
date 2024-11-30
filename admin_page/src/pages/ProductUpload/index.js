@@ -8,14 +8,15 @@ import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
 import { MyContext } from '../../App';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 import { MdCloudUpload } from "react-icons/md";
 import { fetchDataFromApi, postData, postDataProduct } from '../../utils/api';
 import { FaRegImages } from 'react-icons/fa';
-import { FaD } from 'react-icons/fa6';
+//import { FaD } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
+//import { IoCloseSharp } from 'react-icons/io5';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
@@ -37,8 +38,14 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
 });
 
 const ProductUpload = () => {
+    
+    const [isLoading, setIsLoading] = useState(false);
+    const productImages = useRef();
+    const imagesArr = [];
+    const [catData, setCatData] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
     const [categoryVal, setCategoryVal] = useState('');
+    const [productSize, setProductSize] = useState('');
     const [ratingsValue, setRatingValue] = useState(1);
     const context = useContext(MyContext);
     const formdata = new FormData();
@@ -57,15 +64,12 @@ const ProductUpload = () => {
         countInStock: null,
         rating: 0,
         isFeatured: null,
+        discount: 0,
+        productSIZE: '',
+        
     })
     const [isFeaturedValue, setisFeaturedValue] = useState('');
-    const handleChangeisFeaturedValue = (event) => {
-        setisFeaturedValue(event.target.value);
-        setFormFields(() => ({
-            ...formFields,
-            isFeatured: event.target.value
-        }))
-    };
+    
     const onChangeFile = async (e, apiEndPoint) => {
         try {
             const imgArr = [];
@@ -91,15 +95,28 @@ const ProductUpload = () => {
             [e.target.name]: e.target.value
         }))
     }
-    const [isLoading, setIsLoading] = useState(false);
-    const productImages = useRef();
-    const imagesArr = [];
-    const [catData, setCatData] = useState([]);
+   
+
+    const handleChangeisFeaturedValue = (event) => {
+        setisFeaturedValue(event.target.value);
+        setFormFields(() => ({
+            ...formFields,
+            isFeatured: event.target.value
+        }))
+    };
     const handleChangeCategory = (event) => {
         setCategoryVal(event.target.value);
         setFormFields(() => ({
             ...formFields,
             category: event.target.value
+        }))
+    };
+
+    const handleChangeProductSize = (event) => {
+        setProductSize(event.target.value);
+        setFormFields(() => ({
+            ...formFields,
+            productSIZE: event.target.value
         }))
     };
     useEffect(() => {
@@ -143,6 +160,8 @@ const ProductUpload = () => {
     const addProduct = (e) => {
         e.preventDefault();
 
+        console.log(formFields);
+
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
         formdata.append('brand', formFields.brand);
@@ -152,6 +171,9 @@ const ProductUpload = () => {
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('rating', formFields.rating);
         formdata.append('isFeatured', formFields.isFeatured);
+        formdata.append('discount', formFields.discount);
+        formdata.append('productSIZE', formFields.productSIZE);
+
         if (formFields.name === "") {
             context.setAlertBox({
                 open: true,
@@ -225,6 +247,15 @@ const ProductUpload = () => {
             });
             return false;
         };
+        if (formFields.discount === null) {
+            context.setAlertBox({
+                open: true,
+                msg: "Yêu cầu nhập discount ",
+                error: true
+            });
+            return false;
+        };
+        
         // if (formFields.images.length === 0) {
         //     context.setAlertBox({
         //         open: true,
@@ -252,6 +283,9 @@ const ProductUpload = () => {
                 countInStock: 0,
                 rating: 0,
                 isFeatured: false,
+                discount:0,
+                productSIZE: '',
+
             });
             history('/product/list');
             // return true;
@@ -268,7 +302,8 @@ const ProductUpload = () => {
                             components="a"
                             href="#"
                             label="Dashboard"
-                            icon={<HomeIcon fontSize="small" />} />
+                            icon={<HomeIcon fontSize="small" />} 
+                        />
                         <StyledBreadcrumb
                             components="a"
                             label="Products"
@@ -277,7 +312,6 @@ const ProductUpload = () => {
                         />
                         <StyledBreadcrumb
                             label="Product Upload"
-
                             deleteIcon={<ExpandMoreIcon />}
                         />
                     </Breadcrumbs>
@@ -323,14 +357,7 @@ const ProductUpload = () => {
                                             </Select>
                                         </div>
                                     </div>
-
-                                    <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Brand</h6>
-                                            <input type='text' name="brand" value={formFields.brand} onChange={inputChange} />
-
-                                        </div>
-                                    </div>
+                                 
                                     <div className='col'>
                                         <div className='form-group'>
                                             <h6>Sản phẩm nối bật</h6>
@@ -353,6 +380,27 @@ const ProductUpload = () => {
                                         </div>
                                     </div>
 
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>product size</h6>
+                                            <Select
+                                                value={productSize}
+                                                onChange={handleChangeProductSize}
+                                                displayEmpty
+                                                inputProps={{ 'aria-label': 'Without label' }}
+                                                className='w-100'
+                                            >
+                                                <MenuItem value="">
+                                                    <em value={null}>None</em>
+                                                </MenuItem>
+                                                <MenuItem value={'S'}>S</MenuItem>
+                                                <MenuItem value={'L'}>L</MenuItem>
+                                                <MenuItem value={'XL'}>XL</MenuItem>
+                                                <MenuItem value={'2XL'}>2XL</MenuItem>
+                                                <MenuItem value={'3XL'}>3XL</MenuItem>
+                                            </Select>                                        </div>
+                                    </div>
+
                                 </div>
 
 
@@ -368,6 +416,14 @@ const ProductUpload = () => {
                                         <div className='form-group'>
                                             <h6>old price</h6>
                                             <input type='text' name="oldPrice" value={formFields.oldPrice} onChange={inputChange} />
+                                        </div>
+                                    </div>
+
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>Brand</h6>
+                                            <input type='text' name="brand" value={formFields.brand} onChange={inputChange} />
+
                                         </div>
                                     </div>
                                 </div>
@@ -391,6 +447,14 @@ const ProductUpload = () => {
                                             />
                                         </div>
                                     </div>
+                                    
+                                    
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>discount</h6>
+                                            <input type='text' name="discount" value={formFields.discount} onChange={inputChange} />
+                                        </div>
+                                    </div>
 
                                     <div className='col'>
                                         <div className='form-group'>
@@ -400,6 +464,7 @@ const ProductUpload = () => {
                                     </div>
 
                                 </div>
+
                                 {/* <div className='col'>
                                <h6>Anh san pham</h6>
                                     <div className='stickyBox'>{
@@ -435,10 +500,17 @@ const ProductUpload = () => {
                                             <div className='uploadBox' key={index}>
                                                 <img src={img} className='w-100' />
                                             </div>
+                                            // <div className='uploadBox' key={index}>
+                                            //     <span className='remove' onClick={() => removeImg(index, img)}><IoCloseSharp/></span>
+
+                                            //     <div className='box'>
+                                            //         <LazyLoadImage alt={"image"} effect="blur" className="w-100" src={img} />
+                                            //     </div>
+                                            // </div>
                                         )
                                     })
                                 }
-                                <div className="uploadBox">
+                                <div className="uploadBox mb-3">
                                     <input type='file' multiple onChange={(e) => onChangeFile(e, '/api/products/upload')} name='images' />
                                     <div className='info'>
                                         <FaRegImages />

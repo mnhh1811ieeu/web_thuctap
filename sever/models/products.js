@@ -45,6 +45,16 @@ oldPrice: {
     type: Boolean,
     default: false,
 },
+discount:{
+    type: Number,
+    required: true,
+},
+productSIZE:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ProductSize',
+    default: null,
+    
+},
     dateCreated: {
     type: Date,
     default: Date.now,

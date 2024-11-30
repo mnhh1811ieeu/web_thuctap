@@ -562,6 +562,10 @@ border-radius: 10px;
   color: #403e57;
 }
 
+.table th{
+  white-space: nowrap;
+}
+
 .table-responsive::-webkit-scrollbar-thumb{
   background: #ccc !important;
 }
@@ -1290,3 +1294,7 @@ button .loader{
   max-width: 100%; /* Đảm bảo không tràn ra ngoài */
 }
 
+
+button.notAllow{
+  cursor: no-drop
+}

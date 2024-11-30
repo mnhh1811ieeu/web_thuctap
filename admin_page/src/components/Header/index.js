@@ -58,11 +58,10 @@ const Header = () => {
                 <div className="container-fluid w-100">
                     <div className="row d-flex align-items-center w-100">
                         {/* Logo */}
-                        <div className="col-sm-2 part1">
+                        <div className="col-sm-2 pl-5 part1">
                             <Link to={'/'} className="d-flex align-items-center logo">
-                            <img src={logo}/>
-                            <span className="ml-2">BHM</span>
-
+                                <img src={logo} alt="logo"/>
+                            
                             </Link>
                         </div>
 
@@ -106,7 +105,7 @@ const Header = () => {
                                             <div>
                                                 <div className="userImg">
                                                     <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png"/>
+                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" alt="image dog cartoon"/>
                                                     </span>
                                                 </div>
                                             </div>

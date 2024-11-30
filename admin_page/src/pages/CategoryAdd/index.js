@@ -7,12 +7,11 @@ import { MdCloudUpload } from "react-icons/md";
 import { emphasize, styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import { postData } from '../../utils/api';
-import { FormatColorFill } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import { MyContext } from '../../App';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+
+
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
         theme.palette.mode === 'light'
@@ -34,8 +33,10 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
 
 const CategoryAdd = () => {
     const [isLoading, setIsLoading] = useState(false);
+    
     const [formFields, setFormFields] = useState({
         name: '',
+        
         images: '[]',
         color: ''
     });
@@ -52,7 +53,6 @@ const CategoryAdd = () => {
         )
     };
     
-      
     const addImgUrl = (e) => {
         const arr = [];
         arr.push(e.target.value);
@@ -78,7 +78,8 @@ const CategoryAdd = () => {
             postData('/api/category/create', formFields).then(res => {
                 setIsLoading(false);
                 history('/category');
-            })
+            });
+        //    context.fetchCategory();
         } else {
             context.setAlertBox({
                 open:true,
@@ -127,9 +128,11 @@ const CategoryAdd = () => {
 
                                 <div className="form-group">
                                     <h6>Link ảnh</h6>
-
                                     <input type="text" name='images' onChange={addImgUrl} />
                                 </div>
+
+                               
+
                                 <div className="form-group">
                                     <h6>Màu</h6>
 

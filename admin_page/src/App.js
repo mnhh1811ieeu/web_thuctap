@@ -17,6 +17,8 @@ import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import LoadingBar from 'react-top-loading-bar'
 import Editproduct from './pages/Products/proEdit';
+import { fetchDataFromApi } from './utils/api';
+import AddProductSIZE from './pages/Products/addProductSIZE';
 
 const MyContext = createContext();
 
@@ -27,6 +29,7 @@ function App() {
     const [isLogin, setIsLogin] = useState(true);
     const [isHideSiderbarAndHeader, setisHideSiderbarAndHeader] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [catData, setCatData] = useState([]);
     const[baseUrl,setBaseUrl]=useState("http://localhost:4000");
     const [alertBox,setAlertBox]=useState({
       msg:'',
@@ -56,10 +59,26 @@ function App() {
       alertBox,
       setAlertBox,
       setProgress,
-      baseUrl
+      baseUrl,
+      catData,
+    //   fetchCategory,
     }
+    // const fetchCategory=() => {
+    //   fetchDataFromApi('/api/category/').then((res) => {
+    //     setCatData(res);
+    //     setProgress(100);
+    //   })
+    // }
 
- 
+    useEffect( () => {
+      setProgress(20);
+      fetchDataFromApi('/api/category/').then((res) => {
+        setCatData(res);
+        setProgress(100);
+      })
+    }, [])
+
+    
   return (
     <BrowserRouter>
       <MyContext.Provider value={values}>
@@ -105,6 +124,8 @@ function App() {
               <Route path="/category/add" exact={true} element={<CategoryAdd/>}/>
               <Route path="/category" exact={true} element={<Category/>}/>
               <Route path="/product/edit/:id" exact={true} element={<Editproduct/>}/>
+              <Route path="/productSIZE/add" exact={true} element={<AddProductSIZE/>}/>
+              {/* <Route path="/productSIZE/list" exact={true} element={<AddProductSIZE/>}/> */}
             </Routes>
           </div>
 

@@ -56,6 +56,13 @@ router.get(`/`, async (req, res) => {
     res.send(productList);
 
 });
+router.get(`/featured`, async (req, res) => {
+    const productList = await Product.find( {isFeatured:true}); 
+        if(!productList){
+        res.status(500).json( { success :false})
+    }
+    return res.status(200).json(productList);
+    })
 
 router.post(`/create`, async (req, res) => {
 
@@ -101,6 +108,10 @@ router.post(`/create`, async (req, res) => {
         rating: req.body.rating,
         // numReviews: req.body.numReviews,
         isFeatured: req.body.isFeatured,
+        discount: req.body.discount,
+        productSIZE: req.body.productSIZE,
+  
+
     });
     product = await product.save();
     if (!product) {
