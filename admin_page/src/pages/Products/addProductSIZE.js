@@ -106,6 +106,9 @@ const AddProductSIZE = () => {
                 })
             });
             setIsLoading(false);
+            setFormFields({
+                productSIZE: ''
+            });
         }
 
     }

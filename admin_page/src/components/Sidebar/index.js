@@ -62,7 +62,6 @@ const Sidebar = () => {
                             <li><Link to="/product/details">Product View</Link></li>
                             <li><Link to="/product/upload">Product Upload</Link></li>
                             <li><Link to="/productSIZE/add">Thêm size sản phẩm</Link></li>
-                            <li><Link to="/productSIZE/list">Size sản phẩm</Link></li>
                         </ul>
                     </div>
 
