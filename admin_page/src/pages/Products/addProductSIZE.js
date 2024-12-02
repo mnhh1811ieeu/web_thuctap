@@ -81,7 +81,7 @@ const AddProductSIZE = () => {
         
         setIsLoading(true);
 
-        if( setEditId === ''){
+        if( editId === '' ){
             postData('/api/productSIZE/create', formFields).then( (res) => {
                 context.setAlertBox({
                     open: true,
