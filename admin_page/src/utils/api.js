@@ -29,10 +29,10 @@ export const postDataProduct = async (url, formData) => {
     }
 };
 export const editData= async(url, updatedData)=>{
-    const {res}= await axios.put(`http://localhost:4000${url}`,updatedData)
+    const {res}= await axios.put(`${process.env.REACT_APP_BASE_URL}${url}`,updatedData)
     return res;
 }
 export const deleteData= async(url)=>{
-    const {res}= await axios.delete(`http://localhost:4000${url}`)
+    const {res}= await axios.delete(`${process.env.REACT_APP_BASE_URL}${url}`)
     return res;
 }

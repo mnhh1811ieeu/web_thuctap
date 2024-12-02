@@ -397,7 +397,7 @@ header button.rounded-circle:hover svg{
   width: 70px;
   height: 70px;
   background: #0858f7;
-  border-radius: 100%;
+  border-radius: 50%;
   position: absolute;
   top: -20px;
   right: -20px;

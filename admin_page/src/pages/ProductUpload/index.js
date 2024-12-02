@@ -43,6 +43,7 @@ const ProductUpload = () => {
     const productImages = useRef();
     const imagesArr = [];
     const [catData, setCatData] = useState([]);
+    const [productSIZEData, setProductSIZEData] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
     const [categoryVal, setCategoryVal] = useState('');
     const [productSize, setProductSize] = useState('');
@@ -53,6 +54,8 @@ const ProductUpload = () => {
     const [files, setFiles] = useState([]);
     const [imgFiles, setimgFiles] = useState();
     const [previews, setPreviews] = useState();
+
+
     const [formFields, setFormFields] = useState({
         name: '',
         description: '',
@@ -128,6 +131,10 @@ const ProductUpload = () => {
 
             setCatData(res);
             context.setProgress(100);
+        })
+
+        fetchDataFromApi('/api/productSIZE/').then((res) => {
+            setProductSIZEData( res );
         })
 
     }, []);
@@ -393,12 +400,16 @@ const ProductUpload = () => {
                                                 <MenuItem value="">
                                                     <em value={null}>None</em>
                                                 </MenuItem>
-                                                <MenuItem value={'S'}>S</MenuItem>
-                                                <MenuItem value={'L'}>L</MenuItem>
-                                                <MenuItem value={'XL'}>XL</MenuItem>
-                                                <MenuItem value={'2XL'}>2XL</MenuItem>
-                                                <MenuItem value={'3XL'}>3XL</MenuItem>
-                                            </Select>                                        </div>
+                                                {
+                                                    productSIZEData?.map ( (item, index) => {
+                                                        return(
+                                                            <MenuItem key={index} value={item.productSIZE}>{item.productSIZE}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                                
+                                            </Select>
+                                        </div>
                                     </div>
 
                                 </div>
