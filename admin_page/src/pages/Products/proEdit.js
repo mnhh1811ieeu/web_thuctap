@@ -43,7 +43,7 @@ const ProductUpload = () => {
     const context = useContext(MyContext);
     const formdata = new FormData();
     const history = useNavigate();
-    const [isSelectedImages,setIsSelectedImages]=useState(false);
+    const [isSelectedImages, setIsSelectedImages] = useState(false);
     const [files, setFiles] = useState([]);
     const [imgFiles, setimgFiles] = useState();
     const [previews, setPreviews] = useState();
@@ -74,29 +74,29 @@ const ProductUpload = () => {
             const files = e.target.files;
             // setimgFiles(e.target.files);
             for (var i = 0; i < files.length; i++) {
-                if(files[i] && (files[i].type==='image/jpeg'||files[i].type==='image/jpg' || files[i].type==='image/png' || files[i].type==='image/webp]]]')){
+                if (files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' || files[i].type === 'image/png' || files[i].type === 'image/webp]]]')) {
                     setimgFiles(files);
                     const file = files[i];
                     imgArr.push(file);
                     formdata.append(`images`, file);
                     setFiles(imgArr);
                     console.log(imgArr);
-                setIsSelectedImages(true);
-                postDataProduct(apiEndPoint, formdata).then((res) => {
-                    context.setAlertBox({
-                        open:true,
-                        error:false,
-                        msg:"đã cập nhật ảnh"
-                    })
-                });
+                    setIsSelectedImages(true);
+                    postDataProduct(apiEndPoint, formdata).then((res) => {
+                        context.setAlertBox({
+                            open: true,
+                            error: false,
+                            msg: "đã cập nhật ảnh"
+                        })
+                    });
                 }
-                else{
+                else {
                     context.setAlertBox({
-                        open:true,
-                        error:true,
-                        msg:"Yêu cầu chọn ảnh"
+                        open: true,
+                        error: true,
+                        msg: "Yêu cầu chọn ảnh"
                     })
-                }  
+                }
             }
         } catch (error) {
             console.log(error)
@@ -111,7 +111,7 @@ const ProductUpload = () => {
     const [isLoading, setIsLoading] = useState(false);
     const productImages = useRef();
     const imagesArr = [];
-    const [product,setProducts]=useState([]);
+    const [product, setProducts] = useState([]);
     const [catData, setCatData] = useState([]);
     const handleChangeCategory = (event) => {
         setCategoryVal(event.target.value);
@@ -465,7 +465,7 @@ const ProductUpload = () => {
                     <div className='card p-4 mt-0'>
                         <div className='imagesUploadSec'>
                             <h4 className='mb-4 mt-0'>Media And Published</h4>
-                            <div className="imgUploadBox d-flex align-items-center">
+                            {/* <div className="imgUploadBox d-flex align-items-center">
                                 {
                                     previews?.length !== 0 && previews?.map((img, index) => {
                                         return (
@@ -489,6 +489,29 @@ const ProductUpload = () => {
                                 </div>
 
 
+                            </div> */}
+                            <div className="imgUploadBox d-flex align-items-center">
+                                {Array.isArray(previews) && previews.length > 0 ? (
+                                    previews.map((img, index) => (
+                                        <div className="uploadBox" key={index}>
+                                            <img src={img} className="w-100" alt={`Preview ${index}`} />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>Không có ảnh nào để hiển thị</p>
+                                )}
+                                <div className="uploadBox">
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={(e) => onChangeFile(e, '/api/products/upload')}
+                                        name="images"
+                                    />
+                                    <div className="info">
+                                        <FaRegImages />
+                                        <h5>Image upload</h5>
+                                    </div>
+                                </div>
                             </div>
 
 

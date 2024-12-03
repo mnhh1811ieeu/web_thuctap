@@ -50,7 +50,7 @@ discount:{
     required: true,
 },
 productSIZE:{
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'ProductSize',
     default: null,
     

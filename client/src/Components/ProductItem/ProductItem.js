@@ -53,29 +53,29 @@ const ProductItem = (props) => {
                 <Link to={'/product/1'}>
                     {
                         isHovered === true ?
-                            // <Slider {...settings} ref={sliderRef}>
-                            //     {
-
-                            //         props.item?.images?.map( ( image, index) => {
-                            //             return (
-                            //                 <div className='slick-slide' key={index}>
-                            //                     <img src={image} className='w-100' />
-                            //                 </div>
-                            //             )
-                            //         })
-                            //     }
-                            // </Slider>
                             <Slider {...settings} ref={sliderRef}>
-                                {props.item?.images?.map((image, index) => (
-                                    <div className="slick-slide" key={index}>
-                                        <img
-                                            src={`http://localhost:${process.env.PORT || 4000}/uploads/${image}`}
-                                            className="w-100"
-                                            alt={`Slide ${index}`}
-                                        />
-                                    </div>
-                                ))}
+                                {
+
+                                    props.item?.images?.map( ( image, index) => {
+                                        return (
+                                            <div className='slick-slide' key={index}>
+                                                <img src={image} className='w-100' />
+                                            </div>
+                                        )
+                                    })
+                                }
                             </Slider>
+                            // <Slider {...settings} ref={sliderRef}>
+                            //     {props.item?.images?.map((image, index) => (
+                            //         <div className="slick-slide" key={index}>
+                            //             <img
+                            //                 src={`http://localhost:${process.env.PORT || 4000}/uploads/${image}`}
+                            //                 className="w-100"
+                            //                 alt={`Slide ${index}`}
+                            //             />
+                            //         </div>
+                            //     ))}
+                            // </Slider>
 
                             :
                             <img src={props.item?.images[0]} alt="product" className='w-100' />

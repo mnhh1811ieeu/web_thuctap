@@ -22,7 +22,7 @@ app.use("/uploads",express.static("uploads"));
 app.use(`/api/category`,categoryRoutes);
 app.use(`/api/products`,productRoutes);
 app.use(`/api/productSIZE`,productSizeRoutes);
-//app.use(`/api/imageUpload`,imageUploadRoutes);
+
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
