@@ -240,7 +240,11 @@ const Products = () => {
                                                 {/* <td><Rating name="read-only" defaultValue={item?.rating} precision={0.5} size="small" readOnly/></td> */}
                                                 <td>{item.rating}</td>
                                                 <td>{item.discount}</td>
-                                                <td>{item?.productSIZE}</td>
+                                                <td>{item?.productSIZE?.map ( (siz) =>{
+                                                    return (
+                                                        <span className='badge badge-primary mr-2'>{siz}</span>
+                                                    )
+                                                })}</td>
 
                                                 <td>
                                                     <div className="actions d-flex align-items-center">

@@ -49,12 +49,12 @@ discount:{
     type: Number,
     required: true,
 },
-productSIZE:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ProductSize',
-    default: null,
-    
-},
+productSIZE:[
+    {
+        type: String,
+        default: null,
+    }
+],
     dateCreated: {
     type: Date,
     default: Date.now,

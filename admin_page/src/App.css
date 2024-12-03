@@ -24,6 +24,11 @@ body {
   background: transparent !important;
 }
 
+.badge {
+  padding: 4px;
+  font-size: 13px;
+  font-weight: 400;
+}
 .btn-blue {
   background: #0858f7 !important;
   font-size: 14px !important;

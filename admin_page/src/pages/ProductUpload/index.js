@@ -5,18 +5,16 @@ import HomeIcon from '@mui/icons-material/Home';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { emphasize, styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
-import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
 import { MyContext } from '../../App';
 import Select from '@mui/material/Select';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import { MdCloudUpload } from "react-icons/md";
 import { fetchDataFromApi, postData, postDataProduct } from '../../utils/api';
 import { FaRegImages } from 'react-icons/fa';
-//import { FaD } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
-//import { IoCloseSharp } from 'react-icons/io5';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
@@ -37,16 +35,29 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
 });
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+
 const ProductUpload = () => {
     
     const [isLoading, setIsLoading] = useState(false);
     const productImages = useRef();
-    const imagesArr = [];
+    //const imagesArr = [];
     const [catData, setCatData] = useState([]);
     const [productSIZEData, setProductSIZEData] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
+
     const [categoryVal, setCategoryVal] = useState('');
-    const [productSize, setProductSize] = useState('');
+    const [productSize, setProductSize] = useState([]);
     const [ratingsValue, setRatingValue] = useState(1);
     const context = useContext(MyContext);
     const formdata = new FormData();
@@ -68,7 +79,7 @@ const ProductUpload = () => {
         rating: 0,
         isFeatured: null,
         discount: 0,
-        productSIZE: '',
+        productSIZE: [],
         
     })
     const [isFeaturedValue, setisFeaturedValue] = useState('');
@@ -116,18 +127,25 @@ const ProductUpload = () => {
     };
 
     const handleChangeProductSize = (event) => {
-        setProductSize(event.target.value);
-        setFormFields(() => ({
-            ...formFields,
-            productSIZE: event.target.value
-        }))
+        // setProductSize(event.target.value);
+        // setFormFields(() => ({
+        //     ...formFields,
+        //     productSIZE: event.target.value
+        // }))
+
+        const {
+            target: { value },
+        } = event;
+        setProductSize(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+        formFields.productSIZE = value
     };
     useEffect(() => {
         window.scrollTo(0, 0);
         context.setProgress(20);
 
         fetchDataFromApi('/api/category/').then((res) => {
-
 
             setCatData(res);
             context.setProgress(100);
@@ -168,6 +186,8 @@ const ProductUpload = () => {
         e.preventDefault();
 
         console.log(formFields);
+        console.log('productSIZE')
+        console.log(productSize)
 
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
@@ -180,6 +200,7 @@ const ProductUpload = () => {
         formdata.append('isFeatured', formFields.isFeatured);
         formdata.append('discount', formFields.discount);
         formdata.append('productSIZE', formFields.productSIZE);
+        
 
         if (formFields.name === "") {
             context.setAlertBox({
@@ -262,7 +283,6 @@ const ProductUpload = () => {
             });
             return false;
         };
-        
         // if (formFields.images.length === 0) {
         //     context.setAlertBox({
         //         open: true,
@@ -271,6 +291,7 @@ const ProductUpload = () => {
         //     });
         //     return false;
         // };
+        
         setIsLoading(true);
         postData('/api/products/create', formFields).then((res) => {
             context.setAlertBox({
@@ -291,7 +312,7 @@ const ProductUpload = () => {
                 rating: 0,
                 isFeatured: false,
                 discount:0,
-                productSIZE: '',
+                productSIZE: [],
 
             });
             history('/product/list');
@@ -389,17 +410,16 @@ const ProductUpload = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>product size</h6>
-                                            <Select
+                                            <h6>Size</h6>
+                                            <Select 
+                                                multiple
                                                 value={productSize}
                                                 onChange={handleChangeProductSize}
                                                 displayEmpty
-                                                inputProps={{ 'aria-label': 'Without label' }}
                                                 className='w-100'
+                                                MenuProps={MenuProps}
                                             >
-                                                <MenuItem value="">
-                                                    <em value={null}>None</em>
-                                                </MenuItem>
+                                            
                                                 {
                                                     productSIZEData?.map ( (item, index) => {
                                                         return(
@@ -418,14 +438,14 @@ const ProductUpload = () => {
                                 <div className='row'>
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>regular price</h6>
+                                            <h6>Giá Khuyến Mãi</h6>
                                             <input type='text' name="price" value={formFields.price} onChange={inputChange} />
                                         </div>
                                     </div>
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>old price</h6>
+                                            <h6>Giá Cũ</h6>
                                             <input type='text' name="oldPrice" value={formFields.oldPrice} onChange={inputChange} />
                                         </div>
                                     </div>
@@ -443,7 +463,7 @@ const ProductUpload = () => {
                                 <div className='row'>
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>rating</h6>
+                                            <h6>Rating</h6>
                                             <Rating
                                                 name="simple-controlled"
                                                 value={ratingsValue}
@@ -462,7 +482,7 @@ const ProductUpload = () => {
                                     
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>discount</h6>
+                                            <h6>Giảm giá(%)</h6>
                                             <input type='text' name="discount" value={formFields.discount} onChange={inputChange} />
                                         </div>
                                     </div>

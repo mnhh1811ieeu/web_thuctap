@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 import { MdCloudUpload } from "react-icons/md";
 import { editData, fetchDataFromApi, postDataProduct } from '../../utils/api';
 import { FaRegImages } from 'react-icons/fa';
-import { Link, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
@@ -36,10 +36,30 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
 });
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 const ProductUpload = () => {
+
+
+    const [isLoading, setIsLoading] = useState(false);
+    const productImages = useRef();
+    const imagesArr = [];
+    const [product,setProducts]=useState([]);
+    const [catData, setCatData] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
     const [categoryVal, setCategoryVal] = useState('');
-    const [productSize, setProductSize] = useState('');
+    const [productSize, setProductSize] = useState([]);
+
+    const [productSIZEData, setProductSIZEData] = useState([])
     const [ratingsValue, setRatingValue] = useState(1);
     const context = useContext(MyContext);
     const formdata = new FormData();
@@ -61,7 +81,7 @@ const ProductUpload = () => {
         rating: 0,
         isFeatured: null,
         discount: 0,
-        productSIZE: '',
+        productSIZE: [],
     })
     const [isFeaturedValue, setisFeaturedValue] = useState('');
     
@@ -105,11 +125,7 @@ const ProductUpload = () => {
             [e.target.name]: e.target.value
         }))
     }
-    const [isLoading, setIsLoading] = useState(false);
-    const productImages = useRef();
-    const imagesArr = [];
-    const [product,setProducts]=useState([]);
-    const [catData, setCatData] = useState([]);
+
 
     const handleChangeisFeaturedValue = (event) => {
         setisFeaturedValue(event.target.value);
@@ -126,11 +142,13 @@ const ProductUpload = () => {
         }))
     };
     const handleChangeProductSize = (event) => {
-        setProductSize(event.target.value);
-        setFormFields(() => ({
-            ...formFields,
-            productSIZE: event.target.value
-        }))
+        const {
+            target: { value },
+        } = event;
+        setProductSize(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+        formFields.productSIZE = value
     };
 
     useEffect(() => {
@@ -162,6 +180,10 @@ const ProductUpload = () => {
             console.log(res);
             
         });
+
+        fetchDataFromApi('/api/productSIZE/').then((res) => {
+            setProductSIZEData( res );
+        })
 
 
     }, []);
@@ -316,7 +338,7 @@ const ProductUpload = () => {
                 rating: 0,
                 isFeatured: false,
                 discount: 0,
-                productSIZE:''
+                productSIZE:[]
                 
             });
             history('/product/list');
@@ -415,22 +437,24 @@ const ProductUpload = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>product size</h6>
-                                            <Select
+                                            <h6>Size</h6>
+                                            <Select 
+                                                multiple
                                                 value={productSize}
                                                 onChange={handleChangeProductSize}
                                                 displayEmpty
-                                                inputProps={{ 'aria-label': 'Without label' }}
                                                 className='w-100'
+                                                MenuProps={MenuProps}
                                             >
-                                                <MenuItem value="">
-                                                    <em value={null}>None</em>
-                                                </MenuItem>
-                                                <MenuItem value={'S'}>S</MenuItem>
-                                                <MenuItem value={'L'}>L</MenuItem>
-                                                <MenuItem value={'XL'}>XL</MenuItem>
-                                                <MenuItem value={'2XL'}>2XL</MenuItem>
-                                                <MenuItem value={'3XL'}>3XL</MenuItem>
+                                            
+                                                {
+                                                    productSIZEData?.map ( (item, index) => {
+                                                        return(
+                                                            <MenuItem key={index} value={item.productSIZE}>{item.productSIZE}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                                
                                             </Select>
                                         </div>
                                     </div>
@@ -534,7 +558,7 @@ const ProductUpload = () => {
                                                 isSelectedImages===true?
                                                 <img src={`${img}`} className='w-100'/>
                                                 :
-                                                <img src={`${context.baseUrl}/uploads/${img}`} className='w-100'/>
+                                                <img src={`${context.baseUrl}/uploads/${img}`} className='w-100' alt="img upload"/>
                                             }
                                             </div>
                                         )
@@ -554,7 +578,7 @@ const ProductUpload = () => {
 
 
 
-                            <Button type='submit' className='btn-blue btn-lg btn-big w-100' >
+                            <Button type='submit' className='btn-blue btn-lg btn-big w-100 mt-3' >
                                 <MdCloudUpload /> &nbsp; {isLoading === true ? <CircularProgress color="inherit" className="loader" /> : 'Xác nhận sửa'}
                             </Button>
 
