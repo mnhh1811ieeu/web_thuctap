@@ -305,6 +305,18 @@ const ProductUpload = () => {
         //     return false;
         // };
         
+    
+        // Kiểm tra ảnh đã được chọn hay chưa
+        if (!imgFiles || imgFiles.length === 0) {
+            context.setAlertBox({ open: true, msg: "Ảnh sản phẩm là bắt buộc", error: true });
+            return;
+        }
+    
+        // Thêm các ảnh vào formdata
+        for (let i = 0; i < imgFiles.length; i++) {
+            formdata.append('images', imgFiles[i]);  // Đảm bảo truyền đúng tên trường là 'images'
+        }
+    
         setIsLoading(true);
         postData('/api/products/create', formdata).then((res) => {
             context.setAlertBox({ open: true, msg: 'Đã tạo sản phẩm thành công', error: false });

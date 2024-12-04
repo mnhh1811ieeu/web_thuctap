@@ -125,7 +125,7 @@ const ProductUpload = () => {
             [e.target.name]: e.target.value
         }))
     }
-    
+
     const handleChangeisFeaturedValue = (event) => {
         setisFeaturedValue(event.target.value);
         setFormFields(() => ({
