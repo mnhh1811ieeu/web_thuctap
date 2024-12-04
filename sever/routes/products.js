@@ -161,6 +161,7 @@ router.post('/create', upload.array('images', 10), async (req, res) => {
     if (!category) {
         return res.status(404).send("Danh mục không tồn tại");
     }
+    
 
     // Kiểm tra ảnh trong body
     const files = req.files;  // Các file ảnh được upload tạm thời bởi multer
@@ -291,7 +292,8 @@ router.put('/:id', async (req, res) => {
             rating: req.body.rating,
             // numReviews: req.body.numReviews,
             isFeatured: req.body.isFeatured,
-
+            discount: req.body.discount,
+            productSIZE: req.body.productSIZE
         },
         { new: true }
     );

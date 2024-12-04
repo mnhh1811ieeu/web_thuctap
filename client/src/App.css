@@ -36,6 +36,7 @@ button{text-transform: capitalize !important;}
   display: inline-block;
   padding: 7px 10px;
   border-radius: 20px;
+  flex-wrap: wrap;
 }
 .badge.bg-success{
   background: #e5f8ed !important;

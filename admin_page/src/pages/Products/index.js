@@ -207,6 +207,8 @@ const Products = () => {
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Rating</th>
+                                    <th>Discount</th>
+                                    <th>Size</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -236,6 +238,12 @@ const Products = () => {
                                                 </td>
                                                 <td>{item.countInStock}</td>
                                                 <td>{item.rating}</td>
+                                                <td>{item.discount}</td>
+                                                <td>{item?.productSIZE?.map ( (siz) =>{
+                                                    return (
+                                                        <span className='badge badge-primary mr-2'>{siz}</span>
+                                                    )
+                                                })}</td>
 
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
@@ -255,8 +263,6 @@ const Products = () => {
                                                     </div>
                                                 </td>
                                             </tr>
-
-
                                         )
                                     })
                                 } */
@@ -284,6 +290,12 @@ const Products = () => {
                                                 </td>
                                                 <td>{item.countInStock}</td>
                                                 <td>{item.rating}</td>
+                                                <td>{item.discount}</td>
+                                                <td>{item?.productSIZE?.map ( (siz) =>{
+                                                    return (
+                                                        <span className='badge badge-primary mr-2'>{siz}</span>
+                                                    )
+                                                })}</td>
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
                                                         <Link to="/product/details">
