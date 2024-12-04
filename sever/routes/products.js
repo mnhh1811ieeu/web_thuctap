@@ -225,8 +225,8 @@ router.delete(`/:id`, async (req, res) => {
     const product=await Product.findById(req.params.id);
     const images= product.images;
     if(images.length!==0){
-        for (image of images){
-            fs.unlinkSync(`uploads/${image}`);
+        for (images of images){
+            fs.unlinkSync(`uploads/${images}`);
         }
     }
     const deletProduct = await Product.findByIdAndDelete(req.params.id);
@@ -241,6 +241,7 @@ router.delete(`/:id`, async (req, res) => {
     })
 }
 )
+
 router.get('/:id', async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) {

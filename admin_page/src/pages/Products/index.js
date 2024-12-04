@@ -291,9 +291,9 @@ const Products = () => {
                                                 <td>{item.countInStock}</td>
                                                 <td>{item.rating}</td>
                                                 <td>{item.discount}</td>
-                                                <td>{item?.productSIZE?.map ( (siz) =>{
+                                                <td style={{width: "100px"}}>{item?.productSIZE?.map ( (siz) =>{
                                                     return (
-                                                        <span className='badge badge-primary mr-2'>{siz}</span>
+                                                        <span className='badge badge-primary'>{siz}</span>
                                                     )
                                                 })}</td>
                                                 <td>
