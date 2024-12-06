@@ -16,12 +16,14 @@ app.use(bodyParser.json());
 const categoryRoutes=require('./routes/categories');
 const productRoutes=require('./routes/products');
 const productSizeRoutes = require('./routes/productSIZE.js');
+const cart = require('./routes/cart.js');
 //const imageUploadRoutes = require('./helper/imageUpload.js');
 
 app.use("/uploads",express.static("uploads"));
 app.use(`/api/category`,categoryRoutes);
 app.use(`/api/products`,productRoutes);
 app.use(`/api/productSIZE`,productSizeRoutes);
+app.use(`/api/cart`, cart);
 //app.use(`/api/imageUpload`,imageUploadRoutes);
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {

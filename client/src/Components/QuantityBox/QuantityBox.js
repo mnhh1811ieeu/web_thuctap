@@ -1,9 +1,9 @@
 import { Button } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaMinus } from 'react-icons/fa6'
 import { MdAdd } from "react-icons/md";
 
-const QuantityBox = () => {
+const QuantityBox = (props) => {
 
     const [inputVal, setInputVal] = useState(1);
     const plus = () => {
@@ -16,6 +16,9 @@ const QuantityBox = () => {
         }
     }
 
+    useEffect(() => {
+        props.quantity(inputVal)
+    }, inputVal);
 
   return (
     <div className='quantityDrop d-flex align-items-center'>

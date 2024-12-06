@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, json } from "react-router-dom";
 import Header from "./Components/Header";
 import Home from "./Pages/Home";
 import ProductDetails from "./Pages/ProductDetails";
@@ -21,11 +21,14 @@ function App() {
   const [isOpenProductModal, setIsOpenProductModal] = useState(false);
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const [cartData, setCartData] =useState([]);
 
   useEffect( () => {
    //getCountry("https://provinces.open-api.vn/api/?depth=2");
     getCountry("https://countriesnow.space/api/v0.1/countries/");
   }, []);
+
+  let [cartFields, setCarFields] = useState([]);
 
   const getCountry =async(url) => {
     const responsive = await axios.get(url).then( (res) =>{
@@ -34,6 +37,25 @@ function App() {
     })
   }
 
+
+
+  const addtoCart=(data)=> {
+    postData(`/api/cart/add`).then((res) => {
+      if(res.status!==false) {
+        setAlertBox({
+        open: true,
+        error: false,
+        msg: "Mặt hàng đã được thêm vào giỏ hàng"
+        })
+      } else {
+        setAlertBox({
+        open: true,
+        error: true,
+        msg:res.msg
+        })
+      }
+    })
+  }
 
   const values = {
     countryList,
@@ -44,7 +66,10 @@ function App() {
     isHeaderFooterShow,
     setIsHeaderFooterShow,
     setIsLogin,
-    isLogin
+    isLogin,
+    addtoCart,
+    cartData,
+    setCartData
   }
   return (
     <BrowserRouter >

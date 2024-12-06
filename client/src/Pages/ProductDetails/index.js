@@ -1,11 +1,14 @@
 import { Button, Rating } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import ProductZoom from '../../Components/ProductZoom/ProductZoom'
 import QuantityBox from '../../Components/QuantityBox/QuantityBox'
 import { IoCart } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 import Tooltip from '@mui/material/Tooltip';
 import RelatedProducts from './RelatedProducts/RelatedProducts';
+
+import { MyContext } from '../../App';
+import { useParams } from 'react-router-dom';
 
 const ProductDetails = () => {
 
@@ -15,7 +18,34 @@ const ProductDetails = () => {
     
     const isActive = (index) => {
         setActiveSize(index);
-    }
+    }  
+
+  
+  let [cartFields, setCarFields] = useState([]);
+  let [productQuantity, setProductQuantity] = useState();
+
+  const { id } = useParams();
+
+  const context = useContext(MyContext);
+
+  const quantity=(val)=> {
+    setProductQuantity(val)
+  }
+
+  const addtoCart= (data)=>{
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    cartFields.productTitle = productData?.name
+    cartFields.images= productData?.images[0]
+    cartFields.rating = productData?.rating
+    cartFields.price = productData?.price
+    cartFields.quantity = productQuantity
+    cartFields.subTotal = parseInt(productData?.price * productQuantity)
+    cartFields.productId = productData?.id
+    cartFields.userId = user?.userId
+
+    context.addtoCart(cartFields);
+  }
 
   return (
     <>
@@ -79,8 +109,8 @@ const ProductDetails = () => {
                             </ul>
                         </div>
                         <div className='d-flex align-items-center mt-4 '>
-                            <QuantityBox/>
-                            <Button className='btn-blue btn-lg btn-big btn-round ml-4'>
+                            <QuantityBox quantity = {quantity}/>
+                            <Button className='btn-blue btn-lg btn-big btn-round ml-4' onClick={()=>addtoCart(productData)}>
                                 <IoCart/> &nbsp; Thêm vào giỏ hàng 
                             </Button>
 
