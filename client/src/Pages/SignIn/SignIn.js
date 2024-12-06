@@ -4,67 +4,82 @@ import logo1 from "../../assets/images/logo1.png";
 import gg from "../../assets/images/gg.png";
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios để gọi API
-import { fetchDataFromApi } from '../../utils/api';
+import { fetchDataFromApi, postDataUser } from '../../utils/api';
 
 const SignIn = () => {
-  const { isLogin, setIsLogin } = useContext(MyContext);
+  const [isLoading, setIsLoading] = useState(false);
   const context = useContext(MyContext); // Dùng context để cập nhật isLogin
-  const [email, setEmail] = useState(""); // Lưu email
-  const [password, setPassword] = useState(""); // Lưu mật khẩu
+ 
   const [error, setError] = useState(""); // Lưu thông báo lỗi khi đăng nhập
-// Giả sử sau khi người dùng đăng nhập thành công, bạn lưu trạng thái vào localStorage
-const handleLoginSuccess = (userData) => {
-  localStorage.setItem("authToken", userData.token); // Lưu token hoặc thông tin đăng nhập khác
-  setIsLogin(true);  // Cập nhật trạng thái trong context
-};
+  const history = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const onChangeInput = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+  const signIn = async (e) => {
+    e.preventDefault();
 
+    if (formData.email === "" || formData.password === "") {
+      alert("Email và mật khẩu không được để trống!");
+      return;
+    }
+    setIsLoading(true); // Bắt đầu loading
+
+    try {
+      // Gửi yêu cầu đăng nhập
+      const res = await postDataUser("/api/user/signin", formData);
+      console.log("Response from API:", res); // Kiểm tra toàn bộ response trả về
+
+      // Lưu thông tin vào localStorage
+      localStorage.setItem("token", res.token);
+      const user = {
+        name: res.user?.name,
+        email: res.user?.email,
+        userId: res.user?.id
+      }
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Hiển thị thông báo thành công
+      context.setAlertBox({
+        open: true,
+        error: false,
+        msg: "Đăng nhập thành công",
+      });
+
+      // Chuyển hướng sau 2 giây
+      setTimeout(() => {
+        window.location.href = "/"
+      }, 1000);
+    } catch (error) {
+      console.error("Lỗi khi xử lý đăng nhập:", error);
+
+      context.setAlertBox({
+        open: true,
+        error: true,
+        msg: "Đăng nhập thất bại. Vui lòng thử lại.",
+      });
+      setIsLoading(false); // Dừng loading khi có lỗi
+    }
+  };
   useEffect(() => {
     context.setIsHeaderFooterShow(false);
   }, []);
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsLogin(true); // Cập nhật trạng thái đăng nhập
-    }
-  }, [setIsLogin]);
 
-  useEffect(() => {
-    if (isLogin) {
-      fetchDataFromApi("/api/auth")
-        .then((data) => {
-          console.log("Thông tin người dùng:", data);
-        })
-        .catch((error) => {
-          console.error("Lỗi khi gọi API:", error);
-        });
-    }
-  }, [isLogin]);
-  
-  const handleLogin = async (e) => {
-    e.preventDefault(); // Ngừng reload trang khi submit
-  
-    try {
-      const response = await axios.post('http://localhost:4000/api/auth/login', { email, password });
-      console.log("Đăng nhập thành công:", response.data);
-  
-      // Lưu token vào localStorage
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("isLogin", JSON.stringify(true));  // Lưu trạng thái login
-  
-      // Cập nhật trạng thái isLogin trong context
-      context.setIsLogin(true);
-      
-      alert("Đăng nhập thành công!");
-      // Dùng history.push() để chuyển hướng mà không reload trang
-      window.location.replace("/"); // Dùng replace để không lưu trang đăng nhập trong lịch sử
-    } catch (err) {
-      console.error("Lỗi đăng nhập:", err.response?.data || err.message);
-      setError("Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.");
-    }
-  };
-  
+  }, []);
+
+
+
+
 
   return (
     <section className='section signInPage'>
@@ -75,7 +90,7 @@ const handleLoginSuccess = (userData) => {
             <img src={logo1} alt="" style={{ width: '100px' }} />
           </div>
 
-          <form className='mt-3' onSubmit={handleLogin}>
+          <form className='mt-3' onSubmit={signIn}>
             <h2 className='mb-4'>ĐĂNG NHẬP</h2>
             <div className='form-group'>
               <TextField
@@ -85,8 +100,8 @@ const handleLoginSuccess = (userData) => {
                 required
                 variant="standard"
                 className='w-100'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} // Cập nhật email
+               name="email"
+                onChange={onChangeInput} // Cập nhật email
               />
             </div>
             <div className='form-group'>
@@ -97,8 +112,8 @@ const handleLoginSuccess = (userData) => {
                 required
                 variant="standard"
                 className='w-100'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} // Cập nhật mật khẩu
+               name="password"
+                onChange={onChangeInput} 
               />
             </div>
 

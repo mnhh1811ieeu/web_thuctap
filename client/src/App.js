@@ -21,7 +21,16 @@ function App() {
   const [isOpenProductModal, setIsOpenProductModal] = useState(false);
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
-
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    userId:""
+  })
+  const [alertBox, setAlertBox] = useState({
+    msg: '',
+    error: false,
+    open: false
+  })
   // useEffect( () => {
   //  //getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
   //   getCountry("https://countriesnow.space/api/v0.1/countries/");
@@ -33,6 +42,7 @@ function App() {
   //       console.log(res.data.data)
   //   })
   // }
+
   const getCountry = async (url) => {
     const responsive = await axios.get(url).then((res) => {
       setCountryList(res.data.data);
@@ -44,7 +54,16 @@ function App() {
   useEffect(() => {
     getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
   }, []);
-  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token !== null && token !== "" && token !== null) {
+      setIsLogin(true);
+      const userData= JSON.parse(localStorage.getItem("user"));
+      setUser(userData);
+    } else {
+      setIsLogin(false);
+    }
+  }, [isLogin])
 
 
   const values = {
@@ -56,7 +75,9 @@ function App() {
     isHeaderFooterShow,
     setIsHeaderFooterShow,
     setIsLogin,
-    isLogin
+    isLogin,
+    alertBox,
+    setAlertBox
   }
   return (
     <BrowserRouter >

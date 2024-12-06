@@ -131,7 +131,7 @@ const Products = () => {
                         />
                     </Breadcrumbs>
                     <Link to='/product/upload'><Button className='btn-blue ml-3 pl-3 pr-3'>
-                            Thêm sản phẩm</Button></Link>
+                        Thêm sản phẩm</Button></Link>
                 </div>
                 <div className="row dashboardBoxWrapperRow">
                     <div className="col-md-8">
@@ -291,7 +291,7 @@ const Products = () => {
                                                 <td>{item.countInStock}</td>
                                                 <td>{item.rating}</td>
                                                 <td>{item.discount}</td>
-                                                <td>{item?.productSIZE?.map ( (siz) =>{
+                                                <td>{item?.productSIZE?.map((siz) => {
                                                     return (
                                                         <span className='badge badge-primary mr-2'>{siz}</span>
                                                     )
@@ -314,7 +314,7 @@ const Products = () => {
                                             </tr>
                                         );
                                     })
-                                    
+
                                 }
 
 

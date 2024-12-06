@@ -26,6 +26,15 @@ export const postDataProduct = async (url, formData) => {
         throw error; // Ném lỗi để xử lý bên ngoài nếu cần
     }
 };
+export const postDataUser = async (url, formData) => {
+    try {
+        const response = await axios.post("http://localhost:4000" + url, formData);
+        return response.data; // Đảm bảo trả về dữ liệu chính xác từ response
+    } catch (error) {
+        console.error("Error in postData:", error.response?.data || error.message);
+        throw error; // Ném lỗi để frontend có thể xử lý
+    }
+};
 export const editData= async(url, updateData)=>{
     const {res}= await axios.put(`http://localhost:4000${url}`,updateData)
     return res;

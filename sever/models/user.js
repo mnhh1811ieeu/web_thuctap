@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    phoneNumber: {
+    phone: {
         type: String,
         required: true,
         unique: true,
@@ -23,11 +23,11 @@ const userSchema = new mongoose.Schema({
 });
 
 // Mã hóa mật khẩu trước khi lưu vào database
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
+userSchema.virtual('id').get(function (){
+    return this._id.toHexString();
 });
-
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+userSchema.set('toJSON',{
+    virtuals:  true,
+})
+exports.User = mongoose.model('User', userSchema);
+exports.userSchema=userSchema;

@@ -29,24 +29,24 @@ const Home = () => {
       setCatData(res);
     })
 
-    // fetchDataFromApi(`/api/products/featured`).then( (res ) => {
-    //   setFeaturedProducts(res)
-    // })
+    fetchDataFromApi(`/api/products/featured`).then( (res ) => {
+      setFeaturedProducts(res)
+    })
 
     fetchDataFromApi("/api/products/").then( (res) => {
       setProductsData(res);
 
     })
-    fetchDataFromApi("/api/products/featured").then((res) => {
-      if (Array.isArray(res)) {
-        const baseUrl = "http://localhost:4000/uploads"; // Đảm bảo đường dẫn chính xác đến thư mục uploads
-        const updatedFeaturedProducts = res.map((item) => ({
-          ...item,
-          images: item.images.map((img) => `${baseUrl}/${img}`), // Cập nhật đường dẫn ảnh
-        }));
-        setFeaturedProducts(updatedFeaturedProducts);
-      }
-    });
+    // fetchDataFromApi("/api/products/featured").then((res) => {
+    //   if (Array.isArray(res)) {
+    //     const baseUrl = "http://localhost:4000/uploads"; // Đảm bảo đường dẫn chính xác đến thư mục uploads
+    //     const updatedFeaturedProducts = res.map((item) => ({
+    //       ...item,
+    //       images: item.images.map((img) => `${baseUrl}/${img}`), // Cập nhật đường dẫn ảnh
+    //     }));
+    //     setFeaturedProducts(updatedFeaturedProducts);
+    //   }
+    // });
 
     // fetchDataFromApi("/api/products/").then((res) => {
     //   if (Array.isArray(res)) {
