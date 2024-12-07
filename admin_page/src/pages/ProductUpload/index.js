@@ -84,49 +84,25 @@ const ProductUpload = () => {
     })
     const [isFeaturedValue, setisFeaturedValue] = useState('');
     
-    // const onChangeFile = async (e, apiEndPoint) => {
-    //     try {
-    //         const imgArr = [];
-    //         const files = e.target.files;
-    //         setimgFiles(e.target.files);
-    //         for (var i = 0; i < files.length; i++) {
-    //             const file = files[i];
-    //             imgArr.push(file);
-    //             formdata.append(`images`, file);
-    //         }
-    //         setFiles(imgArr);
-    //         // sửa chỗ này
-    //         postDataProduct(apiEndPoint, formdata).then((res) => {
-    //             console.log(res);
-    //         });
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
     const onChangeFile = async (e, apiEndPoint) => {
         try {
-            const files = e.target.files; // Lấy danh sách file từ input
-            const formdata = new FormData(); // Tạo một đối tượng FormData mới
-    
-            // Thêm từng file vào FormData
-            for (let i = 0; i < files.length; i++) {
-                formdata.append("images", files[i]);
+            const imgArr = [];
+            const files = e.target.files;
+            setimgFiles(e.target.files);
+            for (var i = 0; i < files.length; i++) {
+                const file = files[i];
+                imgArr.push(file);
+                formdata.append(`images`, file);
             }
-    
-            // Gửi FormData đến API
-            const response = await postDataProduct(apiEndPoint, formdata);
-    
-            // Xử lý phản hồi từ server
-            if (response.status === 200) {
-                console.log("Tải lên thành công:", response.data);
-            } else {
-                console.error("Tải lên thất bại:", response.message);
-            }
+            setFiles(imgArr);
+            // sửa chỗ này
+            postDataProduct(apiEndPoint, formdata).then((res) => {
+                console.log(res);
+            });
         } catch (error) {
-            console.error("Có lỗi xảy ra:", error);
+            console.log(error)
         }
-    };
-    
+    }
     const inputChange = (e) => {
         setFormFields(() => ({
             ...formFields,
