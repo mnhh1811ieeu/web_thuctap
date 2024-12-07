@@ -20,9 +20,13 @@ const productSchema = mongoose.Schema({
     type: Number,
     default: 0
 },
-oldPrice: {
+    oldPrice: {
     type: Number,
     default: 0
+},
+    catName:{
+    type: String,
+    default: ''
 },
     category: {
     type: mongoose.Schema.Types.ObjectId,
@@ -49,12 +53,12 @@ discount:{
     type: Number,
     required: true,
 },
-productSIZE:[
-    {
-        type: String,
-        default: null,
-    }
-],
+productSIZE:[{
+    type: String,
+    default: null,
+}]
+    
+,
     dateCreated: {
     type: Date,
     default: Date.now,

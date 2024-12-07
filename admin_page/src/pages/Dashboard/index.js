@@ -219,6 +219,8 @@ const Dashboard = () => {
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Rating</th>
+                                    <th>Discount</th>
+                                    <th>Size</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -229,9 +231,9 @@ const Dashboard = () => {
                                             <tr>
                                                 <td>
                                                     <div className="d-flex align-align-items-center  productBox">
-                                                        <div className="imgWrapper">
+                                                    <div className="imgWrapper">
                                                             <div className="img card shadow m-0">
-                                                                <img className="w-100" src={`${context.baseUrl}/uploads/${item.images[0]}`} />
+                                                                <img className="w-100" src={item.images[0]} alt={item.name} /> {/* Sử dụng trực tiếp URL của Cloudinary */}
                                                             </div>
                                                         </div>
                                                         <div className="info pl-3">
@@ -248,6 +250,15 @@ const Dashboard = () => {
                                                 </td>
                                                 <td>{item.countInStock}</td>
                                                 <td>{item.rating}</td>
+                                                <td>{item.discount}</td>
+                                                
+                                                <td style={{width: "100px"}}>
+                                                    {item?.productSIZE?.map ( (siz) =>{
+                                                        return (
+                                                            <span className='badge badge-primary'>{siz}</span>
+                                                        )
+                                                    })}
+                                                </td>
                                                
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
@@ -269,12 +280,7 @@ const Dashboard = () => {
                             </tbody>
                         </table>
 
-                        <div className="d-flex tableFooter">
-                            <p>showing <b>12</b>of <b>60</b> results</p>
-                            <Pagination className="pagination" count={productList?.totalPages}
-                                showFirstButton showLastButton color="primary" onChange={handleChange} />
-
-                        </div>
+                        
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import HomeBanner from '../../Components/HomeBanner'
 import img1 from '../../assets/images/img1.png'
 import anvat1 from '../../assets/images/anvat1.png'
@@ -13,61 +13,72 @@ import ProductItem from '../../Components/ProductItem/ProductItem';
 import HomeCat from '../../Components/HomeCat/HomeCat'
 import banner2 from '../../assets/images/banner2.png'
 import banner3 from '../../assets/images/banner3.png'
+import banner4 from '../../assets/images/banner4.png'
 import discountSec from '../../assets/images/discountSec.png'
 import { fetchDataFromApi } from '../../utils/api'
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import { MyContext } from '../../App';
+
 
 
 
 
 const Home = () => {
 
-  const [catData, setCatData ] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [productsData, setProductsData] = useState([]); 
-  useEffect( () => {
-    fetchDataFromApi("/api/category/").then( (res) => {
-      setCatData(res);
-    })
+  const [productsData, setProductsData] = useState([]);
+  const [value, setValue] = useState(0);
+  const [selectedCat, setSelectedCat] = useState('váy');
+  const [filterData, setFilterData] = useState([]);
 
-    // fetchDataFromApi(`/api/products/featured`).then( (res ) => {
-    //   setFeaturedProducts(res)
-    // })
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const context = useContext(MyContext);
+  
+  const selectCat= (cat) => {
+    setSelectedCat(cat);
+  }
+
+
+  useEffect( () => {
+    window.scrollTo(0, 0);
+
+    //setSelectedCat( context.categoryData[0]?.name);
 
     fetchDataFromApi("/api/products/").then( (res) => {
       setProductsData(res);
 
     })
     fetchDataFromApi("/api/products/featured").then((res) => {
-      if (Array.isArray(res)) {
-        const baseUrl = "http://localhost:4000/uploads"; // Đảm bảo đường dẫn chính xác đến thư mục uploads
-        const updatedFeaturedProducts = res.map((item) => ({
-          ...item,
-          images: item.images.map((img) => `${baseUrl}/${img}`), // Cập nhật đường dẫn ảnh
-        }));
-        setFeaturedProducts(updatedFeaturedProducts);
-      }
+        setFeaturedProducts(res);
     });
 
-    // fetchDataFromApi("/api/products/").then((res) => {
-    //   if (Array.isArray(res)) {
-    //     const baseUrl = "http://localhost:4000/uploads"; // Đảm bảo đường dẫn chính xác đến thư mục uploads
-    //     const updatedProducts = res.map((item) => ({
-    //       ...item,
-    //       images: item.images.map((img) => `${baseUrl}/${img}`), // Cập nhật đường dẫn ảnh
-    //     }));
-    //     setProductsData(updatedProducts);
-    //   }
-    // });
+    fetchDataFromApi("/api/products?perPage=8").then( (res) => {
+      setProductsData(res);
+    })
+
+    
+
   }, [])
 
-  
+  useEffect( () => {
+    fetchDataFromApi(`/api/products?catName=${selectedCat}`).then( (res) => {
+      setFilterData(res.products);
+    })
+  }, [selectedCat])
+
   return (
     <>
       <HomeBanner/>
 
       {
-        catData?.length!==0 && <HomeCat catData={catData}/>
+        context.categoryData?.length!==0 && <HomeCat catData={context.categoryData}/>
       }
+    
 
       <section className='homeProducts'>
         <div className='container'>
@@ -80,7 +91,7 @@ const Home = () => {
                 </div>
 
                 <div className='banner mt-4'>
-                  <img src={anvat1} className="cursor w-100"/>
+                  <img src={banner4} className="cursor w-100"/>
                 </div>
               </div>
             </div> 
@@ -89,6 +100,74 @@ const Home = () => {
               <div className='d-flex align-items-center'>
                 <div className='info w-75'>
                   <h3 className='mb-0 hd'>sản phẩm bán chạy nhất</h3>
+                  <p className='text-light text-sml mb-0'>Đừng bỏ lỡ các ưu đãi hiện tại cho đến hết tháng 12.</p>
+                </div>
+
+                <div className='ml-auto'>
+                  <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    className='filterTabs'
+                  >
+                    {
+                      context.categoryData?.map( (item, index) => {
+                        return(
+                          <Tab className='item' label={item.name} 
+                            onClick={ () => selectCat(item.name)}/>
+                        )
+                      })
+                    }
+                  </Tabs>
+                </div>
+
+              </div>
+              <div className='product_row w-100 mt-4'>
+                <Swiper
+                  slidesPerView={4}
+                  spaceBetween={0}
+                  navigation={true}
+                  slidesPerGroup={1}
+                  modules={[Navigation]}
+                  className="mySwiper"
+                >
+                {
+                  filterData?.length!==0 && filterData?.slice(0)?.reverse()?.map(( item, index) => {
+                    return(
+                      <SwiperSlide key={index}>
+                      <ProductItem item={item}/>
+                      </SwiperSlide>
+                    )
+                  })
+                }
+                </Swiper>
+              </div>
+
+
+              <div className='d-flex align-items-center mt-5'>
+                <div className='info w-75'>
+                  <h3 className='mb-0 hd'>Sản phẩm mới</h3>
+                  <p className='text-light text-sml mb-0'>Sản phẩm mới đã được cập nhật trong kho của BHM.</p>
+                </div>
+
+                
+              </div>
+
+              <div className='product_row productRow2 w-100 mt-4 d-flex'>
+                {
+                  productsData?.products?.length!==0 && productsData?.products?.slice(0).reverse().map(( item, index) => {
+                    return(
+                      <ProductItem key={index} item={item}/>
+                    )
+                  })
+                }
+
+              </div>
+
+              <div className='d-flex align-items-center mt-3'>
+                <div className='info w-75'>
+                  <h3 className='mb-0 hd'>Váy</h3>
                   <p className='text-light text-sml mb-0'>Đừng bỏ lỡ các ưu đãi hiện tại cho đến hết tháng 12.</p>
                 </div>
 
@@ -113,26 +192,6 @@ const Home = () => {
                   })
                 }
                 </Swiper>
-              </div>
-
-
-              <div className='d-flex align-items-center mt-5'>
-                <div className='info w-75'>
-                  <h3 className='mb-0 hd'>Sản phẩm mới</h3>
-                  <p className='text-light text-sml mb-0'>Sản phẩm mới đã được cập nhật trong kho của BHM.</p>
-                </div>
-
-                <Button className='viewAllBtn ml-auto'> View all <TfiAngleDoubleRight/></Button>
-              </div>
-              <div className='product_row productRow2 w-100 mt-4 d-flex'>
-                {
-                  productsData?.products?.length!==0 && productsData?.products?.map(( item, index) => {
-                    return(
-                      <ProductItem key={index} item={item}/>
-                    )
-                  })
-                }
-
               </div>
 
               <div className='d-flex mt-4 mb-5 bannerSec'>

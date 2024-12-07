@@ -63,7 +63,7 @@ const Navigation = () => {
                         <li className='list list-inline-item'>
                             <Link to="/"><Button>Home</Button> </Link>
                             <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
+                                <Link to={`/subCat/}`}><Button>Home</Button> </Link>
                                 <Link to="/"><Button>Home</Button> </Link>
                                 <Link to="/"><Button>Home</Button> </Link>
                             </div>

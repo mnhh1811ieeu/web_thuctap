@@ -70,10 +70,11 @@ const ProductUpload = () => {
     const [formFields, setFormFields] = useState({
         name: '',
         description: '',
-        // images: [],
+        images: [],
         brand: '',
         price: null,
         oldPrice: null,
+        catName: '',
         category: '',
         countInStock: null,
         rating: 0,
@@ -110,6 +111,9 @@ const ProductUpload = () => {
         }))
     }
    
+    const selectCat= (cat) =>{
+        formFields.catName = cat;
+    }
 
     const handleChangeisFeaturedValue = (event) => {
         setisFeaturedValue(event.target.value);
@@ -125,14 +129,7 @@ const ProductUpload = () => {
             category: event.target.value
         }))
     };
-
     const handleChangeProductSize = (event) => {
-        // setProductSize(event.target.value);
-        // setFormFields(() => ({
-        //     ...formFields,
-        //     productSIZE: event.target.value
-        // }))
-
         const {
             target: { value },
         } = event;
@@ -140,7 +137,10 @@ const ProductUpload = () => {
             typeof value === 'string' ? value.split(',') : value,
         );
         formFields.productSIZE = value
+        
     };
+
+
     useEffect(() => {
         window.scrollTo(0, 0);
         context.setProgress(20);
@@ -152,7 +152,8 @@ const ProductUpload = () => {
         })
 
         fetchDataFromApi('/api/productSIZE/').then((res) => {
-            setProductSIZEData( res );
+            setProductSIZEData(res);
+
         })
 
     }, []);
@@ -195,6 +196,7 @@ const ProductUpload = () => {
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
         formdata.append('oldPrice', formFields.oldPrice);
+        formdata.append('catName', formFields.catName);
         formdata.append('category', formFields.category);
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('rating', formFields.rating);
@@ -296,7 +298,7 @@ const ProductUpload = () => {
             });
             return false;
         };
-        // if (formFields.images.length === 0) {
+     // if (formFields.images.length === 0) {
         //     context.setAlertBox({
         //         open: true,
         //         msg: "Yêu cầu thêm ảnh",
@@ -306,17 +308,6 @@ const ProductUpload = () => {
         // };
         
     
-        // Kiểm tra ảnh đã được chọn hay chưa
-        if (!imgFiles || imgFiles.length === 0) {
-            context.setAlertBox({ open: true, msg: "Ảnh sản phẩm là bắt buộc", error: true });
-            return;
-        }
-    
-        // Thêm các ảnh vào formdata
-        for (let i = 0; i < imgFiles.length; i++) {
-            formdata.append('images', imgFiles[i]);  // Đảm bảo truyền đúng tên trường là 'images'
-        }
-    
         setIsLoading(true);
         postData('/api/products/create', formdata).then((res) => {
             context.setAlertBox({ open: true, msg: 'Đã tạo sản phẩm thành công', error: false });
@@ -325,8 +316,10 @@ const ProductUpload = () => {
                 name: '',
                 description: '',
                 brand: '',
+                images:[],
                 price: 0,
                 oldPrice: 0,
+                catName: '',
                 category: '',
                 countInStock: 0,
                 rating: 0,
@@ -393,11 +386,13 @@ const ProductUpload = () => {
                                                 className='w-100'
                                             >
                                                 <MenuItem value="">
-                                                    <em value={null}>None</em></MenuItem>
+                                                    <em >None</em></MenuItem>
                                                 {
-                                                    catData?.categoryList?.length !== 0 && catData?.categoryList?.map((cat, index) => {
+                                                    context.catData?.categoryList?.length !== 0 && context.catData?.categoryList?.map((cat, index) => {
                                                         return (
-                                                            <MenuItem value={cat.id} key={index}>{cat.name}</MenuItem>
+                                                            <MenuItem value={cat.id} key={index}
+                                                                onClick={ ()=> selectCat(cat.name)}
+                                                            >{cat.name}</MenuItem>
                                                         )
                                                     })
                                                 }

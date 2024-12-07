@@ -558,14 +558,14 @@ nav .navPart2 ul li .submenu a button:hover{
 }
 .productItem .imgWrapper img{
   transition: all 0.3s ease-in-out;
+
 }
 .productItem .imgWrapper:hover img{
   transform: scale(1.1);
 }
 .productItem .imgWrapper:hover .actions{
- opacity: 1;
- right: 10px; 
-
+  opacity: 1;
+  right: 10px;
 }
 .badge-primary{
   background:  #2bbef9 !important;
@@ -807,6 +807,10 @@ footer .linksWrap ul .zalo svg{
   top: 20px;
   left: 70px;
   z-index: 100;
+}
+.productZoomBig{
+  height: 300px;
+  overflow: hidden;
 }
 
 .productDetails .productDZoom .badge{left: 90px;}

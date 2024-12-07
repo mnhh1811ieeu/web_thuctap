@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../../Components/Sidebar/Sidebar'
 import { IoMdMenu } from "react-icons/io";
 import { TbGridDots } from "react-icons/tb";
@@ -10,11 +10,13 @@ import { FaAngleDown } from "react-icons/fa";
 import ProductItem from '../../Components/ProductItem/ProductItem';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import { useParams } from "react-router-dom"
+import { fetchDataFromApi } from '../../utils/api';
 
 const Listing = () => {
 
   const [productView, setProductView] = useState('four');
-
+  const [productData, setProductData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const openDropdown = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -23,6 +25,14 @@ const Listing = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const {id} = useParams();
+
+  useEffect( () => {
+     fetchDataFromApi(`/api/products?catName=${id}`).then( (res)=> {
+      setProductData(res.products)
+     })
+  }, [id])
 
 
   return (
@@ -65,22 +75,13 @@ const Listing = () => {
                       </div>
 
                       <div className='productListing' >
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
-                        <ProductItem itemView={productView} />
+                        {
+                          productData?.map( (item, index) => {
+                            <ProductItem key={index} itemView={productView} item={item}/>
+                          })
+                        }
+                        
+                        
                       </div>
 
 

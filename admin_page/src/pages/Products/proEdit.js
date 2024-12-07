@@ -52,7 +52,6 @@ const ProductUpload = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const productImages = useRef();
-    const imagesArr = [];
     const [product,setProducts]=useState([]);
     const [catData, setCatData] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
@@ -72,10 +71,11 @@ const ProductUpload = () => {
     const [formFields, setFormFields] = useState({
         name: '',
         description: '',
-        // images: [],
+        images: [],
         brand: '',
         price: null,
         oldPrice: null,
+        catName:'',
         category: '',
         countInStock: null,
         rating: 0,
@@ -126,6 +126,25 @@ const ProductUpload = () => {
         }))
     }
 
+    const ensureArray = (data) => {
+        // Nếu data là mảng, kiểm tra từng phần tử trong mảng
+        if (Array.isArray(data)) {
+            return data.flatMap(item => {
+                // Nếu phần tử là chuỗi và có dấu phẩy, tách chuỗi ra thành mảng
+                if (typeof item === 'string' && item.includes(',')) {
+                    return item.split(',');  // Tách chuỗi thành mảng
+                }
+                return item;  // Nếu không, giữ nguyên phần tử
+            });
+        }
+        // Nếu data là chuỗi, tách chuỗi thành mảng
+        return data ? data.split(',') : [];
+    };
+
+    const selectCat= (cat) =>{
+        formFields.catName = cat;
+    }
+
     const handleChangeisFeaturedValue = (event) => {
         setisFeaturedValue(event.target.value);
         setFormFields(() => ({
@@ -158,30 +177,41 @@ const ProductUpload = () => {
             setCatData(res);
             context.setProgress(100);
         });
+
+        fetchDataFromApi('/api/productSIZE/').then((res) => {
+            setProductSIZEData( res );
+        })
+        
         fetchDataFromApi(`/api/products/${id}`).then((res) => {
+            
+            const productSizeArray = ensureArray(res.productSIZE);
+            console.log(productSizeArray);
             setProducts(res);
+            
             setFormFields({
                 name: res.name,
                 description: res.description,
                 brand: res.brand,
                 price: res.price,
                 oldPrice: res.oldPrice,
+                catName: res.catName,
                 category: res.category,
                 countInStock: res.countInStock,
                 rating: res.rating,
                 isFeatured: res.isFeatured,
+                discount: res.discount,
+                productSIZE: productSizeArray
             });
             setRatingValue(res.rating);
             setCategoryVal(res.category);
+            setProductSize(productSizeArray);
             setisFeaturedValue(res.isFeatured);
             setPreviews(res.images);
             context.setProgress(100);
+            console.log(productSizeArray)
 
         });
 
-        fetchDataFromApi('/api/productSIZE/').then((res) => {
-            setProductSIZEData( res );
-        })
 
 
     }, []);
@@ -219,10 +249,14 @@ const ProductUpload = () => {
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
         formdata.append('oldPrice', formFields.oldPrice);
+        formdata.append('catName', formFields.catName);
         formdata.append('category', formFields.category);
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('rating', formFields.rating);
         formdata.append('isFeatured', formFields.isFeatured);
+        formdata.append('discount', formFields.discount);
+        formdata.append('productSIZE', formFields.productSIZE);
+
         if (formFields.name === "") {
             context.setAlertBox({
                 open: true,
@@ -304,6 +338,7 @@ const ProductUpload = () => {
         //     });
         //     return false;
         // };
+        
         setIsLoading(true);
         editData(`/api/products/${id}`, formFields).then((res) => {
             context.setAlertBox({
@@ -319,6 +354,7 @@ const ProductUpload = () => {
                 brand: '',
                 price: 0,
                 oldPrice: 0,
+                catName: '',
                 category: '',
                 countInStock: 0,
                 rating: 0,
@@ -386,11 +422,12 @@ const ProductUpload = () => {
                                                 className='w-100'
                                             >
                                                 <MenuItem value="">
-                                                    <em value={null}>None</em></MenuItem>
+                                                    <em >None</em></MenuItem>
                                                 {
                                                     catData?.categoryList?.length !== 0 && catData?.categoryList?.map((cat, index) => {
                                                         return (
-                                                            <MenuItem value={cat.id} key={index}>{cat.name}</MenuItem>
+                                                            <MenuItem value={cat.id} key={index}
+                                                            onClick={ ()=> selectCat(cat.name)} >{cat.name}</MenuItem>
                                                         )
                                                     })
                                                 }
@@ -430,7 +467,7 @@ const ProductUpload = () => {
                                     <div className='col'>
                                         <div className='form-group'>
                                             <h6>Size</h6>
-                                            <Select 
+                                            <Select
                                                 multiple
                                                 value={productSize}
                                                 onChange={handleChangeProductSize}
@@ -442,7 +479,8 @@ const ProductUpload = () => {
                                                 {
                                                     productSIZEData?.map ( (item, index) => {
                                                         return(
-                                                            <MenuItem key={index} value={item.productSIZE}>{item.productSIZE}</MenuItem>
+                                                            <MenuItem key={index} value={item.productSIZE} 
+                                                            >{item.productSIZE}</MenuItem>
                                                         )
                                                     })
                                                 }

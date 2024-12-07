@@ -22,7 +22,8 @@ const HomeCat = (props) => {
                     className="mySwiper"
                 >
                 {
-                    props.catData?.categoryList?.length!==0 &&  props.catData?.categoryList?.map( (cat, index) => {
+                    
+                    props.catData?.length!==0 &&  props.catData?.map( (cat, index) => {
                         return(
                             <SwiperSlide key={index}>
                                 <div className='item text-center cursor' style={{ background:cat.color}}>
@@ -34,7 +35,7 @@ const HomeCat = (props) => {
                         )
                     })
                 }
-
+                
                 </Swiper>
             
             </div>

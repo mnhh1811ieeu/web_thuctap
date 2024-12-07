@@ -64,18 +64,27 @@ router.post(`/upload`, upload.array("images"), async (req, res) => {
 router.get(`/`, async (req, res) => {
 
     const page=parseInt(req.query.page) || 1;
-    const perPage=10;
+    const perPage=parseInt(req.query.perPage);
     const totalPosts = await Product.countDocuments();
 
     const totalPages= Math.ceil(totalPosts /perPage);
 
-    if(page>totalPages){
+    if( page > totalPages){
         return res.status(404).json({message:"Không thấy trang"})
     }
-    const productList = await Product.find().populate("category")
+
+    let productList=[];
+
+    if(req.query.catName !== undefined){
+        productList = await Product.find({catName: req.query.catName}).populate("category");
+    }else{
+        productList = await Product.find().populate("category")
             .skip((page-1)*perPage)
             .limit(perPage)
             .exec();
+    }
+
+    
     
 
     if (!productList) {
@@ -86,7 +95,6 @@ router.get(`/`, async (req, res) => {
         "totalPages":totalPages,
         "page":page
     });
-    res.send(productList);
 
 });
 router.get(`/featured`, async (req, res) => {
@@ -198,6 +206,7 @@ router.post('/create', upload.array('images', 10), async (req, res) => {
         images: imageUrls,  // Dùng URL ảnh từ Cloudinary
         brand: req.body.brand,
         price: req.body.price,
+        catName: req.body.catName,
         category: req.body.category,
         oldPrice: req.body.oldPrice,
         countInStock: req.body.countInStock,
@@ -225,8 +234,8 @@ router.delete(`/:id`, async (req, res) => {
     const product=await Product.findById(req.params.id);
     const images= product.images;
     if(images.length!==0){
-        for (images of images){
-            fs.unlinkSync(`uploads/${images}`);
+        for (image of images){
+            fs.unlinkSync(`uploads/${image}`);
         }
     }
     const deletProduct = await Product.findByIdAndDelete(req.params.id);
@@ -288,6 +297,7 @@ router.put('/:id', async (req, res) => {
             brand: req.body.brand,
             price: req.body.price,
             oldPrice: req.body.oldPrice,
+            catName: req.body.catName,
             category: req.body.category,
             countInStock: req.body.countInStock,
             rating: req.body.rating,

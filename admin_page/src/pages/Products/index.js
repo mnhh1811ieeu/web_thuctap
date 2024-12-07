@@ -213,59 +213,7 @@ const Products = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* {
-                                    productList?.products?.length !== 0 && productList?.products?.map((item, index) => {
-                                        return (
-                                            <tr>
-                                                <td>
-                                                    <div className="d-flex align-align-items-center  productBox">
-                                                        <div className="imgWrapper">
-                                                            <div className="img card shadow m-0">
-                                                                <img className="w-100" src={`${context.baseUrl}/uploads/${item.images[0]}`} />
-                                                            </div>
-                                                        </div>
-                                                        <div className="info pl-3">
-                                                            <h6>{item.name}</h6>
-                                                            <p>{item.description}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>{item.category.name}</td>
-                                                <td>{item.brand}</td>
-                                                <td>
-                                                    <del className="old">{item.oldPrice}</del>
-                                                    <span className="new text-danger">{item.price}</span>
-                                                </td>
-                                                <td>{item.countInStock}</td>
-                                                <td>{item.rating}</td>
-                                                <td>{item.discount}</td>
-                                                <td>{item?.productSIZE?.map ( (siz) =>{
-                                                    return (
-                                                        <span className='badge badge-primary mr-2'>{siz}</span>
-                                                    )
-                                                })}</td>
-
-                                                <td>
-                                                    <div className="actions d-flex align-items-center">
-                                                        <Link to="/product/details">
-                                                            <Button className="secondary" color="secondary"><FaEye /></Button>
-                                                        </Link>
-                                                        <Button className="success" color="success" >
-                                                            <Link to={`/product/edit/${item.id}`}>
-                                                                <Button className="success" color="success">
-                                                                    <FaPen />
-                                                                </Button>
-                                                            </Link>
-
-
-                                                        </Button>
-                                                        <Button className="error" color="error" onClick={() => deleteProduct(item.id)}><MdDelete /></Button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })
-                                } */
+                                {
                                     productList?.products?.length !== 0 && productList?.products?.map((item, index) => {
                                         return (
                                             <tr key={index}>
@@ -291,11 +239,15 @@ const Products = () => {
                                                 <td>{item.countInStock}</td>
                                                 <td>{item.rating}</td>
                                                 <td>{item.discount}</td>
-                                                <td style={{width: "100px"}}>{item?.productSIZE?.map ( (siz) =>{
-                                                    return (
-                                                        <span className='badge badge-primary'>{siz}</span>
-                                                    )
-                                                })}</td>
+                                                
+                                                <td style={{width: "100px"}}>
+                                                    {item?.productSIZE?.map ( (siz) =>{
+                                                        return (
+                                                            <span className='badge badge-primary'>{siz}</span>
+                                                        )
+                                                    })}
+                                                </td>
+
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
                                                         <Link to="/product/details">
