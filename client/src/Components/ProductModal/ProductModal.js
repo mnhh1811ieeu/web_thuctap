@@ -17,36 +17,35 @@ const ProductModal = (props) => {
     <>
         <Dialog className='productModal' open={context.isOpenProductModal} onClose={ () => context.setIsOpenProductModal(false)}>
            
-            <Button className='close_' onClick={() => 
+            <Button className='close_' onClick={() =>
                 context.setIsOpenProductModal(false)}><IoCloseCircleOutline/>
             </Button>
 
-            <h4 className='mb-1 font-weight-bold'>tooi laf thang </h4>
+            <h4 className='mb-1 font-weight-bold'>{props?.data?.name}</h4>
             <div className='d-flex align-items-center mr-4'>
-                <div className='d-flex align-items-center'>
-                    <span><b>bugv</b></span>
-                    <span className='ml-2'>vgv</span>
+                <div className='d-flex align-items-center mr-4'>
+                    <span>Brand:</span>
+                    <span className='ml-2'><b>{props?.data?.brand}</b></span>
                 </div>
-
-                <Rating name='read-only' value={5} size="small" precision={0.5} readOnly />
+                <Rating name='read-only' value={parseInt(props.data?.rating)} size="small" precision={0.5} readOnly />
                 
             </div>
             <hr/>
 
             <div className='row mt-2 productDetailModal'>
                 <div className='col-md-5'>
-                     <ProductZoom/>     
+                    <ProductZoom images={props?.data?.images} discount={props?.data?.discount}/>
                 </div>
 
                 <div className='col-md-7'>
                     <div className='d-flex info align-items-center'>
-                        <span className='oldPrice lg mr-2'>9.10</span>
-                        <span className='netPrice text-danger lg'>9.10</span>
+                        <span className='oldPrice lg mr-2'>{props?.data?.oldPrice}</span>
+                        <span className='netPrice text-danger lg'>{props?.data?.price}</span>
                     </div>
 
                     <span className='badge bg-success mt-2'>In stock</span>
 
-                    <p className='mt-2'> Day la san pham duoc phat trien boi cogn ty hang dau ve thoi trang </p>
+                    <p className='mt-2'>{props?.data?.description}</p>
 
                     <div className='d-flex align-items-center'>
                         <QuantityBox/>

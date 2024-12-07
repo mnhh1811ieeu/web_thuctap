@@ -1,5 +1,5 @@
 import { Button, Rating } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ProductZoom from '../../Components/ProductZoom/ProductZoom'
 import QuantityBox from '../../Components/QuantityBox/QuantityBox'
 import { IoCart } from "react-icons/io5";
@@ -7,15 +7,28 @@ import { FaRegHeart } from "react-icons/fa";
 import Tooltip from '@mui/material/Tooltip';
 import RelatedProducts from './RelatedProducts/RelatedProducts';
 
+import { useParams } from 'react-router-dom';
+import { fetchDataFromApi } from '../../utils/api';
+
 const ProductDetails = () => {
 
     const [activeTabs, setActiveTabs] = useState(0);
     const [activeSize, setActiveSize] = useState(null);
     const [currentProduct, setCurrentProduct] = useState({});
+    const [productData, setProductData] = useState({});
+
+    const {id} = useParams();
     
     const isActive = (index) => {
         setActiveSize(index);
     }
+
+    useEffect(() => {
+        window.scrollTo(0,0);
+        fetchDataFromApi(`/api/products/${id}`).then((res) => {
+            setProductData(res);
+        })
+    }, []);
 
   return (
     <>
@@ -23,35 +36,35 @@ const ProductDetails = () => {
             <div className='container'>
                 <div className='row'>
                     <div className='productDZoom col-md-5 pl-5'>
-                        <ProductZoom/>
+                        <ProductZoom image={productData?.data?.images} discount={productData?.data?.discount}/>
                     </div>
                     
 
                     <div className='col-md-7 pl-5 pr-5'>
-                        <h2 className='hd text-text-capitalize'>All Natural Italian-style chicken meatballs</h2>
+                        <h2 className='hd text-text-capitalize'>{productData?.name}</h2>
                         <ul className='list list-inline'>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center'>
-                                    <span className=' mr-2' > Brands :</span>
-                                    <span>Welch's</span>
+                                    <span className=' mr-2' >Brands: </span>
+                                    <span>{productData?.brand}</span>
                                 </div>
                             </li>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center'>
-                                    <Rating className='read-only' value={4.5} precision={0.5} readOnly size="small" />
+                                    <Rating className='read-only' value={productData?.rating} precision={0.5} readOnly size="small" />
                                     <span className='text-light cursor ml-2'>1 Review</span>
                                 </div>
                             </li>
                         </ul>
 
                         <div class='d-flex info mb-4'>
-                            <span class='oldPrice'>3.800.000Đ</span>
-                            <span class='netPrice text-danger ml-2'>2.599.000Đ</span>
+                            <span class='oldPrice'>{productData?.oldPrice}</span>
+                            <span class='netPrice text-danger ml-2'>{productData?.price}</span>
                         </div>
 
                         <span className='badge badge-success'>IN STOCK</span>
 
-                        <p className='mt-3'>đây là sản phẩm này sản phẩm kia rất tốt</p>
+                        <p className='mt-3'>{productData?.description}</p>
 
                         <div className='productSize d-flex align-items-center'>
                             <span>Size / Weight:</span>
