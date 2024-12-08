@@ -1,14 +1,49 @@
-import React, { useState } from 'react'
-import FormGroup from '@mui/material/FormGroup';
+import React, { useContext, useEffect, useState } from 'react'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css'; 
 import { Link } from 'react-router-dom';
+import { MyContext } from '../../App';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { useParams } from 'react-router-dom';
+import Rating from '@mui/material/Rating';
+import { Button } from '@mui/material';
 
-const Sidebar = () => {
-  const [value, setValue] = useState([100, 60000]);
+const Sidebar = (props) => {
+  const [value, setValue] = useState([100, 60000000]);
   const [ value2, setValue2] =useState(0);
+  const context = useContext(MyContext);
+  const [cateName, setCateName]= useState(''); 
+
+  const [filterCat, setFilterCat] = React.useState('female');
+
+  const {name} =useParams();
+
+  const handleChange = (event) => {
+    setFilterCat(event.target.value);
+    props.filterData(event.target.value)
+    setCateName(event.target.value)
+  };
+
+  useEffect( () => {
+    setCateName(name)
+  }, [name])
+
+  useEffect( () => {
+    props.filterByPrice(value, cateName)
+  }, [value])
+
+  const filterByRating= (rating ) => {
+    props.filterByRating(rating, cateName)
+  }
+
+  // const getNameRate = () => {
+  //   // Ưu tiên lấy cateName nếu có giá trị
+  //   return cateName || name;
+  // };
+
   return (
     <>
     <div className='sidebar'>
@@ -17,75 +52,57 @@ const Sidebar = () => {
             <h6>PRODUCT CATEGORIES</h6>
 
             <div className='scroll'>
-              <ul>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="Men"  />
-                </li>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="Women" />
-                </li>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="Beauty"  />
-                </li>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="Women" />
-                </li>
-              </ul>
+            <RadioGroup
+              aria-labelledby="demo-controlled-radio-buttons-group"
+              name="controlled-radio-buttons-group"
+              value={filterCat}
+              onChange={handleChange}
+            >
+              {
+                  context.categoryData?.length !==0 && context.categoryData?.map( (item, index) => {
+                      return(
+                        <FormControlLabel value={item?.name} control={<Radio />} label={item?.name}  />
+                      )
+                  })
+              }
+              
+            </RadioGroup>
             </div>
         </div>
 
 
         <div className='filterBox'>
-          <h6>Filter By Price</h6>
+          <h6>Mức Giá</h6>
 
 
-          <RangeSlider value={value} onInput={setValue} min={100} max={60000} step={5} />
+          <RangeSlider value={value} onInput={setValue} min={100} max={60000000} step={5} />
 
           <div className='d-flex pt-2 pb-2 priceRange'>
             <span>
-              From: <strong className='text-dark'>Rs: {value[0]}</strong> 
+              Từ: <strong className='text-dark'>{value[0]}Đ</strong> 
             </span>
             <span className='ml-auto'>
-              From: <strong className='text-dark'>Rs: {value[1]}</strong></span>
+              Đến: <strong className='text-dark'>{value[1]}Đ</strong></span>
           </div>
 
 
         </div>
 
         <div className='filterBox'>
-            <h6>PRODUCT STATUS</h6>
-
-            <div className='scroll'>
-              <ul>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="In stock"  />
-                </li>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="On sale" />
-                </li>
-                
-              </ul>
-            </div>
-        </div>
-
-        <div className='filterBox'>
             <h6>BRANDS</h6>
 
             <div className='scroll'>
-              <ul>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="Frito lay"  />
-                </li>
-                <li>
-                  <FormControlLabel className='w-100' control={<Checkbox/>} label="Nespresso" />
-                </li>
-                
-              </ul>
+              
+                <Button onClick={ () => filterByRating(5)}><Rating name="read-only" value={5} readOnly size="small"/></Button>
+                <Button onClick={ () => filterByRating(4)}><Rating name="read-only" value={4} readOnly size="small"/></Button>
+                <Button onClick={ () => filterByRating(3)}><Rating name="read-only" value={3} readOnly size="small"/></Button>
+                <Button onClick={ () => filterByRating(2)}><Rating name="read-only" value={2} readOnly size="small"/></Button>
+                <Button onClick={ () => filterByRating(1)}><Rating name="read-only" value={1} readOnly size="small"/></Button>
+
             </div>
         </div>
 
-        <Link to="#"><img src="https://scontent.fhan14-5.fna.fbcdn.net/v/t39.30808-6/465592933_855295973482198_183696684565547478_n.jpg?stp=dst-jpg_s600x600&_nc_cat=109&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEGvQVw7lpVuMeXvYmbH_24MHWbYMlMuycwdZtgyUy7J4uslENyXIG9yGfC7PjxeENDYJSQZacfoOfnlSbl0mlm&_nc_ohc=dJBPWRvxPL8Q7kNvgEvPXMh&_nc_zt=23&_nc_ht=scontent.fhan14-5.fna&_nc_gid=ATIX_wZPfFC6qGTFhx_B6gS&oh=00_AYDWgDSXtmPXjfJw3DWxIANapbTg4bX0ab8TSw-TxwQ9BA&oe=673406FC" 
-        className='w-100'/></Link>
+        
       
     </div>
     </>

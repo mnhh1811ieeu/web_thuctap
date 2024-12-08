@@ -51,7 +51,6 @@ const Home = () => {
 
     fetchDataFromApi("/api/products/").then( (res) => {
       setProductsData(res);
-
     })
     fetchDataFromApi("/api/products/featured").then((res) => {
         setFeaturedProducts(res);

@@ -1,14 +1,15 @@
 import { Button } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { IoMdMenu } from "react-icons/io";
 import { FaAngleDown } from 'react-icons/fa6'
 import { Link } from 'react-router-dom';
 //import { IoHomeOutline } from "react-icons/io5";
 import { FaAngleRight } from "react-icons/fa";
+import { MyContext } from '../../../App';
 
 const Navigation = () => {
     const [isOpenSidebarVal, setIsOpenSidebarVal] = useState(false);
-
+    const context = useContext(MyContext);
 
   return (
     <nav>
@@ -29,8 +30,7 @@ const Navigation = () => {
                                     <Link to="/"><Button>Home<FaAngleRight className='ml-auto'/></Button></Link>
                                     <div className='submenu'>
                                         <Link to="/"><Button>Home</Button> </Link>
-                                        <Link to="/"><Button>Home</Button> </Link>
-                                        <Link to="/"><Button>Home</Button> </Link>                     
+                                                
                                     </div>
                                 </li>
                                 <li className=''>
@@ -62,71 +62,22 @@ const Navigation = () => {
                     <ul className='list list-inline ml-auto'>
                         <li className='list list-inline-item'>
                             <Link to="/"><Button>Home</Button> </Link>
-                            <div className='submenu shadow'>
-                                <Link to={`/subCat/}`}><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
+                            
                         </li>
-                        <li className='list list-inline-item'>
-                            <Link to="/"><Button>Men</Button></Link>
-                            <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
-                        </li>
-                        <li className='list list-inline-item'>
-                            <Link to="/"><Button>Women</Button></Link>
-                            <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
-                        </li>
-                        <li className='list list-inline-item'>
-                            <Link to="/"><Button>Kids</Button></Link>
-                            <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
-                        </li>
-                        <li className='list list-inline-item'>
-                            <Link to="/"><Button>Beauty</Button></Link>
-                            <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
-                        </li>
-                        <li className='list list-inline-item'>
-                            <Link to="/"><Button>Watches</Button></Link>
-                            <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
-                        </li>
-                        <li className='list list-inline-item'>
-                            <Link to="/"><Button>Blog</Button></Link>
-                            <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
-                        </li>
-                        <li className='list list-inline-item'>
-                            <Link to="/"><Button>Contact</Button></Link>
-                            <div className='submenu shadow'>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                                <Link to="/"><Button>Home</Button> </Link>
-                            </div>
-                        </li>
-                        
+
+                        {
+                            context.categoryData?.length !==0 && context.categoryData?.slice(0, 7).map( (item, index) => {
+                                return(
+                                    <li className='list list-inline-item'>
+                                        <Link to={`/subCat/${item?.name}`}><Button>{item?.name}</Button> </Link>
+                                        
+                                    </li>
+                                )
+                            })
+                        }
+                    
                     </ul>
-                </div>                  
+                </div>
             </div>
         </div>
     </nav>

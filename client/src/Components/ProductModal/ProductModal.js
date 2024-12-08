@@ -20,7 +20,9 @@ const ProductModal = (props) => {
             <Button className='close_' onClick={() =>
                 context.setIsOpenProductModal(false)}><IoCloseCircleOutline/>
             </Button>
-
+{
+    console.log(props)
+}
             <h4 className='mb-1 font-weight-bold'>{props?.data?.name}</h4>
             <div className='d-flex align-items-center mr-4'>
                 <div className='d-flex align-items-center mr-4'>

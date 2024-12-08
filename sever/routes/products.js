@@ -75,26 +75,54 @@ router.get(`/`, async (req, res) => {
 
     let productList=[];
 
-    if(req.query.catName !== undefined){
+    if( req.query.minPrice !== undefined && req.query.maxPrice !== undefined){
         productList = await Product.find({catName: req.query.catName}).populate("category");
+
+        const filteredProducts = productList.filter( product => {
+            if( req.query.minPrice && product.price < parseInt(+req.query.minPrice)){
+                return false;
+            }
+            if( req.query.maxPrice && product.price > parseInt(+req.query.maxPrice)){
+                return false;
+            }
+            return true;
+        });
+
+        if (!productList) {
+            res.status(500).json({ success: false })
+        }
+        return res.status(200).json({
+            "products":filteredProducts,
+            "totalPages":totalPages,
+            "page":page
+        });
     }else{
-        productList = await Product.find().populate("category")
-            .skip((page-1)*perPage)
-            .limit(perPage)
-            .exec();
+        productList = await Product.find(req.query).populate("category");
+
+        if (!productList) {
+            res.status(500).json({ success: false })
+        }
+        return res.status(200).json({
+            "products":productList,
+            "totalPages":totalPages,
+            "page":page
+        });
     }
+    
+
+    // if(req.query.catName !== undefined){
+    //     productList = await Product.find({catName: req.query.catName}).populate("category");
+    // }else{
+    //     productList = await Product.find().populate("category")
+    //         .skip((page-1)*perPage)
+    //         .limit(perPage)
+    //         .exec();
+    // }
 
     
     
 
-    if (!productList) {
-        res.status(500).json({ success: false })
-    }
-    return res.status(200).json({
-        "products":productList,
-        "totalPages":totalPages,
-        "page":page
-    });
+    
 
 });
 router.get(`/featured`, async (req, res) => {

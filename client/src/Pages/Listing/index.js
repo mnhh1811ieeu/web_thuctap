@@ -9,7 +9,6 @@ import { TfiLayoutGrid4Alt } from "react-icons/tfi";
 import { FaAngleDown } from "react-icons/fa";
 import ProductItem from '../../Components/ProductItem/ProductItem';
 import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
 import { useParams } from "react-router-dom"
 import { fetchDataFromApi } from '../../utils/api';
 
@@ -26,25 +25,47 @@ const Listing = () => {
     setAnchorEl(null);
   };
 
-  const {id} = useParams();
+  const {name} = useParams();
 
   useEffect( () => {
-     fetchDataFromApi(`/api/products?catName=${id}`).then( (res)=> {
+     fetchDataFromApi(`/api/products?catName=${name}`).then( (res)=> {
       setProductData(res.products)
      })
-  }, [id])
+  }, [name])
 
+  const filterData = (name) =>{
+    fetchDataFromApi(`/api/products?catName=${name}`).then( (res)=> {
+      setProductData(res.products)
+    })
+  }
+
+  const filterByPrice = (price, catName) =>{
+    fetchDataFromApi(`/api/products?minPrice=${price[0]}&maxPrice=${price[1]}&catName=${catName}`).then( (res)=> {
+      setProductData(res.products)
+      console.log(res)
+    })
+  }
+
+  const filterByRating = (rating, catName) => {
+    fetchDataFromApi(`/api/products?rating=${rating}&catName=${catName}`).then( (res)=> {
+      setProductData(res.products)
+    })
+  }
 
   return (
     <>
         <section className='product_Listing_Page'>
             <div className='container'>
                 <div className='productListing d-flex'>
-                    <Sidebar/>
+                    <Sidebar filterData={filterData} filterByPrice={filterByPrice} filterByRating={filterByRating}/>
 
                     <div className='content_right'>
-                      <img src="https://media-cdn-v2.laodong.vn/storage/newsportal/2024/9/26/1399809/Kim-Ji-Won-Dior-Tap--02.jpg" 
-                      className="w-100" style={{ borderRadius: '10px'}}/>
+                      <div style={{ width: "940px",height: '280px',  display: 'flex', gap: '10px'}}>
+                        <img src="https://bazaarvietnam.vn/wp-content/uploads/2024/03/kim-ji-won-2-1.jpg" 
+                        className="w-50" style={{ borderRadius: '10px', objectFit: 'cover'}}/>
+                        <img src="https://bazaarvietnam.vn/wp-content/uploads/2024/10/bazaarvietnam-yoona-girls-generation-duoc-cong-bo-la-dai-su-thuong-hieu-moi-cua-valentino-thum.jpg" 
+                        className="w-50" style={{ borderRadius: '10px', objectFit: 'cover'}}/>
+                      </div>
 
 
                       <div className='showBy mt-3 mb-3 d-flex align-items-center'>
@@ -77,7 +98,10 @@ const Listing = () => {
                       <div className='productListing' >
                         {
                           productData?.map( (item, index) => {
-                            <ProductItem key={index} itemView={productView} item={item}/>
+                            return(
+                              <ProductItem key={index} itemView={productView} item={item}/>
+                            
+                            )
                           })
                         }
                         
