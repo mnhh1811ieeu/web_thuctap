@@ -123,6 +123,7 @@ const ProductUpload = () => {
     const onChangeFile = async (e, apiEndPoint) => {
         try {
             const files = e.target.files;
+
             const formData = new FormData();
             
             Array.from(files).forEach(file => formData.append('images', file));
@@ -141,6 +142,7 @@ const ProductUpload = () => {
                     open: true,
                     error: true,
                     msg: "Không có ảnh nào được tải lên"
+
                 });
             }
         } catch (error) {

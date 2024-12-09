@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, json } from "react-router-dom";
 import Header from "./Components/Header";
 import Home from "./Pages/Home";
 import ProductDetails from "./Pages/ProductDetails";
@@ -12,15 +12,22 @@ import ProductModal from "./Components/ProductModal/ProductModal";
 import Cart from "./Pages/Cart";
 import SignIn from "./Pages/SignIn/SignIn";
 import SignUp from "./Pages/SignUp/SignUp";
+import { fetchDataFromApi,postData } from "./utils/api";
 
 const MyContext = createContext();
 
 function App() {
   const [countryList, setCountryList] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [isOpenProductModal, setIsOpenProductModal] = useState(false);
+  const [isOpenProductModal, setIsOpenProductModal] = useState({
+    id: '',
+    open: false
+  });
+  const [productData, setProductData] = useState();
+
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -31,6 +38,11 @@ function App() {
     error: false,
     open: false
   })
+
+
+  const [cartData, setCartData] =useState([]);
+
+  let [cartFields, setCarFields] = useState([]);
   // useEffect( () => {
   //  //getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
   //   getCountry("https://countriesnow.space/api/v0.1/countries/");
@@ -51,6 +63,13 @@ function App() {
   };
   
   // Inside useEffect:
+  useEffect(()=> {
+    isOpenProductModal.open === true &&
+    fetchDataFromApi(`/api/products/${isOpenProductModal.id}`).then((res) => {
+      setProductData(res);
+    })
+  }, [isOpenProductModal]);
+
   useEffect(() => {
     getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
   }, []);
@@ -66,6 +85,19 @@ function App() {
   }, [isLogin])
 
 
+
+  const addtoCart=(data)=> {
+    postData(`/api/cart/add`, data).then((res) => {
+      if(res!==null && res!==undefined && res!==""){
+        setAlertBox({
+          open: true,
+          error: false,
+          msg: "San pham da duoc them vao gio hang"
+        })
+      }
+    })
+  }
+
   const values = {
     countryList,
     setSelectedCountry,
@@ -77,7 +109,12 @@ function App() {
     setIsLogin,
     isLogin,
     alertBox,
-    setAlertBox
+    setAlertBox,
+    addtoCart,
+    cartData,
+    setCartData,
+    cartFields,
+    setCarFields
   }
   return (
     <BrowserRouter >
@@ -98,7 +135,7 @@ function App() {
           isHeaderFooterShow === true && <Footer/>
         }
         {
-            isOpenProductModal === true && <ProductModal /> 
+            isOpenProductModal.open === true && <ProductModal data = {productData}/> 
         }
       </MyContext.Provider> 
     </BrowserRouter>

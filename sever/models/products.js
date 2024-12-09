@@ -49,12 +49,14 @@ discount:{
     type: Number,
     required: true,
 },
+
 productSIZE:[
     {
         type: String,
         default: null,
     }
 ],
+
     dateCreated: {
     type: Date,
     default: Date.now,
