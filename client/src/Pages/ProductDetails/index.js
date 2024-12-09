@@ -1,5 +1,5 @@
 import { Button, Rating } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import ProductZoom from '../../Components/ProductZoom/ProductZoom'
 import QuantityBox from '../../Components/QuantityBox/QuantityBox'
 import { IoCart } from "react-icons/io5";
@@ -8,6 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 import RelatedProducts from './RelatedProducts/RelatedProducts';
 
 import { useParams } from 'react-router-dom';
+import { MyContext } from '../../App';
 import { fetchDataFromApi } from '../../utils/api';
 
 const ProductDetails = () => {
@@ -15,9 +16,11 @@ const ProductDetails = () => {
     const [activeTabs, setActiveTabs] = useState(0);
     const [activeSize, setActiveSize] = useState(null);
     const [currentProduct, setCurrentProduct] = useState({});
-    const [productData, setProductData] = useState({});
+    const [productData, setProductData] = useState();
 
     const {id} = useParams();
+
+    const context = useContext(MyContext);
     
     const isActive = (index) => {
         setActiveSize(index);
@@ -30,13 +33,56 @@ const ProductDetails = () => {
         })
     }, []);
 
+    let [cartFields, setCarFields] = useState([]);
+    let [productQuantity, setProductQuantity] = useState();
+
+    const quantity=(val)=> {
+        setProductQuantity(val)
+    }
+
+    // const addtoCart= (data)=>{
+        
+    //     const user = JSON.parse(localStorage.getItem("user"));
+    //     console.log(user);
+    
+    
+    //     cartFields.productTitle = productData?.name
+    //     cartFields.images= productData?.images[0]
+    //     cartFields.rating = productData?.rating
+    //     cartFields.price = productData?.price
+    //     cartFields.quantity = productQuantity
+    //     cartFields.subTotal = parseInt(productData?.price * productQuantity)
+    //     cartFields.productId = productData?.id
+    //     cartFields.userId = user?.userId
+
+    
+    //     context.addtoCart(cartFields);
+    // }
+    const addtoCart = (data) => {
+        // Lấy dữ liệu user từ localStorage
+        const user = JSON.parse(localStorage.getItem("user"));
+    
+        const cartFields = {}; // Khởi tạo đối tượng cartFields
+        cartFields.productTitle = productData?.name || "No title";
+        cartFields.images = productData?.images?.[0] || "No image";
+        cartFields.rating = productData?.rating || 0;
+        cartFields.price = productData?.price || 0;
+        cartFields.quantity = productQuantity || 1; // Đảm bảo không bị 0
+        cartFields.subTotal = parseInt(productData?.price * productQuantity); // Tính tổng
+        cartFields.productId = productData?.id || "No ID";
+        cartFields.userId = user.userId;
+    
+        context.addtoCart(cartFields);
+    };
+    
+
   return (
     <>
         <section className="productDetails section">
             <div className='container'>
                 <div className='row'>
                     <div className='productDZoom col-md-5 pl-5'>
-                        <ProductZoom image={productData?.data?.images} discount={productData?.data?.discount}/>
+                        <ProductZoom images={productData?.images} discount={productData?.discount}/>
                     </div>
                     
 
@@ -51,7 +97,7 @@ const ProductDetails = () => {
                             </li>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center'>
-                                    <Rating className='read-only' value={productData?.rating} precision={0.5} readOnly size="small" />
+                                    <Rating className='read-only' value={parseInt(productData?.rating)} precision={0.5} readOnly size="small" />
                                     <span className='text-light cursor ml-2'>1 Review</span>
                                 </div>
                             </li>
@@ -66,34 +112,28 @@ const ProductDetails = () => {
 
                         <p className='mt-3'>{productData?.description}</p>
 
-                        <div className='productSize d-flex align-items-center'>
-                            <span>Size / Weight:</span>
-                            <ul className='list list-inline mb-0 pl-4'>
-                                <li className='list-inline-item'>
-                                    <a className={`tag ${activeSize === 1 ? 'active' : ''}`}
-                                    onClick={ () => isActive(1) }></a>
-                                </li>
-                                <li className='list-inline-item'>
-                                    <a className={`tag ${activeSize === 2 ? 'active' : ''}`}
-                                    onClick={ () => isActive(2)} >120g</a>
-                                </li><li className='list-inline-item'>
-                                    <a className={`tag ${activeSize === 3 ? 'active' : ''}`}
-                                    onClick={ () => isActive(3)} >250g</a>
-                                </li>
-                                <li className='list-inline-item'>
-                                    <a className={`tag ${activeSize === 4 ? 'active' : ''}`}
-                                    onClick={ () => isActive(4)} >500g</a>
-                                </li>
+                        {
+                            productData?.productSIZE?.length!==0 &&
+                            <div className='productSize d-flex align-items-center' >
+                               <span>Size: </span>
+                               <ul className='list list-inline mb-0 pl-4'>
+                                {
+                                    productData?.productSIZE?.map((item, index) => {
+                                        return(
+                                            <li className='list-inline-item'>
+                                                <a className={`tag ${activeSize === index ? 'active' : ''}`} onClick={()=> isActive(index)}>{item}</a>
+                                            </li>
+                                        )
+                                    })
+                                }
+                               </ul>
+                            </div>
+                        }
 
-                                <li className='list-inline-item'>
-                                    <a className={`tag ${activeSize === 5 ? 'active' : ''}`}
-                                    onClick={ () => isActive(5)} >1kg</a>
-                                </li>
-                            </ul>
-                        </div>
+                        
                         <div className='d-flex align-items-center mt-4 '>
-                            <QuantityBox/>
-                            <Button className='btn-blue btn-lg btn-big btn-round ml-4'>
+                            <QuantityBox quantity = {quantity}/>
+                            <Button className='btn-blue btn-lg btn-big btn-round ml-4' onClick={()=>addtoCart(productData)}>
                                 <IoCart/> &nbsp; Thêm vào giỏ hàng 
                             </Button>
 
@@ -143,7 +183,7 @@ const ProductDetails = () => {
                         {
                             activeTabs === 0 &&
                             <div className='tabContent'>
-                                <p>{currentProduct.decription}</p>
+                                {productData?.description}
                             </div>
                         }
 
@@ -266,7 +306,9 @@ const ProductDetails = () => {
                 <br/>
 
                 <RelatedProducts title="sản phẩm liên quan "/>
+
                 <RelatedProducts title="sản phẩm đã xem gần đây"/>
+                
 
             </div>
         </section>

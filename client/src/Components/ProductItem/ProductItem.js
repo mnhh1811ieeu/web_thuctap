@@ -24,7 +24,10 @@ const ProductItem = (props) => {
         autoplay: true
     }
     const viewProDuctDetails = (id) => {
-        context.setIsOpenProductModal(true);
+        context.setIsOpenProductModal({
+            id: id,
+            open: true
+        });
     }
 
     const handleMouseEnter = () => {
@@ -87,7 +90,7 @@ const ProductItem = (props) => {
                     {props?.item?.discount}%
                 </span>
                 <div className='actions' >
-                    <Button onClick={() => viewProDuctDetails(1)}><AiOutlineFullscreen /></Button>
+                    <Button onClick={() => viewProDuctDetails(props.item?.id)}><AiOutlineFullscreen /></Button>
                     <Button><FaRegHeart style={{ fontSize: '20px' }} /></Button>
                 </div>
             </div>

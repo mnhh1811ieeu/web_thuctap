@@ -19,6 +19,7 @@ const categoryRoutes=require('./routes/categories');
 const productRoutes=require('./routes/products');
 const productSizeRoutes = require('./routes/productSIZE.js');
 const userRoutes= require('./routes/user.js');
+const cart = require('./routes/cart');
 
 // app.use(authJwt());
 app.use("/uploads",express.static("uploads"));
@@ -26,6 +27,7 @@ app.use(`/api/category`,categoryRoutes);
 app.use(`/api/products`,productRoutes);
 app.use(`/api/productSIZE`,productSizeRoutes);
 app.use(`/api/user`,userRoutes);
+app.use(`/api/cart`, cart);
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
