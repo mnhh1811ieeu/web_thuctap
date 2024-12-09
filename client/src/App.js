@@ -12,46 +12,87 @@ import ProductModal from "./Components/ProductModal/ProductModal";
 import Cart from "./Pages/Cart";
 import SignIn from "./Pages/SignIn/SignIn";
 import SignUp from "./Pages/SignUp/SignUp";
+import { fetchDataFromApi,postData } from "./utils/api";
 
 const MyContext = createContext();
 
 function App() {
   const [countryList, setCountryList] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [isOpenProductModal, setIsOpenProductModal] = useState(false);
+  const [isOpenProductModal, setIsOpenProductModal] = useState({
+    id: '',
+    open: false
+  });
+  const [productData, setProductData] = useState();
+
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    userId:""
+  })
+  const [alertBox, setAlertBox] = useState({
+    msg: '',
+    error: false,
+    open: false
+  })
+
+
   const [cartData, setCartData] =useState([]);
 
-  useEffect( () => {
-   //getCountry("https://provinces.open-api.vn/api/?depth=2");
-    getCountry("https://countriesnow.space/api/v0.1/countries/");
-  }, []);
-
   let [cartFields, setCarFields] = useState([]);
+  // useEffect( () => {
+  //  //getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
+  //   getCountry("https://countriesnow.space/api/v0.1/countries/");
+  // }, []);
 
-  const getCountry =async(url) => {
-    const responsive = await axios.get(url).then( (res) =>{
-        setCountryList(res.data.data)
-        console.log(res.data.data)
+  // const getCountry =async(url) => {
+  //   const responsive = await axios.get(url).then( (res) =>{
+  //       setCountryList(res.data.data)
+  //       console.log(res.data.data)
+  //   })
+  // }
+
+  const getCountry = async (url) => {
+    const responsive = await axios.get(url).then((res) => {
+      setCountryList(res.data.data);
+      console.log(res.data.data);
+    });
+  };
+  
+  // Inside useEffect:
+  useEffect(()=> {
+    isOpenProductModal.open === true &&
+    fetchDataFromApi(`/api/products/${isOpenProductModal.id}`).then((res) => {
+      setProductData(res);
     })
-  }
+  }, [isOpenProductModal]);
+
+  useEffect(() => {
+    getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
+  }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token !== null && token !== "" && token !== null) {
+      setIsLogin(true);
+      const userData= JSON.parse(localStorage.getItem("user"));
+      setUser(userData);
+    } else {
+      setIsLogin(false);
+    }
+  }, [isLogin])
 
 
 
   const addtoCart=(data)=> {
-    postData(`/api/cart/add`).then((res) => {
-      if(res.status!==false) {
+    postData(`/api/cart/add`, data).then((res) => {
+      if(res!==null && res!==undefined && res!==""){
         setAlertBox({
-        open: true,
-        error: false,
-        msg: "Mặt hàng đã được thêm vào giỏ hàng"
-        })
-      } else {
-        setAlertBox({
-        open: true,
-        error: true,
-        msg:res.msg
+          open: true,
+          error: false,
+          msg: "San pham da duoc them vao gio hang"
         })
       }
     })
@@ -67,9 +108,13 @@ function App() {
     setIsHeaderFooterShow,
     setIsLogin,
     isLogin,
+    alertBox,
+    setAlertBox,
     addtoCart,
     cartData,
-    setCartData
+    setCartData,
+    cartFields,
+    setCarFields
   }
   return (
     <BrowserRouter >
@@ -90,7 +135,7 @@ function App() {
           isHeaderFooterShow === true && <Footer/>
         }
         {
-            isOpenProductModal === true && <ProductModal /> 
+            isOpenProductModal.open === true && <ProductModal data = {productData}/> 
         }
       </MyContext.Provider> 
     </BrowserRouter>

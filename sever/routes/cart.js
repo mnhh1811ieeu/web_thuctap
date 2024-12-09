@@ -19,8 +19,6 @@ router.get(`/`, async (req, res) => {
 
 router.post('/add', async (req, res) => {
 
-  const cartItem = await Cart.find({productId:req.body.productId});
-  if(!cartItem){
     let cartList = new Cart({
       productTitle: req.body.productTitle,
       images: req.body.image,
@@ -41,10 +39,8 @@ router.post('/add', async (req, res) => {
   
     cartList = await cartList.save();
     res.status(201).json(cartList);
-  } else {
-    res.status(401).json({status: false, msg: "Sản phẩm đã được thêm vào giỏ hàng"})
-  }
-  
+
+
 });
 
 router.delete('/:id', async (req, res) => {

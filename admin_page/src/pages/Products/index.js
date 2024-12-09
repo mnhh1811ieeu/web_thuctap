@@ -18,9 +18,8 @@ import { MdDelete } from "react-icons/md";
 import Pagination from '@mui/material/Pagination';
 import { Link } from "react-router-dom";
 import { deleteData, fetchDataFromApi } from '../../utils/api';
-
+import { CheckBox } from '@mui/icons-material';
 import { MyContext } from '../../App';
-import Rating from '@mui/material/Rating';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
@@ -50,6 +49,7 @@ const Products = () => {
     const [showBy, setshowBy] = React.useState('');
     const [showBysetCatBy, setCatBy] = React.useState('');
     const open = Boolean(anchorEl);
+    const [catData, setCatData] = useState([]);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -131,7 +131,7 @@ const Products = () => {
                         />
                     </Breadcrumbs>
                     <Link to='/product/upload'><Button className='btn-blue ml-3 pl-3 pr-3'>
-                            Thêm sản phẩm</Button></Link>
+                        Thêm sản phẩm</Button></Link>
                 </div>
                 <div className="row dashboardBoxWrapperRow">
                     <div className="col-md-8">
@@ -213,7 +213,7 @@ const Products = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {
+                                {/* {
                                     productList?.products?.length !== 0 && productList?.products?.map((item, index) => {
                                         return (
                                             <tr>
@@ -233,14 +233,17 @@ const Products = () => {
                                                 <td>{item.category.name}</td>
                                                 <td>{item.brand}</td>
                                                 <td>
-                                                    <del className="old">{item.oldPrice}đ</del>
-                                                    <span className="new text-danger">{item.price}đ</span>
+                                                    <del className="old">{item.oldPrice}</del>
+                                                    <span className="new text-danger">{item.price}</span>
                                                 </td>
                                                 <td>{item.countInStock}</td>
-                                                {/* <td><Rating name="read-only" defaultValue={item?.rating} precision={0.5} size="small" readOnly/></td> */}
                                                 <td>{item.rating}</td>
                                                 <td>{item.discount}</td>
-                                                <td>{item?.productSIZE}</td>
+                                                <td>{item?.productSIZE?.map ( (siz) =>{
+                                                    return (
+                                                        <span className='badge badge-primary mr-2'>{siz}</span>
+                                                    )
+                                                })}</td>
 
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
@@ -260,10 +263,58 @@ const Products = () => {
                                                     </div>
                                                 </td>
                                             </tr>
-
-
                                         )
                                     })
+                                } */
+                                    productList?.products?.length !== 0 && productList?.products?.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>
+                                                    <div className="d-flex align-items-center productBox">
+                                                        <div className="imgWrapper">
+                                                            <div className="img card shadow m-0">
+                                                                <img className="w-100" src={item.images[0]} alt={item.name} /> {/* Sử dụng trực tiếp URL của Cloudinary */}
+                                                            </div>
+                                                        </div>
+                                                        <div className="info pl-3">
+                                                            <h6>{item.name}</h6>
+                                                            <p>{item.description}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{item.category.name}</td>
+                                                <td>{item.brand}</td>
+                                                <td>
+                                                    <del className="old">{item.oldPrice}</del>
+                                                    <span className="new text-danger">{item.price}</span>
+                                                </td>
+                                                <td>{item.countInStock}</td>
+                                                <td>{item.rating}</td>
+                                                <td>{item.discount}</td>
+                                                <td>{item?.productSIZE?.map((siz) => {
+                                                    return (
+                                                        <span className='badge badge-primary mr-2'>{siz}</span>
+                                                    )
+                                                })}</td>
+                                                <td>
+                                                    <div className="actions d-flex align-items-center">
+                                                        <Link to="/product/details">
+                                                            <Button className="secondary" color="secondary"><FaEye /></Button>
+                                                        </Link>
+                                                        <Button className="success" color="success">
+                                                            <Link to={`/product/edit/${item.id}`}>
+                                                                <Button className="success" color="success">
+                                                                    <FaPen />
+                                                                </Button>
+                                                            </Link>
+                                                        </Button>
+                                                        <Button className="error" color="error" onClick={() => deleteProduct(item.id)}><MdDelete /></Button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+
                                 }
 
 

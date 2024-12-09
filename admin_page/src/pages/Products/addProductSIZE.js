@@ -10,7 +10,6 @@ import { MyContext } from '../../App';
 import Button from '@mui/material/Button';
 import { MdCloudUpload } from "react-icons/md";
 import { deleteData, editData, fetchDataFromApi, postData } from '../../utils/api';
-import { useNavigate } from 'react-router-dom';
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -42,9 +41,9 @@ const AddProductSIZE = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [ productSizeData, setProductSizeData] = useState([]);
     const context = useContext(MyContext);
-    const history = useNavigate();
 
     const [formFields, setFormFields] = useState({
+
         productSIZE: '',
         
     })
@@ -108,9 +107,10 @@ const AddProductSIZE = () => {
             setIsLoading(false);
             setFormFields({
                 productSIZE: ''
-            });
+            })
+            
         }
-
+ 
     }
 
     const deleteItem = (id) => {
@@ -163,7 +163,8 @@ const AddProductSIZE = () => {
                                         <div className='form-group'>
                                             <h6>Size sản phẩm</h6>
 
-                                            <input type='text ' name="productSIZE" value={formFields.productSIZE} onChange={inputChange}/>
+                                            <input type='text ' name="productSIZE" value={formFields.productSIZE} onChange={
+                                                inputChange}/>
                                         </div>
                                     </div>
 

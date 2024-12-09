@@ -8,13 +8,13 @@ import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
 import { MyContext } from '../../App';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 import { MdCloudUpload } from "react-icons/md";
-import { editData, fetchDataFromApi, postDataProduct } from '../../utils/api';
+import { editData, fetchDataFromApi, postData, postDataProduct, postDataProduct2 } from '../../utils/api';
 import { FaRegImages } from 'react-icons/fa';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
@@ -36,15 +36,35 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
 });
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
 const ProductUpload = () => {
+
+
+    const [isLoading, setIsLoading] = useState(false);
+    const productImages = useRef();
+    const imagesArr = [];
+    const [product, setProducts] = useState([]);
+    const [catData, setCatData] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
     const [categoryVal, setCategoryVal] = useState('');
-    const [productSize, setProductSize] = useState('');
+    const [productSize, setProductSize] = useState([]);
+
+    const [productSIZEData, setProductSIZEData] = useState([])
     const [ratingsValue, setRatingValue] = useState(1);
     const context = useContext(MyContext);
     const formdata = new FormData();
     const history = useNavigate();
-    const [isSelectedImages,setIsSelectedImages]=useState(false);
+    const [isSelectedImages, setIsSelectedImages] = useState(false);
     const [files, setFiles] = useState([]);
     const [imgFiles, setimgFiles] = useState();
     const [previews, setPreviews] = useState();
@@ -61,55 +81,85 @@ const ProductUpload = () => {
         rating: 0,
         isFeatured: null,
         discount: 0,
-        productSIZE: '',
+        productSIZE: [],
     })
     const [isFeaturedValue, setisFeaturedValue] = useState('');
-    
+
+    // const onChangeFile = async (e, apiEndPoint) => {
+    //     try {
+    //         const imgArr = [];
+    //         const files = e.target.files;
+    //         // setimgFiles(e.target.files);
+    //         for (var i = 0; i < files.length; i++) {
+    //             if (files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' || files[i].type === 'image/png' || files[i].type === 'image/webp]]]')) {
+    //                 setimgFiles(files);
+    //                 const file = files[i];
+    //                 imgArr.push(file);
+    //                 formdata.append(`images`, file);
+    //                 setFiles(imgArr);
+    //                 console.log(imgArr);
+    //                 setIsSelectedImages(true);
+    //                 postDataProduct(apiEndPoint, formdata).then((res) => {
+    //                     context.setAlertBox({
+    //                         open: true,
+    //                         error: false,
+    //                         msg: "đã cập nhật ảnh"
+    //                     })
+    //                 });
+    //             }
+    //             else {
+    //                 context.setAlertBox({
+    //                     open: true,
+    //                     error: true,
+    //                     msg: "Yêu cầu chọn ảnh"
+    //                 })
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
     const onChangeFile = async (e, apiEndPoint) => {
         try {
-            const imgArr = [];
             const files = e.target.files;
-            // setimgFiles(e.target.files);
-            for (var i = 0; i < files.length; i++) {
-                if(files[i] && (files[i].type==='image/jpeg'||files[i].type==='image/jpg' || files[i].type==='image/png' || files[i].type==='image/webp')){
-                    setimgFiles(files);
-                    const file = files[i];
-                    imgArr.push(file);
-                    formdata.append(`images`, file);
-                    setFiles(imgArr);
-                    console.log(imgArr);
-                setIsSelectedImages(true);
-                postDataProduct(apiEndPoint, formdata).then((res) => {
-                    context.setAlertBox({
-                        open:true,
-                        error:false,
-                        msg:"đã cập nhật ảnh"
-                    })
+
+            const formData = new FormData();
+            
+            Array.from(files).forEach(file => formData.append('images', file));
+    
+            const res = await postDataProduct(apiEndPoint, formData);
+    
+            if (res.images && res.images.length > 0) {
+                setFormFields((prev) => ({
+                    ...prev,
+                    images: res.images // Lưu lại URL ảnh vào formFields
+                }));
+    
+                console.log("Ảnh đã được tải lên thành công:", res.images);
+            } else {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: "Không có ảnh nào được tải lên"
+
                 });
-                }
-                else{
-                    context.setAlertBox({
-                        open:true,
-                        error:true,
-                        msg:"Yêu cầu chọn ảnh"
-                    })
-                }  
             }
         } catch (error) {
-            console.log(error)
+            console.error("Lỗi khi tải ảnh lên:", error);
+            context.setAlertBox({
+                open: true,
+                error: true,
+                msg: "Đã xảy ra lỗi khi tải ảnh lên"
+            });
         }
-    }
+    };
     const inputChange = (e) => {
         setFormFields(() => ({
             ...formFields,
             [e.target.name]: e.target.value
         }))
     }
-    const [isLoading, setIsLoading] = useState(false);
-    const productImages = useRef();
-    const imagesArr = [];
-    const [product,setProducts]=useState([]);
-    const [catData, setCatData] = useState([]);
 
     const handleChangeisFeaturedValue = (event) => {
         setisFeaturedValue(event.target.value);
@@ -126,17 +176,23 @@ const ProductUpload = () => {
         }))
     };
     const handleChangeProductSize = (event) => {
-        setProductSize(event.target.value);
-        setFormFields(() => ({
-            ...formFields,
-            productSIZE: event.target.value
-        }))
+        const {
+            target: { value },
+        } = event;
+        setProductSize(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+        formFields.productSIZE = value
     };
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        setCatData(context.catData);
+        context.setProgress(20);
 
+        fetchDataFromApi('/api/category/').then((res) => {
+            setCatData(res);
+            context.setProgress(100);
+        });
         fetchDataFromApi(`/api/products/${id}`).then((res) => {
             setProducts(res);
             setFormFields({
@@ -149,25 +205,21 @@ const ProductUpload = () => {
                 countInStock: res.countInStock,
                 rating: res.rating,
                 isFeatured: res.isFeatured,
-                discount: res.discount,
-                productSIZE: res.productSIZE
-                
             });
             setRatingValue(res.rating);
             setCategoryVal(res.category);
             setisFeaturedValue(res.isFeatured);
-            setProductSize(res.productSIZE);
             setPreviews(res.images);
             context.setProgress(100);
-            console.log(res);
-            
+
         });
+
+        fetchDataFromApi('/api/productSIZE/').then((res) => {
+            setProductSIZEData(res);
+        })
 
 
     }, []);
-    useEffect(() => {
-        console.log('Old Price:', formFields.oldPrice);
-    }, [formFields.oldPrice]);
 
     useEffect(() => {
         if (!imgFiles) return;
@@ -177,13 +229,19 @@ const ProductUpload = () => {
         }
         const objectUrls = tmp;
         setPreviews(objectUrls);
-        //free memory
-        for (let i = 0; i < objectUrls.length; i++) {
-            return () => {
-                URL.revokeObjectURL(objectUrls[i])
-            }
+
+        // Free memory after using object URLs
+        return () => {
+            objectUrls.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [imgFiles]);
+
+    useEffect(() => {
+        if (formFields.images && formFields.images.length > 0) {
+            setPreviews(formFields.images); // Hiển thị ảnh đã tải lên nếu có
         }
-    }, [imgFiles])
+    }, [formFields.images]); // Khi images thay đổi, cập nhật lại previews
+
 
     const addProductImages = () => {
 
@@ -191,139 +249,194 @@ const ProductUpload = () => {
         productImages.current.value = "";
 
     }
-    const editProduct = (e) => {
+    // const editProduct = (e) => {
+    //     e.preventDefault();
+
+    //     formdata.append('name', formFields.name);
+    //     formdata.append('description', formFields.description);
+    //     formdata.append('brand', formFields.brand);
+    //     formdata.append('price', formFields.price);
+    //     formdata.append('oldPrice', formFields.oldPrice);
+    //     formdata.append('category', formFields.category);
+    //     formdata.append('countInStock', formFields.countInStock);
+    //     formdata.append('rating', formFields.rating);
+    //     formdata.append('isFeatured', formFields.isFeatured);
+    //     if (formFields.name === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền tên sản phẩm",
+    //             error: true
+    //         });
+
+    //         return false;
+    //     };
+    //     if (formFields.brand === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền hãng",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.description === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền mô tả sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.price === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền giá sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.oldPrice === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền giá cũ sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.category === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu chọn loại sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.countInStock === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền số sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.rating === 0) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu chọn số sao",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.isFeatured === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu chọn có yt k",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     // if (formFields.images.length === 0) {
+    //     //     context.setAlertBox({
+    //     //         open: true,
+    //     //         msg: "Yêu cầu thêm ảnh",
+    //     //         error: true
+    //     //     });
+    //     //     return false;
+    //     // };
+    //     setIsLoading(true);
+    //     editData(`/api/products/${id}`, formFields).then((res) => {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: 'Đã sửa sản phẩm thành công',
+    //             error: false
+    //         });
+    //         setIsLoading(false);
+    //         setFormFields({
+    //             name: '',
+    //             description: '',
+    //             images: [],
+    //             brand: '',
+    //             price: 0,
+    //             oldPrice: 0,
+    //             category: '',
+    //             countInStock: 0,
+    //             rating: 0,
+    //             isFeatured: false,
+    //             discount: 0,
+    //             productSIZE:[]
+
+    //         });
+    //         history('/product/list');
+    //         // return true;
+    //     })
+
+    // }
+
+    const editProduct = async (e) => {
         e.preventDefault();
-
-
+    
+        if (!formFields.images || formFields.images.length === 0) {
+            context.setAlertBox({
+                open: true,
+                msg: "Yêu cầu thêm ảnh",
+                error: true
+            });
+            return false;
+        }
+    
+        // Chuẩn bị FormData
+        const formdata = new FormData();
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
-        formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
-        formdata.append('oldPrice', formFields.oldPrice);
         formdata.append('category', formFields.category);
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('rating', formFields.rating);
         formdata.append('isFeatured', formFields.isFeatured);
-        formdata.append('discount', formFields.discount);
-        formdata.append('productSIZE', formFields.productSIZE);
-
-        if (formFields.name === "") {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền tên sản phẩm",
-                error: true
+    
+        // Thêm ảnh vào FormData (đảm bảo ảnh là URL hoặc là file)
+        if (formFields.images && formFields.images.length > 0) {
+            formFields.images.forEach((image) => {
+                formdata.append('images[]', image);  // Đảm bảo rằng các ảnh được gửi trong cùng một trường 'images[]'
             });
-
-            return false;
-        };
-        if (formFields.brand === "") {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền hãng",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.description === "") {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền mô tả sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.price === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền giá sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.oldPrice === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền giá cũ sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.category === "") {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu chọn loại sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.countInStock === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền số sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.rating === 0) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu chọn số sao",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.isFeatured === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu chọn có yt k",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.discount === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu nhập discount ",
-                error: true
-            });
-            return false;
-        };
-        // if (formFields.images.length === 0) {
-        //     context.setAlertBox({
-        //         open: true,
-        //         msg: "Yêu cầu thêm ảnh",
-        //         error: true
-        //     });
-        //     return false;
-        // };
+        }
+    
+        console.log("FormData gửi đi:", formdata);
+        console.log("Danh sách các dữ liệu trong FormData:", [...formdata.entries()]);
+    
         setIsLoading(true);
-        editData(`/api/products/${id}`, formFields).then((res) => {
+    
+        try {
+            const res = await editData(`/api/products/${id}`, formdata);  // Gửi request PUT
+            console.log("Phản hồi từ server khi chỉnh sửa sản phẩm:", res);
+    
+            if (res && res.status === true) {
+                context.setAlertBox({
+                    open: true,
+                    msg: 'Đã sửa sản phẩm thành công',
+                    error: false
+                });
+                history('/product/list');  // Điều hướng về danh sách sản phẩm
+            } else {
+                console.error("Phản hồi không có status true:", res);
+                context.setAlertBox({
+                    open: true,
+                    msg: 'Có lỗi xảy ra khi sửa sản phẩm',
+                    error: true
+                });
+            }
+        } catch (error) {
+            console.error("Lỗi khi sửa sản phẩm:", error);
             context.setAlertBox({
                 open: true,
-                msg: 'Đã sửa sản phẩm thành công',
-                error: false
+                msg: 'Có lỗi xảy ra',
+                error: true
             });
-            setIsLoading(false);
-            setFormFields({
-                name: '',
-                description: '',
-                images: [],
-                brand: '',
-                price: 0,
-                oldPrice: 0,
-                category: '',
-                countInStock: 0,
-                rating: 0,
-                isFeatured: false,
-                discount: 0,
-                productSIZE:''
-                
-            });
-            history('/product/list');
-            // return true;
-        })
-
-    }
+        } finally {
+            setIsLoading(false);  // Tắt loading
+        }
+    };
+    
+    
     return (
         <>
             <div className='right-content w-100'>
@@ -390,7 +503,13 @@ const ProductUpload = () => {
                                         </div>
                                     </div>
 
-                                    
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>Brand</h6>
+                                            <input type='text' name="brand" value={formFields.brand} onChange={inputChange} />
+
+                                        </div>
+                                    </div>
                                     <div className='col'>
                                         <div className='form-group'>
                                             <h6>Sản phẩm nối bật</h6>
@@ -415,22 +534,24 @@ const ProductUpload = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>product size</h6>
+                                            <h6>Size</h6>
                                             <Select
+                                                multiple
                                                 value={productSize}
                                                 onChange={handleChangeProductSize}
                                                 displayEmpty
-                                                inputProps={{ 'aria-label': 'Without label' }}
                                                 className='w-100'
+                                                MenuProps={MenuProps}
                                             >
-                                                <MenuItem value="">
-                                                    <em value={null}>None</em>
-                                                </MenuItem>
-                                                <MenuItem value={'S'}>S</MenuItem>
-                                                <MenuItem value={'L'}>L</MenuItem>
-                                                <MenuItem value={'XL'}>XL</MenuItem>
-                                                <MenuItem value={'2XL'}>2XL</MenuItem>
-                                                <MenuItem value={'3XL'}>3XL</MenuItem>
+
+                                                {
+                                                    productSIZEData?.map((item, index) => {
+                                                        return (
+                                                            <MenuItem key={index} value={item.productSIZE}>{item.productSIZE}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+
                                             </Select>
                                         </div>
                                     </div>
@@ -450,14 +571,6 @@ const ProductUpload = () => {
                                         <div className='form-group'>
                                             <h6>old price</h6>
                                             <input type='text' name="oldPrice" value={formFields.oldPrice} onChange={inputChange} />
-                                        </div>
-                                    </div>
-
-                                    <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Brand</h6>
-                                            <input type='text' name="brand" value={formFields.brand} onChange={inputChange} />
-
                                         </div>
                                     </div>
                                 </div>
@@ -525,7 +638,7 @@ const ProductUpload = () => {
                     <div className='card p-4 mt-0'>
                         <div className='imagesUploadSec'>
                             <h4 className='mb-4 mt-0'>Media And Published</h4>
-                            <div className="imgUploadBox d-flex align-items-center">
+                            {/* <div className="imgUploadBox d-flex align-items-center">
                                 {
                                     previews?.length !== 0 && previews?.map((img, index) => {
                                         return (
@@ -534,7 +647,7 @@ const ProductUpload = () => {
                                                 isSelectedImages===true?
                                                 <img src={`${img}`} className='w-100'/>
                                                 :
-                                                <img src={`${context.baseUrl}/uploads/${img}`} className='w-100'/>
+                                                <img src={`${context.baseUrl}/uploads/${img}`} className='w-100' alt="img upload"/>
                                             }
                                             </div>
                                         )
@@ -549,12 +662,59 @@ const ProductUpload = () => {
                                 </div>
 
 
-                            </div>
+                            </div> */
+                                /*   <div className="imgUploadBox d-flex align-items-center">
+                                       {Array.isArray(previews) && previews.length > 0 ? (
+                                           previews.map((img, index) => (
+                                               <div className="uploadBox" key={index}>
+                                                   <img src={img} className="w-100" alt={`Preview ${index}`} />
+                                               </div>
+                                           ))
+                                       ) : (
+                                           <p>Không có ảnh nào để hiển thị</p>
+                                       )}
+                                       <div className="uploadBox">
+                                           <input
+                                               type="file"
+                                               multiple
+                                               onChange={(e) => onChangeFile(e, '/api/products/upload')}
+                                               name="images"
+                                           />
+                                           <div className="info">
+                                               <FaRegImages />
+                                               <h5>Image upload</h5>
+                                           </div>
+                                       </div>
+                                   </div>*/
+                                <div className="imgUploadBox d-flex align-items-center">
+                                    {Array.isArray(previews) && previews.length > 0 ? (
+                                        previews.map((img, index) => (
+                                            <div className="uploadBox" key={index}>
+                                                <img src={img} className="w-100" alt={`Preview ${index}`} />
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>Không có ảnh nào để hiển thị</p>
+                                    )}
+                                    <div className="uploadBox">
+                                        <input
+                                            type="file"
+                                            multiple
+                                            onChange={(e) => onChangeFile(e, '/api/products/upload')}
+                                            name="images"
+                                        />
+                                        <div className="info">
+                                            <FaRegImages />
+                                            <h5>Image upload</h5>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
 
 
 
-
-                            <Button type='submit' className='btn-blue btn-lg btn-big w-100' >
+                            <Button type='submit' className='btn-blue btn-lg btn-big w-100 mt-3' >
                                 <MdCloudUpload /> &nbsp; {isLoading === true ? <CircularProgress color="inherit" className="loader" /> : 'Xác nhận sửa'}
                             </Button>
 
