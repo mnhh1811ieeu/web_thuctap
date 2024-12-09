@@ -7,12 +7,14 @@ import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import { MyContext } from '../../App';
 
+
 const ProductItem = (props) => {
 
     const [isHovered, setIsHovered] = useState(false);
     const context = useContext(MyContext);
 
     const sliderRef = useRef();
+    
 
     var settings = {
         dots: true,
@@ -50,7 +52,7 @@ const ProductItem = (props) => {
             onMouseLeave={handleMouseLeave}>
 
             <div className='imgWrapper'>
-                <Link to={'/product/1'}>
+                <Link to={`/product/${props.item.id}`}>
                     {
                         isHovered === true ?
                             <Slider {...settings} ref={sliderRef}>
