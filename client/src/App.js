@@ -28,6 +28,27 @@ function App() {
   const [categoryData, setCategoryData] = useState();
   const [productData, setProductData] = useState();
   const [activeCat, setActiveCat] = useState('');
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    userId:""
+  })
+  const [alertBox, setAlertBox] = useState({
+    msg: '',
+    error: false,
+    open: false
+  })
+  // useEffect( () => {
+  //  //getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
+  //   getCountry("https://countriesnow.space/api/v0.1/countries/");
+  // }, []);
+
+  // const getCountry =async(url) => {
+  //   const responsive = await axios.get(url).then( (res) =>{
+  //       setCountryList(res.data.data)
+  //       console.log(res.data.data)
+  //   })
+  // }
 
   const getCountry = async (url) => {
     const responsive = await axios.get(url).then((res) => {
@@ -54,6 +75,16 @@ function App() {
     if (isOpenProductModal?.id) {
         const controller = new AbortController();
         const signal = controller.signal;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token !== null && token !== "" && token !== null) {
+      setIsLogin(true);
+      const userData= JSON.parse(localStorage.getItem("user"));
+      setUser(userData);
+    } else {
+      setIsLogin(false);
+    }
+  }, [isLogin])
 
         fetchDataFromApi(`/api/products/${isOpenProductModal.id}`, signal)
             .then((res) => {
@@ -85,7 +116,9 @@ function App() {
     categoryData,
     setCategoryData,
     activeCat,
-    setActiveCat
+    setActiveCat,
+    alertBox,
+    setAlertBox
   }
   return (
     <BrowserRouter >

@@ -5,24 +5,27 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 //import axios from "axios";
 require('dotenv/config');
+const authJwt = require('./helper/jwt.js');
 
 app.use(cors());
 app.options('*', cors())
 
 //middleware
 app.use(bodyParser.json());
-
+app.use(express.json());
+// app.use(authJwt());
 //routes
 const categoryRoutes=require('./routes/categories');
 const productRoutes=require('./routes/products');
 const productSizeRoutes = require('./routes/productSIZE.js');
-//const imageUploadRoutes = require('./helper/imageUpload.js');
+const userRoutes= require('./routes/user.js');
 
+// app.use(authJwt());
 app.use("/uploads",express.static("uploads"));
 app.use(`/api/category`,categoryRoutes);
 app.use(`/api/products`,productRoutes);
 app.use(`/api/productSIZE`,productSizeRoutes);
-
+app.use(`/api/user`,userRoutes);
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
