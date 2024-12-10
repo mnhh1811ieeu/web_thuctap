@@ -39,12 +39,29 @@ const ProductDetails = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         fetchDataFromApi(`/api/products/${id}`).then((res) => {
-            setProductData(res.products)
+            setProductData(res)
+            console.log(res)
         })
         fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res => {
             setReviewData(res)
         }))
     }, [id])
+
+    const ensureArray = (data) => {
+        // Nếu data là mảng, kiểm tra từng phần tử trong mảng
+        if (Array.isArray(data)) {
+            return data.flatMap(item => {
+                // Nếu phần tử là chuỗi và có dấu phẩy, tách chuỗi ra thành mảng
+                if (typeof item === 'string' && item.includes(',')) {
+                    return item.split(',');  // Tách chuỗi thành mảng
+                }
+                return item;  // Nếu không, giữ nguyên phần tử
+            });
+        }
+        // Nếu data là chuỗi, tách chuỗi thành mảng
+        return data ? data.split(',') : [];
+    };
+    const sizes = ensureArray( productData?.productSIZE);
     const addReview = (e) => {
         e.preventDefault();
 
@@ -159,9 +176,9 @@ const ProductDetails = () => {
                             </li>
                         </ul>
 
-                        <div class='d-flex info mb-4'>
-                            <span class='oldPrice'>{productData?.oldPrice}</span>
-                            <span class='netPrice text-danger ml-2'>{productData?.price}</span>
+                        <div className='d-flex info mb-4'>
+                            <span className='oldPrice'>{productData?.oldPrice}</span>
+                            <span className='netPrice text-danger ml-2'>{productData?.price}</span>
                         </div>
 
                             <span className='badge badge-success'>IN STOCK</span>
@@ -169,12 +186,12 @@ const ProductDetails = () => {
                         <p className='mt-3'>{productData?.description}</p>
 
                         {
-                            productData?.productSIZE?.length!==0 &&
+                            sizes?.length!==0 &&
                             <div className='productSize d-flex align-items-center' >
                                <span>Size: </span>
                                <ul className='list list-inline mb-0 pl-4'>
                                 {
-                                    productData?.productSIZE?.map((item, index) => {
+                                    sizes?.map((item, index) => {
                                         return(
                                             <li className='list-inline-item'>
                                                 <a className={`tag ${activeSize === index ? 'active' : ''}`} onClick={()=> isActive(index)}>{item}</a>
