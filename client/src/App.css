@@ -809,12 +809,12 @@ footer .linksWrap ul .zalo svg{
   z-index: 100;
 }
 .productZoomBig{
-  height: 300px;
+  height: auto;
   overflow: hidden;
 }
 
 .productDetails .productDZoom .badge{left: 90px;}
-.zoomSliderBig{ width: 70% !important;}
+.zoomSliderBig{ width: 75% !important;}
 .zoomSlider{padding-top: 30px ;}
 .zoomSlider .slick-slide {
   padding-right: 20px !important;
@@ -1000,6 +1000,7 @@ footer .linksWrap ul .zalo svg{
 }
 .productDetails h2.hd{
   font-size:  26px;
+  line-height: 36px;
 }
 .productDetails h3.hd{
   font-size:  22px;

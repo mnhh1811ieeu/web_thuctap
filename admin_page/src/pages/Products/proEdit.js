@@ -126,20 +126,7 @@ const ProductUpload = () => {
         }))
     }
 
-    const ensureArray = (data) => {
-        // Nếu data là mảng, kiểm tra từng phần tử trong mảng
-        if (Array.isArray(data)) {
-            return data.flatMap(item => {
-                // Nếu phần tử là chuỗi và có dấu phẩy, tách chuỗi ra thành mảng
-                if (typeof item === 'string' && item.includes(',')) {
-                    return item.split(',');  // Tách chuỗi thành mảng
-                }
-                return item;  // Nếu không, giữ nguyên phần tử
-            });
-        }
-        // Nếu data là chuỗi, tách chuỗi thành mảng
-        return data ? data.split(',') : [];
-    };
+      
 
     const selectCat= (cat) =>{
         formFields.catName = cat;

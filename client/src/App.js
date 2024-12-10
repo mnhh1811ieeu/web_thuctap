@@ -58,6 +58,7 @@ function App() {
         fetchDataFromApi(`/api/products/${isOpenProductModal.id}`, signal)
             .then((res) => {
                 setProductData(res);
+                console.log(isOpenProductModal.id)
             })
             .catch((error) => {
                 if (error.name === 'AbortError') {
