@@ -7,12 +7,14 @@ import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import { MyContext } from '../../App';
 
+
 const ProductItem = (props) => {
 
     const [isHovered, setIsHovered] = useState(false);
     const context = useContext(MyContext);
 
     const sliderRef = useRef();
+    
 
     var settings = {
         dots: true,
@@ -49,7 +51,7 @@ const ProductItem = (props) => {
     }
 
     return (
-        <div className={`item productItem ${props.itemView}`}
+        <div className={`item productItem ${props?.itemView}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}>
 
@@ -60,7 +62,7 @@ const ProductItem = (props) => {
                             <Slider {...settings} ref={sliderRef}>
                                 {
 
-                                    props.item?.images?.map( ( image, index) => {
+                                    props?.item?.images?.map( ( image, index) => {
                                         return (
                                             <div className='slick-slide' key={index}>
                                                 <img src={image} className='w-100' />
@@ -69,6 +71,17 @@ const ProductItem = (props) => {
                                     })
                                 }
                             </Slider>
+                            // <Slider {...settings} ref={sliderRef}>
+                            //     {props.item?.images?.map((image, index) => (
+                            //         <div className="slick-slide" key={index}>
+                            //             <img
+                            //                 src={`http://localhost:${process.env.PORT || 4000}/uploads/${image}`}
+                            //                 className="w-100"
+                            //                 alt={`Slide ${index}`}
+                            //             />
+                            //         </div>
+                            //     ))}
+                            // </Slider>
 
                             :
                             <img src={props.item?.images[0]} alt="product" className='w-100' />
@@ -77,9 +90,10 @@ const ProductItem = (props) => {
 
                 </Link>
                 <span className='badge badge-primary'>
-                    {props.item.discount}%
+                    {props?.item?.discount}%
                 </span>
                 <div className='actions' >
+                    <Button onClick={() => viewProDuctDetails(props.item?.id)}><AiOutlineFullscreen /></Button>
                     <Button onClick={() => viewProDuctDetails(props.item?.id)}><AiOutlineFullscreen /></Button>
                     <Button><FaRegHeart style={{ fontSize: '20px' }} /></Button>
                 </div>
@@ -89,12 +103,18 @@ const ProductItem = (props) => {
                 <Link to={`/product/${props.item?.id}`}> <h4>{props?.item.name?.length > 28 ? props.item.name.substr(0, 28) + '...' : props.item.name}</h4></Link>
                 <span className='text-success d-block'>Có sẵn</span>
                 <Rating className='mb-2 mt-2' name="read-only" value={props?.item?.rating} readOnly size='small' precision={0.5} />
-                <p className='d-flex'>
-                    <span className='oldPrice'>{props?.item?.oldPrice}đ</span>
-                    <span className='netPrice text-danger'> &nbsp; {props?.item?.price}đ</span>
+                <p className="d-flex">
+                    {props?.item?.oldPrice && (
+                        <span className="oldPrice">
+                            {props?.item?.oldPrice.toLocaleString()}đ
+                        </span>
+                    )}
+                    <span className="netPrice text-danger">
+                        &nbsp;{props?.item?.price?.toLocaleString()}đ
+                    </span>
                 </p>
-
             </div>
+
 
 
 

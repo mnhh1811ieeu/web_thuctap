@@ -109,14 +109,14 @@ const Header = () => {
                                                     </MenuItem>
                                                     <Divider />
                                                     <MenuItem onClick={handleClose}>
-                                                        <AddShoppingCartIcon/>Giỏ hàng  
+                                                        <AddShoppingCartIcon />Giỏ hàng
                                                     </MenuItem>
-                                                   
+
                                                     <MenuItem onClick={handleClose}>
                                                         <ListItemIcon>
                                                             <Settings fontSize="small" />
                                                         </ListItemIcon>
-                                                       Chỉnh sửa
+                                                        Chỉnh sửa
                                                     </MenuItem>
                                                     <MenuItem onClick={logout}>
                                                         <ListItemIcon>
@@ -134,8 +134,11 @@ const Header = () => {
                                     <div className='m1-auto cartTab d-flex align-items-center'>
 
                                         <div className='position-relative ml-2'>
-                                            <Button className='circle'><BsHandbagFill /></Button>
-                                            <span className='count d-flex align-items-center justify-content-center'>1</span>
+                                            <Link to="/cart"> {/* Chuyển hướng đến trang giỏ hàng */}
+                                                <Button className="circle">
+                                                    <BsHandbagFill />
+                                                </Button>
+                                            </Link>
 
                                         </div>
 

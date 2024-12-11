@@ -21,6 +21,11 @@ const productSizeRoutes = require('./routes/productSIZE.js');
 const userRoutes= require('./routes/user.js');
 const myListSchema = require('./routes/myList.js')
 
+const userRoutes= require('./routes/user.js');
+const cart = require('./routes/cart');
+
+
+const productReviewRoutes= require('./routes/productReviews.js');
 // app.use(authJwt());
 app.use("/uploads",express.static("uploads"));
 app.use(`/api/category`,categoryRoutes);
@@ -28,6 +33,9 @@ app.use(`/api/products`,productRoutes);
 app.use(`/api/productSIZE`,productSizeRoutes);
 app.use(`/api/user`,userRoutes);
 app.use(`/api/my-list`,myListSchema); 
+app.use(`/api/cart`, cart);
+
+app.use(`/api/productReviews`,productReviewRoutes)
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
