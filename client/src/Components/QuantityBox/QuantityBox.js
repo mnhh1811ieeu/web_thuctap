@@ -56,6 +56,8 @@ const QuantityBox = (props) => {
 
         // Gửi giá trị inputVal lên component cha
         props.quantity(inputVal);
+        props.selectedItem(props.item,inputVal);
+      
     }, [inputVal]); // Chạy khi inputVal thay đổi
 
 

@@ -10,23 +10,24 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { useParams } from 'react-router-dom';
 import { MyContext } from '../../App';
-import { fetchDataFromApi, postData } from '../../utils/api';
+import { fetchDataFromApi, postData, postDataUser } from '../../utils/api';
 
 const ProductDetails = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [rating, setIsRating] = useState(1);
     const [activeTabs, setActiveTabs] = useState(0);
     const [activeSize, setActiveSize] = useState(null);
-    const [currentProduct, setCurrentProduct] = useState({});
+    // const [currentProduct, setCurrentProduct] = useState({});
     const [productData, setProductData] = useState();
     const { id } = useParams();
     const [reviewData, setReviewData] = useState([]);
-
-
+    const [tabError, setTabError] = useState(false);
+    const [addingInCart, setAddingInCart] = useState(false);
     const context = useContext(MyContext);
-    
+   
     const isActive = (index) => {
         setActiveSize(index);
+        setTabError(false);
     }
     const [reviews, setReviews] = useState({
         productId: "",
@@ -45,6 +46,9 @@ const ProductDetails = () => {
         fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res => {
             setReviewData(res)
         }))
+        if(productData?.productSIZE===undefined){
+setActiveTabs(1);
+        }
     }, [id])
 
     const ensureArray = (data) => {
@@ -61,7 +65,7 @@ const ProductDetails = () => {
         // Nếu data là chuỗi, tách chuỗi thành mảng
         return data ? data.split(',') : [];
     };
-    const sizes = ensureArray( productData?.productSIZE);
+    const sizes = ensureArray(productData?.productSIZE);
     const addReview = (e) => {
         e.preventDefault();
 
@@ -73,7 +77,7 @@ const ProductDetails = () => {
         setIsLoading(true);
         postData("/api/productReviews/add", reviews).then((res) => {
             setIsLoading(false);
-            reviews.customerRating=1;
+            reviews.customerRating = 1;
             setReviews({
                 review: "",
                 customerRating: 1
@@ -94,121 +98,186 @@ const ProductDetails = () => {
         reviews.customerRating = e.target.value
     }
 
-    let [cartFields, setCarFields] = useState([]);
+
     let [productQuantity, setProductQuantity] = useState();
 
-    const quantity=(val)=> {
+    const quantity = (val) => {
         setProductQuantity(val)
     }
 
-    // const addtoCart= (data)=>{
-        
+
+    // const addtoCart = (data) => {
+    //     // Lấy dữ liệu user từ localStorage
     //     const user = JSON.parse(localStorage.getItem("user"));
-    //     console.log(user);
-    
-    
-    //     cartFields.productTitle = productData?.name
-    //     cartFields.images= productData?.images[0]
-    //     cartFields.rating = productData?.rating
-    //     cartFields.price = productData?.price
-    //     cartFields.quantity = productQuantity
-    //     cartFields.subTotal = parseInt(productData?.price * productQuantity)
-    //     cartFields.productId = productData?.id
-    //     cartFields.userId = user?.userId
+    //     if (!user) {
+    //         console.error("User not found in localStorage");
+    //         return;
+    //     }
+    //     console.log("User:", user);
 
-    
+    //     // Kiểm tra dữ liệu sản phẩm và số lượng
+    //     console.log("productData:", productData);
+    //     console.log("productQuantity:", productQuantity);
+
+    //     const cartFields = {}; // Khởi tạo đối tượng cartFields
+    //     cartFields.productTitle = productData?.name || "No title";
+    //     cartFields.images = productData?.images?.[0] || "No image";
+    //     cartFields.rating = productData?.rating || 0;
+    //     cartFields.price = productData?.price || 0;
+    //     cartFields.quantity = productQuantity || 1; // Đảm bảo không bị 0
+    //     cartFields.subTotal = parseInt(cartFields.price * cartFields.quantity, 10); // Tính tổng
+    //     cartFields.productId = productData?.id || "No ID";
+    //     cartFields.userId = user.userId;
+
+    //     console.log("Cart Fields:", cartFields);
+
+    //     // Thêm sản phẩm vào giỏ
     //     context.addtoCart(cartFields);
-    // }
-    const addtoCart = (data) => {
-        // Lấy dữ liệu user từ localStorage
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-            console.error("User not found in localStorage");
-            return;
-        }
-        console.log("User:", user);
+    // };
+    const addtoCart = () => {
+       
+        if (activeSize !== null) {
+        
+            const user = JSON.parse(localStorage.getItem("user"));
     
-        // Kiểm tra dữ liệu sản phẩm và số lượng
-        console.log("productData:", productData);
-        console.log("productQuantity:", productQuantity);
+            if (!user) {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: "Bạn cần đăng nhập trước khi thêm sản phẩm vào giỏ hàng!"
+                });
+                return;
+            }
     
-        const cartFields = {}; // Khởi tạo đối tượng cartFields
-        cartFields.productTitle = productData?.name || "No title";
-        cartFields.images = productData?.images?.[0] || "No image";
-        cartFields.rating = productData?.rating || 0;
-        cartFields.price = productData?.price || 0;
-        cartFields.quantity = productQuantity || 1; // Đảm bảo không bị 0
-        cartFields.subTotal = parseInt(cartFields.price * cartFields.quantity, 10); // Tính tổng
-        cartFields.productId = productData?.id || "No ID";
-        cartFields.userId = user.userId;
+            if (!productData || !productData.id || !productData.name || !productData.images || !productData.price || !productData.rating) {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: "Thông tin sản phẩm không đầy đủ!"
+                });
+                return;
+            }
     
-        console.log("Cart Fields:", cartFields);
+            const cartFields = {
+                productTitle: productData.name,
+                images: productData.images[0], // Sử dụng ảnh đầu tiên
+                rating: productData.rating,
+                price: productData.price,
+                quantity: productQuantity,
+                subTotal: productData.price * productQuantity,
+                productId: productData.id,
+                userId: user.userId
+            };
     
-        // Thêm sản phẩm vào giỏ
-        context.addtoCart(cartFields);
-    };
+            console.log("Cart Fields:", cartFields);
     
-
-  return (
-    <>
-        <section className="productDetails section">
-            <div className='container'>
-                <div className='row'>
-                    <div className='productDZoom col-md-5 pl-5'>
-                        <ProductZoom images={productData?.images} discount={productData?.discount}/>
-                    </div>
+            // Bắt đầu quá trình thêm sản phẩm, bật trạng thái "đang xử lý"
+            setAddingInCart(true);
+    
+            postDataUser(`/api/cart/add`, cartFields)
+                .then((res) => {
+                    console.log("API Response:", res);
+    
+                    if (res && res.success) {
+                        context.setAlertBox({
+                            open: true,
+                            error: false,
+                            msg: res.message || "Sản phẩm đã được thêm vào giỏ hàng!"
+                        });
+                    } else {
+                        context.setAlertBox({
+                            open: true,
+                            error: true,
+                            msg: res?.message || "Sản phẩm đã trong danh sách giỏ hàng!"
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error from API call:", error);
+                    context.setAlertBox({
+                        open: true,
+                        error: true,
+                        msg: "Có lỗi trong quá trình xử lý, vui lòng thử lại!"
+                    });
+                })
+                .finally(() => {
+                    // Kết thúc quá trình thêm sản phẩm, tắt trạng thái "đang xử lý"
+                    setTimeout(()=>{
+                        setAddingInCart(false);
+                    },1000);
                     
+                });
+    
+        } else {
+            setTabError(true);
+        }
+    };
+    const selectedItem=()=>{
 
-                    <div className='col-md-7 pl-5 pr-5'>
-                        <h2 className='hd text-text-capitalize'>{productData?.name}</h2>
-                        <ul className='list list-inline'>
-                            <li className='list-inline-item'>
-                                <div className='d-flex align-items-center'>
-                                    <span className=' mr-2' >Brands: </span>
-                                    <span>{productData?.brand}</span>
-                                </div>
-                            </li>
-                            <li className='list-inline-item'>
-                                <div className='d-flex align-items-center'>
-                                    <Rating className='read-only' value={parseInt(productData?.rating)} precision={0.5} readOnly size="small" />
-                                    <span className='text-light cursor ml-2'>1 Review</span>
-                                </div>
-                            </li>
-                        </ul>
+    }
 
-                        <div className='d-flex info mb-4'>
-                            <span className='oldPrice'>{productData?.oldPrice}</span>
-                            <span className='netPrice text-danger ml-2'>{productData?.price}</span>
+
+    return (
+        <>
+            <section className="productDetails section">
+                <div className='container'>
+                    <div className='row'>
+                        <div className='productDZoom col-md-5 pl-5'>
+                            <ProductZoom images={productData?.images} discount={productData?.discount} />
                         </div>
+
+
+                        <div className='col-md-7 pl-5 pr-5'>
+                            <h2 className='hd text-text-capitalize'>{productData?.name}</h2>
+                            <ul className='list list-inline'>
+                                <li className='list-inline-item'>
+                                    <div className='d-flex align-items-center'>
+                                        <span className=' mr-2' >Brands: </span>
+                                        <span>{productData?.brand}</span>
+                                    </div>
+                                </li>
+                                <li className='list-inline-item'>
+                                    <div className='d-flex align-items-center'>
+                                        <Rating className='read-only' value={parseInt(productData?.rating)} precision={0.5} readOnly size="small" />
+                                        <span className='text-light cursor ml-2'>1 Review</span>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div className='d-flex info mb-4'>
+                                <span className='oldPrice'>{productData?.oldPrice}</span>
+                                <span className='netPrice text-danger ml-2'>{productData?.price}</span>
+                            </div>
 
                             <span className='badge badge-success'>IN STOCK</span>
 
-                        <p className='mt-3'>{productData?.description}</p>
+                            <p className='mt-3'>{productData?.description}</p>
 
-                        {
-                            sizes?.length!==0 &&
-                            <div className='productSize d-flex align-items-center' >
-                               <span>Size: </span>
-                               <ul className='list list-inline mb-0 pl-4'>
-                                {
-                                    sizes?.map((item, index) => {
-                                        return(
-                                            <li className='list-inline-item'>
-                                                <a className={`tag ${activeSize === index ? 'active' : ''}`} onClick={()=> isActive(index)}>{item}</a>
-                                            </li>
-                                        )
-                                    })
+                            {
+                                sizes?.length !== 0 &&
+                                <div className='productSize d-flex align-items-center' >
+                                    <span>Size: </span>
+                                    <ul className={`list list-inline mb-0 pl-4 ${tabError === true && 'error'}`}>
+                                        {
+                                            sizes?.map((item, index) => {
+                                                return (
+                                                    <li className='list-inline-item'>
+                                                        <a className={`tag ${activeSize === index ? 'active' : ''}`} onClick={() => isActive(index)}>{item}</a>
+                                                    </li>
+                                                )
+                                            })
+                                        }
+                                    </ul>
+                                </div>
+                            }
+
+
+                            <div className='d-flex align-items-center mt-4 '>
+                                <QuantityBox quantity={quantity} selectedItem={selectedItem}/>
+                                <Button className='btn-blue btn-lg btn-big btn-round ml-4' onClick={addtoCart}>
+                                    <IoCart /> &nbsp; {addingInCart===true?"Đang thêm...":"Thêm vào giỏ hàng"
                                 }
-                               </ul>
-                            </div>
-                        }
-
-                        
-                        <div className='d-flex align-items-center mt-4 '>
-                            <QuantityBox quantity = {quantity}/>
-                            <Button className='btn-blue btn-lg btn-big btn-round ml-4' onClick={()=>addtoCart(productData)}>
-                                <IoCart/> &nbsp; Thêm vào giỏ hàng 
-                            </Button>
+                                </Button>
 
                                 <Tooltip title="Add to Wishlist" placement="top">
                                     <Button className='btn-blue btn-lg btn-big btn-circle ml-2'>
@@ -253,12 +322,12 @@ const ProductDetails = () => {
 
                             <br />
 
-                        {
-                            activeTabs === 0 &&
-                            <div className='tabContent'>
-                                {productData?.description}
-                            </div>
-                        }
+                            {
+                                activeTabs === 0 &&
+                                <div className='tabContent'>
+                                    {productData?.description}
+                                </div>
+                            }
 
                             {
                                 activeTabs === 1 &&
@@ -378,11 +447,11 @@ const ProductDetails = () => {
                     </div>
 
                     <br />
-                     
-                <RelatedProducts title="sản phẩm liên quan "/>
 
-                <RelatedProducts title="sản phẩm đã xem gần đây"/>
-                
+                    <RelatedProducts title="sản phẩm liên quan " />
+
+                    <RelatedProducts title="sản phẩm đã xem gần đây" />
+
 
                 </div>
             </section>

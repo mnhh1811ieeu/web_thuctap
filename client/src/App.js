@@ -12,8 +12,9 @@ import ProductModal from "./Components/ProductModal/ProductModal";
 import Cart from "./Pages/Cart";
 import SignIn from "./Pages/SignIn/SignIn";
 import SignUp from "./Pages/SignUp/SignUp";
-import { fetchDataFromApi,postData } from "./utils/api";
-
+import { fetchDataFromApi} from "./utils/api";
+import Alert from '@mui/material/Alert';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 const MyContext = createContext();
 
 function App() {
@@ -27,7 +28,19 @@ function App() {
 
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const handleClose = (
+    event,
+    reason
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
 
+    setAlertBox({
+      open: false,
+
+    });
+  };
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -40,7 +53,6 @@ function App() {
   })
 
 
-  const [cartData, setCartData] =useState([]);
 
   let [cartFields, setCarFields] = useState([]);
   // useEffect( () => {
@@ -84,19 +96,18 @@ function App() {
     }
   }, [isLogin])
 
-
-
-  const addtoCart=(data)=> {
-    postData(`/api/cart/add`, data).then((res) => {
-      if(res!==null && res!==undefined && res!==""){
-        setAlertBox({
-          open: true,
-          error: false,
-          msg: "San pham da duoc them vao gio hang"
-        })
-      }
-    })
-  }
+  // const addtoCart=(data)=> {
+  //   // console.log(data)
+  //   postData(`/api/cart/add`, data).then((res) => {
+  //     if(res!==null && res!==undefined && res!==""){
+  //       setAlertBox({
+  //         open: true,
+  //         error: false,
+  //         msg: "San pham da duoc them vao gio hang"
+  //       })
+  //     }
+  //   })
+  // }
 
   const values = {
     countryList,
@@ -110,9 +121,7 @@ function App() {
     isLogin,
     alertBox,
     setAlertBox,
-    addtoCart,
-    cartData,
-    setCartData,
+    // addtoCart,
     cartFields,
     setCarFields
   }
@@ -137,6 +146,17 @@ function App() {
         {
             isOpenProductModal.open === true && <ProductModal data = {productData}/> 
         }
+
+<Snackbar open={alertBox.open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity={alertBox.error === false ? "success" : "error"}
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {alertBox.msg}
+          </Alert>
+        </Snackbar>
       </MyContext.Provider> 
     </BrowserRouter>
   );

@@ -17,30 +17,113 @@ router.get(`/`, async (req, res) => {
     }
 });
 
+// router.post('/add', async (req, res) => {
+
+//     let cartList = new Cart({
+//       productTitle: req.body.productTitle,
+//       images: req.body.image,
+//       rating: req.body.rating,
+//       price: req.body.price,
+//       quantity: req.body.quantity,
+//       subTotal: req.body.subTotal,
+//       productId: req.body.productId,
+//       userId: req.body.userId,
+//     });
+  
+//     if (!cartList) {
+//         res.status(500).json({
+//           error: err,
+//           success: false
+//         })
+//     }
+  
+//     cartList = await cartList.save();
+//     res.status(201).json(cartList);
+
+
+// });
+//2
+// router.post('/add', async (req, res) => {
+//   try {
+//       // Kiểm tra xem dữ liệu có đầy đủ không
+//       if (!req.body.productTitle || !req.body.images || !req.body.rating || !req.body.price || !req.body.quantity || !req.body.subTotal || !req.body.productId || !req.body.userId) {
+//           return res.status(400).json({
+//               error: "Missing required fields",
+//               success: false
+//           });
+//       }
+
+//       let cartList = new Cart({
+//           productTitle: req.body.productTitle,
+//           images: req.body.images,
+//           rating: req.body.rating,
+//           price: req.body.price,
+//           quantity: req.body.quantity,
+//           subTotal: req.body.subTotal,
+//           productId: req.body.productId,
+//           userId: req.body.userId,
+//       });
+
+//       // Lưu sản phẩm vào giỏ hàng
+//       cartList = await cartList.save();
+//       res.status(201).json(cartList);
+//   } catch (err) {
+//       console.error("Error saving cart:", err);
+//       res.status(500).json({
+//           error: err.message,
+//           success: false
+//       });
+//   }
+// });
 router.post('/add', async (req, res) => {
+    try {
+        const { productTitle, images, rating, price, quantity, subTotal, productId, userId } = req.body;
 
-    let cartList = new Cart({
-      productTitle: req.body.productTitle,
-      images: req.body.image,
-      rating: req.body.rating,
-      price: req.body.price,
-      quantity: req.body.quantity,
-      subTotal: req.body.subTotal,
-      productId: req.body.productId,
-      userId: req.body.userId,
-    });
-  
-    if (!cartList) {
-        res.status(500).json({
-          error: err,
-          success: false
-        })
+        if (!productTitle || !images || !rating || !price || !quantity || !subTotal || !productId || !userId) {
+            return res.status(400).json({ success: false, error: "Thiếu dữ liệu đầu vào" });
+        }
+
+        const existingCartItem = await Cart.findOne({ productId, userId });
+
+        if (existingCartItem) {
+            return res.status(400).json({ success: false, message: "Sản phẩm đã có trong giỏ hàng" });
+        }
+
+        const cartItem = new Cart({
+            productTitle,
+            images,
+            rating,
+            price,
+            quantity,
+            subTotal,
+            productId,
+            userId
+        });
+
+        await cartItem.save();
+        res.status(201).json({ success: true, message: "Thêm sản phẩm thành công", cart: cartItem });
+    } catch (err) {
+        console.error("Error saving cart:", err);
+        res.status(500).json({ success: false, error: "Lỗi khi thêm sản phẩm vào giỏ hàng" });
     }
-  
-    cartList = await cartList.save();
-    res.status(201).json(cartList);
+});
 
 
+// API kiểm tra sản phẩm đã có trong giỏ hàng chưa
+router.post('/check', async (req, res) => {
+    try {
+        const { productId, userId } = req.body;
+
+        if (!productId || !userId) {
+            return res.status(400).json({ success: false, error: "Thiếu dữ liệu đầu vào" });
+        }
+
+        const existingCartItem = await Cart.findOne({ productId, userId });
+        res.status(200).json({ exists: !!existingCartItem });
+    } catch (err) {
+        console.error("Error checking cart:", err);
+        res.status(500).json({ success: false, error: "Lỗi khi kiểm tra giỏ hàng" });
+    }
 });
 
 router.delete('/:id', async (req, res) => {
@@ -70,7 +153,7 @@ router.put('/:id', async (req, res) => {
     req.params.id,
     {
       productTitle: req.body.productTitle,
-      images: req.body.image,
+      images: req.body.images,
       rating: req.body.rating,
       price: req.body.price,
       quantity: req.body.quantity,

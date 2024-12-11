@@ -284,7 +284,7 @@ router.delete('/:id', async (req, res) => {
             error: error.message
         });
     }
-});
+});1
 router.get('/:id', async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) {
