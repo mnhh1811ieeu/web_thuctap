@@ -262,6 +262,9 @@ const Dashboard = () => {
                                                
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
+                                                        <Link to="/product/details">
+                                                            <Button className="secondary" color="secondary"><FaEye /></Button>
+                                                        </Link>
                                                         <Button className="success" color="success">
                                                             <Link to={`/product/edit/${item.id}`}>
                                                                 <Button className="success" color="success">
@@ -269,7 +272,6 @@ const Dashboard = () => {
                                                                 </Button>
                                                             </Link>
                                                         </Button>
-                                                        <Button className="success" color="success" ><FaPen /></Button>
                                                         <Button className="error" color="error" onClick={()=>deleteProduct(item.id)}><MdDelete/></Button>
                                                     </div>
                                                 </td>

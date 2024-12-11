@@ -488,7 +488,8 @@ nav .navPart2 ul li .submenu a button:hover{
 }
 .productItem .info h4{
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
+  
 }
 .productItem .info{
   padding: 15px;

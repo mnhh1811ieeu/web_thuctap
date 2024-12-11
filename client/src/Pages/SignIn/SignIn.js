@@ -71,7 +71,7 @@ const SignIn = () => {
   };
   useEffect(() => {
     context.setIsHeaderFooterShow(false);
-  }, []);
+  }, [context]);
   useEffect(() => {
     const token = localStorage.getItem("authToken");
 

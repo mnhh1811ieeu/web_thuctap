@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const recentlyViewedSchema = mongoose.Schema({
+    proId:{
+        type:String,
+        default: ''
+    },
     name: {
         type: String,
         required: true,

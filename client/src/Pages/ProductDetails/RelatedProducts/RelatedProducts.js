@@ -32,7 +32,7 @@ const RelatedProducts = (props) => {
                     props?.data?.length !==0 && props?.data.map( (item, index) => {
                         return( 
                             <SwiperSlide key={index}>
-                                <ProductItem item={item}/>
+                                <ProductItem item={item} itemVIew={props.itemView}/>
                             </SwiperSlide>
                         )
                     } )

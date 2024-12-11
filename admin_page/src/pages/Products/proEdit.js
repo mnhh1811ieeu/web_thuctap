@@ -12,7 +12,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 import { MdCloudUpload } from "react-icons/md";
-import { editData, fetchDataFromApi, postData, postDataProduct, postDataProduct2 } from '../../utils/api';
+import { editData, fetchDataFromApi, postData, postDataProduct } from '../../utils/api';
 import { FaRegImages } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -62,9 +62,9 @@ const ProductUpload = () => {
     const [productSIZEData, setProductSIZEData] = useState([])
     const [ratingsValue, setRatingValue] = useState(1);
     const context = useContext(MyContext);
-    const formdata = new FormData();
+  
     const history = useNavigate();
-    const [isSelectedImages, setIsSelectedImages] = useState(false);
+   
     const [files, setFiles] = useState([]);
     const [imgFiles, setimgFiles] = useState();
     const [previews, setPreviews] = useState();
@@ -72,7 +72,7 @@ const ProductUpload = () => {
     const [formFields, setFormFields] = useState({
         name: '',
         description: '',
-        images: [],
+        //images: [],
         brand: '',
         price: null,
         oldPrice: null,
@@ -160,7 +160,21 @@ const ProductUpload = () => {
         }))
     }
 
-      
+    const ensureArray = (data) => {
+        // Nếu data là mảng, kiểm tra từng phần tử trong mảng
+        if (Array.isArray(data)) {
+            return data.flatMap(item => {
+                // Nếu phần tử là chuỗi và có dấu phẩy, tách chuỗi ra thành mảng
+                if (typeof item === 'string' && item.includes(',')) {
+                    return item.split(',');  // Tách chuỗi thành mảng
+                }
+                return item;  // Nếu không, giữ nguyên phần tử
+            });
+        }
+        // Nếu data là chuỗi, tách chuỗi thành mảng
+        return data ? data.split(',') : [];
+    };
+    
 
     const selectCat= (cat) =>{
         formFields.catName = cat;
@@ -538,7 +552,7 @@ const ProductUpload = () => {
             setFormFields({
                 name: '',
                 description: '',
-                images: [],
+                //images: [],
                 brand: '',
                 price: 0,
                 oldPrice: 0,

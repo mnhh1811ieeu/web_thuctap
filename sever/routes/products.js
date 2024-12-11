@@ -59,9 +59,6 @@ router.post(`/upload`, upload.array("images"), async (req, res) => {
 });
 
 
-
-
-
 // Lấy danh sách tất cả sản phẩm
 router.get(`/`, async (req, res) => {
 
@@ -135,132 +132,6 @@ router.get(`/featured`, async (req, res) => {
     return res.status(200).json(productList);
     })
 
-// router.post(`/create`, async (req, res) => {
-
-
-//     const category = await Category.findById(req.body.category);
-//     if (!category) {
-//         return res.status(404).send("Danh mục không tồn tại");
-//     }
-
-//     // const limit = pLimit(2);
-//     // const imagesToUpload = req.body.images.map((image) => {
-//     //     return limit(async () => {
-//     //         const result = await cloudinary.uploader.upload(image);
-//     //         //console.log(`succesful`)
-//     //         //console.log(`result 1 24:14`)
-//     //         return result;
-//     //     }
-//     //     )
-//     // }
-//     // );
-//     // const uploadStatus = await Promise.all(imagesToUpload);
-//     // const imgurl = uploadStatus.map((item) => {
-//     //     return item.secure_url
-//     // })
-//     // if (!uploadStatus) {
-//     //     return res.status(500).json({
-//     //         error: "images cannot upload",
-//     //         status: false
-//     //     }
-
-//     //     )
-//    // }
-
-//     let product = new Product({
-//         name: req.body.name,
-//         description: req.body.description,
-//         images: imagesUrl,
-//         brand: req.body.brand,
-//         price: req.body.price,
-//         category: req.body.category,
-//         oldPrice:req.body.oldPrice,
-//         countInStock: req.body.countInStock,
-//         rating: req.body.rating,
-//         // numReviews: req.body.numReviews,
-//         isFeatured: req.body.isFeatured,
-//         discount: req.body.discount,
-//         productSIZE: req.body.productSIZE,
-  
-
-//     });
-//     product = await product.save();
-//     if (!product) {
-//         res.status(500).json({
-//             error: err,
-//             success: false
-//         })
-//     }
-//     res.status(201).json(product)
-// });
-
-// router.post(`/recentlyViewed`, upload.array('images', 10), async (req, res) => {
-//     // Kiểm tra xem danh mục có tồn tại không
-//     const category = await Category.findById(req.body.category);
-//     if (!category) {
-//         return res.status(404).send("Danh mục không tồn tại");
-//     }
-    
-
-//     // Kiểm tra ảnh trong body
-//     const files = req.files;  // Các file ảnh được upload tạm thời bởi multer
-
-//     if (!files || files.length === 0) {
-//         return res.status(400).json({
-//             message: "Ảnh sản phẩm là bắt buộc"
-//         });
-//     }
-
-//     // Upload ảnh lên Cloudinary
-//     const imageUrls = [];
-//     for (let file of files) {
-//         try {
-//             const result = await cloudinary.uploader.upload(file.path);  // Upload lên Cloudinary
-//             imageUrls.push(result.secure_url);  // Lưu URL của ảnh sau khi upload
-//         } catch (err) {
-//             console.error('Cloudinary upload error:', err);
-//             return res.status(500).json({ message: 'Lỗi khi tải ảnh lên Cloudinary', error: err });
-//         }
-//     }
-
-//     // Kiểm tra các trường dữ liệu khác
-//     if (!req.body.name || !req.body.description || !req.body.price) {
-//         return res.status(400).json({
-//             message: "Tên sản phẩm, mô tả và giá là bắt buộc"
-//         });
-//     }
-
-//     // Tạo một sản phẩm mới
-//     let product = new RecentlyViewed({
-//         name: req.body.name,
-//         description: req.body.description,
-//         images: imageUrls,  // Dùng URL ảnh từ Cloudinary
-//         brand: req.body.brand,
-//         price: req.body.price,
-//         catName: req.body.catName,
-//         category: req.body.category,
-//         oldPrice: req.body.oldPrice,
-//         countInStock: req.body.countInStock,
-//         rating: req.body.rating,
-//         isFeatured: req.body.isFeatured,
-//         discount: req.body.discount,
-//         productSIZE: req.body.productSIZE,
-//     });
-
-//     try {
-//         // Lưu sản phẩm vào MongoDB
-//         product = await RecentlyViewed.save();
-//         res.status(201).json(product);  // Trả về sản phẩm đã tạo
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({
-//             message: "Lỗi khi tạo sản phẩm",
-//             error: err
-//         });
-//     }
-// });
-
-
 router.post('/create', upload.array('images', 10), async (req, res) => {
     // Kiểm tra xem danh mục có tồn tại không
     const category = await Category.findById(req.body.category);
@@ -327,27 +198,6 @@ router.post('/create', upload.array('images', 10), async (req, res) => {
     }
 });
 
-
-// router.delete(`/:id`, async (req, res) => {
-//     const product=await Product.findById(req.params.id);
-//     const images= product.images;
-//     if(images.length!==0){
-//         for (image of images){
-//             fs.unlinkSync(`uploads/${image}`);
-//         }
-//     }
-//     const deletProduct = await Product.findByIdAndDelete(req.params.id);
-//     if (!deletProduct) {
-//         return res.status(404).json({
-//             message: 'khong thay san pham',
-//             status: false
-//         })
-//     } res.status(200).send({
-//         message: 'Da xoa san pham',
-//         status: true
-//     })
-// }
-// )
 router.delete('/:id', async (req, res) => {
     try {
         // Tìm sản phẩm theo ID
@@ -390,18 +240,7 @@ router.delete('/:id', async (req, res) => {
             status: false,
             error: error.message
         });
-    }
-    const deletProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletProduct) {
-        return res.status(404).json({
-            message: 'khong thay san pham',
-            status: false
-        })
-    } res.status(200).send({
-        message: 'Da xoa san pham',
-        status: true
-    })
-}
+    }}
 )
 
 router.get('/:id', async (req, res) => {
@@ -415,70 +254,49 @@ router.get('/:id', async (req, res) => {
 
 
 });
-// router.put('/:id', async (req, res) => {
-//     // const limit = pLimit(2);
-//     // const imagesToUpload = req.body.images.map((image) => {
-//     //     return limit(async () => {
-//     //         const result = await cloudinary.uploader.upload(image);
-//     //         //console.log(`succesful`)
-//     //         //console.log(`result 1 24:14`)
-//     //         return result;
-//     //     }
-//     //     )
-//     // }
-//     // );
+
+
+// router.get('/recentlyViewed', async (req, res) => {
     
-//     // const uploadStatus = await Promise.all(imagesToUpload);
-//     // const imgurl = uploadStatus.map((item) => {
-//     //     return item.secure_url
-//     // })
-//     // if (!uploadStatus) {
-//     //     return res.status(500).json({
-//     //         error: "images cannot upload",
-//     //         status: false
-//     //     }
-
-//     //     )
-//     // }
-//     const product = await Product.findByIdAndUpdate(
-//         req.params.id,
-//         {
-
-//             name: req.body.name,
-//             description: req.body.description,
-//             images: imagesArr,
-//             brand: req.body.brand,
-//             price: req.body.price,
-//             oldPrice: req.body.oldPrice,
-//             catName: req.body.catName,
-//             category: req.body.category,
-//             countInStock: req.body.countInStock,
-//             rating: req.body.rating,
-//             // numReviews: req.body.numReviews,
-//             isFeatured: req.body.isFeatured,
-//             discount: req.body.discount,
-//             productSIZE: req.body.productSIZE
-//         },
-//         { new: true }
-//     );
-//     if (!product) {
-//         res.status(404).json({
-//             message: 'Khong the cap nhat',
-//             status: false
-//         })
+//     console.log('Received query:', req.query);
+//     let productList = [];
+//     try {
+//         productList = await RecentlyViewed.find(req.query).populate("category");
+//         res.status(200).json({
+//             products: productList,
+//             totalPages,
+//             page,
+//         });
+//     } catch (error) {
+//         console.error('Query:', query);
+//         console.error('Error:', error.message);
+//         res.status(500).json({ success: false, error: error.message });
 //     }
-//     res.status(200).json({
-//         message: " da cap nhat",
-//         status: true
-//     })
-// }
-// );
+// });
 
+router.get('/recentlyViewed', async (req, res) => {
+    console.log('Received query:', req.query);
 
+    let productList = [];
+    try {
+        // Kiểm tra và chuyển đổi `_id` nếu tồn tại
+        if (req.query._id && !mongoose.Types.ObjectId.isValid(req.query._id)) {
+            return res.status(400).json({ success: false, message: 'Invalid ID format' });
+        }
+
+        productList = await RecentlyViewed.find(req.query).populate('category');
+        res.status(200).json({
+            products: productList,
+        });
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 router.post('/recentlyViewed', async (req, res) => {
     try {
-        console.log("Dữ liệu nhận từ frontend:", req.body); // In ra dữ liệu nhận được từ frontend
-
+        let findProduct = await RecentlyViewed.find({proId: req.body.id});
+        var product;
         const categoryId = req.body.category;  // Lấy ID danh mục từ body
         if (!categoryId) {
             return res.status(400).json({ message: "ID danh mục không được gửi" });
@@ -503,21 +321,24 @@ router.post('/recentlyViewed', async (req, res) => {
             });
         }
 
-        const product = new RecentlyViewed({
-            name: req.body.name,
-            description: req.body.description,
-            images: imageUrls,  // Các ảnh gửi từ frontend
-            brand: req.body.brand,
-            price: req.body.price,
-            catName: catName,  // Tên danh mục
-            category: req.body.category,
-            oldPrice: req.body.oldPrice,
-            countInStock: req.body.countInStock,
-            rating: req.body.rating,
-            isFeatured: req.body.isFeatured,
-            discount: req.body.discount,
-            productSIZE: req.body.productSIZE,
-        });
+        if(findProduct.length === 0){
+            product = new RecentlyViewed({
+                proId: req.body.id,
+                name: req.body.name,
+                description: req.body.description,
+                images: imageUrls,  // Các ảnh gửi từ frontend
+                brand: req.body.brand,
+                price: req.body.price,
+                catName: catName,  // Tên danh mục
+                category: req.body.category,
+                oldPrice: req.body.oldPrice,
+                countInStock: req.body.countInStock,
+                rating: req.body.rating,
+                isFeatured: req.body.isFeatured,
+                discount: req.body.discount,
+                productSIZE: req.body.productSIZE,
+            });
+        }
 
         const savedProduct = await product.save();
         res.status(201).json(savedProduct);
@@ -530,7 +351,6 @@ router.post('/recentlyViewed', async (req, res) => {
         });
     }
 });
-
 
 
 // API PUT để cập nhật sản phẩm

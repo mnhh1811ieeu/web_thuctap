@@ -72,10 +72,6 @@ function App() {
   //   })
   // }, [isOpenProductModal])
   useEffect(() => {
-    if (isOpenProductModal?.id) {
-        const controller = new AbortController();
-        const signal = controller.signal;
-  useEffect(() => {
     const token = localStorage.getItem("token");
     if (token !== null && token !== "" && token !== null) {
       setIsLogin(true);
@@ -85,6 +81,11 @@ function App() {
       setIsLogin(false);
     }
   }, [isLogin])
+  
+  useEffect(() => {
+    if (isOpenProductModal?.id) {
+        const controller = new AbortController();
+        const signal = controller.signal;
 
         fetchDataFromApi(`/api/products/${isOpenProductModal.id}`, signal)
             .then((res) => {

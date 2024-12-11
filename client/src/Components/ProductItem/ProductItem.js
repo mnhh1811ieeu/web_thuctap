@@ -54,7 +54,7 @@ const ProductItem = (props) => {
             onMouseLeave={handleMouseLeave}>
 
             <div className='imgWrapper'>
-                <Link to={`/product/${props.item?.id}`}>
+                <Link to={`/product/${props?.itemView==='recentlyViewed' ? props.item?.proId : props.item?.id}`}>
                     {
                         isHovered === true ?
                             <Slider {...settings} ref={sliderRef}>
@@ -86,7 +86,7 @@ const ProductItem = (props) => {
             </div>
 
             <div className='info'>
-                <Link to={`/product/${props.item?.id}`}> <h4>{props?.item.name?.length > 35 ? props.item.name.substr(0, 35) + '...' : props.item.name}</h4></Link>
+                <Link to={`/product/${props.item?.id}`}> <h4>{props?.item.name?.length > 28 ? props.item.name.substr(0, 28) + '...' : props.item.name}</h4></Link>
                 <span className='text-success d-block'>Có sẵn</span>
                 <Rating className='mb-2 mt-2' name="read-only" value={props?.item?.rating} readOnly size='small' precision={0.5} />
                 <p className='d-flex'>

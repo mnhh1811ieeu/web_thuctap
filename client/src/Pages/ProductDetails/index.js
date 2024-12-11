@@ -15,6 +15,8 @@ const ProductDetails = () => {
     const [activeSize, setActiveSize] = useState(null);
     const [productData, setProductData] = useState([]);
     const [relatedProductData, setRelatedProductData] = useState([]);
+    const [recentlyViewed, setRecentlyViewed] = useState([]);
+
     
     const {id} = useParams();
     
@@ -26,13 +28,24 @@ const ProductDetails = () => {
         window.scrollTo(0, 0)
 
         fetchDataFromApi(`/api/products/${id}`).then( (res) => {
-            setProductData(res)
-            postData(`/api/products/recentlyViewed`,res);
+            setProductData(res); 
+
             fetchDataFromApi(`/api/products?catName=${res.catName}`).then( (res) => {
                 const filterdData = res?.products?.filter( item => item.id !== id);
                 setRelatedProductData(filterdData);
                 console.log(filterdData);
             })
+            // postData(`/api/products/recentlyViewed`,res).then( (res) => {
+            //     fetchDataFromApi(`/api/products/recentlyViewed`).then( (response) => {
+            //         const uniqueItems = Array.from(new Set(response.map(item => item.id)))
+            //              .map(id => {
+                //              return response.find(item => item.id === id)            
+                //})
+            //         setRecentlyViewed(uniqueItems);
+            //     })
+            // })
+
+            
         })
     }, [id])
     
@@ -280,15 +293,16 @@ const ProductDetails = () => {
                         }
 
 
-
-
                     </div>
                 </div>
                 
                 <br/>
 
                 <RelatedProducts title="sản phẩm liên quan " data={relatedProductData}/>
-                {/* <RelatedProducts title="sản phẩm đã xem gần đây"/> */}
+                {/* {
+                    recentlyViewed?.length!==0 &&
+                    <RelatedProducts title="sản phẩm đã xem gần đây" itemView={"recentlyViewed"} data={recentlyViewed}/>
+                } */}
 
             </div>
         </section>
