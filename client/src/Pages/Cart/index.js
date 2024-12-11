@@ -125,10 +125,10 @@ const Cart = () => {
                                         <td width="15% ">
                                         <span>{item?.quantity}</span> {/* Chỉ hiển thị số lượng mà không cho chỉnh sửa */}
                                         </td>
-                                        <td width="20% ">
+                                        <td width="18% ">
                                             {item?.subTotal} VND
                                         </td>
-                                        <td width="8% ">
+                                        <td width="10% ">
                                             <span className='remove' onClick={()=>removeItem(item?._id)}>
                                                 <IoMdClose />
                                             </span>
@@ -177,7 +177,9 @@ const Cart = () => {
                                         } VND</span>
                                 </div>
                                 <br />
+                                <Link to="/checkout">
                                 <Button className="btn-blue bg-red btn-lg btn-big  ml-3"><CiShoppingCart />Thanh toán</Button>
+                                </Link>
                             </div>
                         </div>
                     </div>
