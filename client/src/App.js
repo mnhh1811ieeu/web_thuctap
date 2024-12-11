@@ -12,6 +12,7 @@ import ProductModal from "./Components/ProductModal/ProductModal";
 import Cart from "./Pages/Cart";
 import SignIn from "./Pages/SignIn/SignIn";
 import SignUp from "./Pages/SignUp/SignUp";
+import Checkout from "./Pages/Checkout";
 import { fetchDataFromApi} from "./utils/api";
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
@@ -139,6 +140,7 @@ function App() {
           <Route path="/cart" exact={true} element={<Cart />} />
           <Route path="/signIn" exact={true} element={<SignIn />} />
           <Route path="/signUp" exact={true} element={<SignUp />} />
+          <Route path="/checkout" exact={true} element={<Checkout />} />
         </Routes>
         {
           isHeaderFooterShow === true && <Footer/>
