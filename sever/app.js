@@ -20,9 +20,8 @@ const productRoutes=require('./routes/products');
 const productSizeRoutes = require('./routes/productSIZE.js');
 const userRoutes= require('./routes/user.js');
 const myListSchema = require('./routes/myList.js')
-
-const userRoutes= require('./routes/user.js');
 const cart = require('./routes/cart');
+const search = require('./routes/search.js')
 
 
 const productReviewRoutes= require('./routes/productReviews.js');
@@ -34,8 +33,8 @@ app.use(`/api/productSIZE`,productSizeRoutes);
 app.use(`/api/user`,userRoutes);
 app.use(`/api/my-list`,myListSchema); 
 app.use(`/api/cart`, cart);
-
 app.use(`/api/productReviews`,productReviewRoutes)
+app.use(`/api/search`,search)
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,

@@ -125,7 +125,9 @@ const user= await User.findByIdAndUpdate(
         name:name,
         phone:phone,
         email:email,
-        password: newPassword
+
+        password: newPassword,
+        images: req.body.images
     },{new :true }
 )
 if(!user)

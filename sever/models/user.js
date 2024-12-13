@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    images: [
+        {
+        type: String,
+        required: true
+}]
 });
 
 // Mã hóa mật khẩu trước khi lưu vào database

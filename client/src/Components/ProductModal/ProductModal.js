@@ -1,7 +1,7 @@
 import { Rating } from '@mui/material';
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog';
-import React, { useContext } from 'react'
+import React, { useContext , useState } from 'react'
 import { IoCloseCircleOutline } from "react-icons/io5";
 import QuantityBox from '../QuantityBox/QuantityBox';
 import { FaRegHeart } from "react-icons/fa";
@@ -11,7 +11,14 @@ import ProductZoom from '../ProductZoom/ProductZoom';
 const ProductModal = (props) => {
 
     const context = useContext(MyContext);
+    let [productQuantity, setProductQuantity] = useState();
 
+    const quantity = (val) => {
+        setProductQuantity(val)
+    }
+    const selectedItem=()=>{
+
+    }
 
   return (
     <>
@@ -20,9 +27,6 @@ const ProductModal = (props) => {
             <Button className='close_' onClick={() =>
                 context.setIsOpenProductModal(false)}><IoCloseCircleOutline/>
             </Button>
-{
-    console.log(props)
-}
             <h4 className='mb-1 font-weight-bold'>{props?.data?.name}</h4>
             <div className='d-flex align-items-center mr-4'>
                 <div className='d-flex align-items-center mr-4'>
@@ -49,7 +53,7 @@ const ProductModal = (props) => {
                     <p className='mt-2'>{props?.data?.description}</p>
 
                     <div className='d-flex align-items-center'>
-                        <QuantityBox/>
+                        <QuantityBox quantity={quantity} selectedItem={selectedItem}/>
 
                         <Button className='btn-blue btn-lg btn-big btn-round'>Add to cart</Button>
                     </div>

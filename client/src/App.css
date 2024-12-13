@@ -21,6 +21,8 @@ button{text-transform: capitalize !important;}
   }
 }
 
+a{ color: #000;}
+
 ::-webkit-scrollbar{
   width: 8px !important;
   height: 8px !important;
@@ -165,6 +167,11 @@ button{text-transform: capitalize !important;}
 .headerSearch button svg{
   font-size: 30px;
   opacity: 0.8s;
+}
+
+.headerSearch button .MuiCircularProgress-root {
+  width: 24px !important;
+  height: 24px !important;
 }
 
 
@@ -1191,9 +1198,10 @@ font-weight: bold;
 .remove:hover svg{
   color:#ed174a !important;
 }
+
 .table tbody tr {
   border-bottom: 1px solid #000;
- 
+  
 }
 
 .table tbody tr:last-child {
@@ -1206,7 +1214,7 @@ font-weight: bold;
   vertical-align: middle;
 }
 .cartPage .table td, .cartPage .table th{
-  border-bottom: 1px solid rgba(0, 0, 0, 2) !important;
+  text-align: center;
 }
 .cartPage table tbody tr:hover{
   background: #fafafa;
@@ -1334,3 +1342,56 @@ font-weight: bold;
   background: rgba(255,255,255,0.7);
 }
 
+.myAccountPage .MuiTab-root{
+  font-weight: 600 !important;
+}
+.myAccBox {
+  padding: 25px !important;
+  background: #FEFFF0;
+}
+.userImage {
+  width: 140px;
+  height: 140px;
+  overflow: hidden;
+  border-radius: 100%;
+  border: 2px solid #1ab9f8;
+  position: relative;
+}
+.userImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.userImage .overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  cursor: pointer;
+  transition:  all 0.2s ease-in-out;
+  opacity: 0;
+  
+}
+.userImage .overlay svg{
+  font-size: 30px;
+  color: #fff;
+}
+.userImage:hover .overlay{
+  opacity: 1;
+}
+.userImage .overlay input{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0100%;
+  z-index: 1000;
+  opacity: 0;
+}
+.myAccBox .form-group {margin-bottom: 20px;}
+.myAccBox .form-group .MuiOutlinedInput-input{
+  background: #f1f1f1 !important;
+}

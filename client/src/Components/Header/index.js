@@ -104,13 +104,18 @@ const Header = () => {
                                                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                                                 >
-                                                    <MenuItem onClick={handleClose}>
-                                                        <Avatar /> Thông tin
-                                                    </MenuItem>
+                                                    <Link to="/my-account">
+                                                        <MenuItem onClick={handleClose}>
+                                                            <Avatar /> Thông tin
+                                                        </MenuItem>
+                                                    </Link>
                                                     <Divider />
-                                                    <MenuItem onClick={handleClose}>
-                                                        <AddShoppingCartIcon />Giỏ hàng
-                                                    </MenuItem>
+                                                    <Link to="/orders">
+                                                        <MenuItem onClick={handleClose}>
+                                                            <AddShoppingCartIcon /> &nbsp; Sản phẩm đã mua
+                                                        </MenuItem>
+                                                        
+                                                    </Link>
 
                                                     <MenuItem onClick={handleClose}>
                                                         <ListItemIcon>

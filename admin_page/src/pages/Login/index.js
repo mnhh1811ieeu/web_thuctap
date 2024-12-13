@@ -87,9 +87,11 @@ const Login = () => {
     return (
         <section className="loginSection">
             <div className="loginBox">
-                <div className="logo text-center">
-                    <img src={Logo} alt="Logo" />
-                    <h5>Login to BHM</h5>
+                <div className="logo">
+                    <div className='imgLogo'>
+                        <img src={Logo} alt="Logo" />
+                    </div>
+                    <h5>Đăng Nhập</h5>
                 </div>
 
                 <div className="wrapper mt-3 card border p-4">

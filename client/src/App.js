@@ -12,6 +12,9 @@ import ProductModal from "./Components/ProductModal/ProductModal";
 import Cart from "./Pages/Cart";
 import SignIn from "./Pages/SignIn/SignIn";
 import SignUp from "./Pages/SignUp/SignUp";
+import Orders from "./Pages/Orders";
+import SearchPage from "./Pages/Search";
+import MyAccount from "./Pages/MyAccount"
 import { fetchDataFromApi} from "./utils/api";
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
@@ -24,11 +27,12 @@ function App() {
     id: '',
     open: false
   });
-  const [productData, setProductData] = useState();
+  const [productData, setProductData] = useState([]);
+  const [searchData, setSearchData] = useState([]);
 
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
-  const [categoryData, setCategoryData] = useState();
+  const [categoryData, setCategoryData] = useState([]);
   const [activeCat, setActiveCat] = useState('');
   const handleClose = (
     event,
@@ -74,14 +78,6 @@ function App() {
       setCountryList(res.data.data);
     });
   };
-  
-  // Inside useEffect:
-  useEffect(()=> {
-    isOpenProductModal.open === true &&
-    fetchDataFromApi(`/api/products/${isOpenProductModal.id}`).then((res) => {
-      setProductData(res);
-    })
-  }, [isOpenProductModal]);
 
   useEffect(() => {
     getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
@@ -160,7 +156,9 @@ function App() {
     setAlertBox,
     // addtoCart,
     cartFields,
-    setCarFields
+    setCarFields,
+    setSearchData,
+    searchData
   }
   return (
     <BrowserRouter >
@@ -176,6 +174,11 @@ function App() {
           <Route path="/cart" exact={true} element={<Cart />} />
           <Route path="/signIn" exact={true} element={<SignIn />} />
           <Route path="/signUp" exact={true} element={<SignUp />} />
+          <Route path="/orders" exact={true} element={<Orders />} />
+          <Route path="/search" exact={true} element={<SearchPage />} />
+          <Route path="/my-account" exact={true} element={<MyAccount />} />
+
+
         </Routes>
         {
           isHeaderFooterShow === true && <Footer/>

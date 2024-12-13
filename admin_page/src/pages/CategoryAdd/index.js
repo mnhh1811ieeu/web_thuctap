@@ -36,7 +36,6 @@ const CategoryAdd = () => {
     
     const [formFields, setFormFields] = useState({
         name: '',
-        
         images: '[]',
         color: ''
     });

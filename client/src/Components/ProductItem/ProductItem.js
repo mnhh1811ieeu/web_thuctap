@@ -94,7 +94,6 @@ const ProductItem = (props) => {
                 </span>
                 <div className='actions' >
                     <Button onClick={() => viewProDuctDetails(props.item?.id)}><AiOutlineFullscreen /></Button>
-                    <Button onClick={() => viewProDuctDetails(props.item?.id)}><AiOutlineFullscreen /></Button>
                     <Button><FaRegHeart style={{ fontSize: '20px' }} /></Button>
                 </div>
             </div>

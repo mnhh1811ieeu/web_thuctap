@@ -66,7 +66,7 @@ const ProductDetails = () => {
             setReviewData(res)
         }))
         if(productData?.productSIZE===undefined){
-setActiveTabs(1);
+            setActiveTabs(1);
         }
     }, [id])
 
@@ -234,22 +234,6 @@ setActiveTabs(1);
     const selectedItem=()=>{
 
     }
-
-
-    useEffect ( () => {
-        window.scrollTo(0, 0)
-
-        fetchDataFromApi(`/api/products/${id}`).then( (res) => {
-            setProductData(res); 
-
-            
-
-            
-        })
-    }, [id])
-    
-
-    
 
   return (
     <>

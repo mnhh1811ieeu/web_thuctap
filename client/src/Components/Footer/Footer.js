@@ -12,6 +12,7 @@ const Footer = () => {
   return (
     <footer>
         <div className='container'>
+            <hr/>
             <div className='topInfo row'>
                 <div className='col d-flex align-items-center'>
                     <span><IoShirtOutline /></span>

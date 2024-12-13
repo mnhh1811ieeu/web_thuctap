@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import HomeBanner from '../../Components/HomeBanner'
 import img1 from '../../assets/images/img1.png'
-import anvat1 from '../../assets/images/anvat1.png'
 import { Button } from '@mui/material'
 import { TfiAngleDoubleRight } from "react-icons/tfi";
 import { Swiper, SwiperSlide } from 'swiper/react';

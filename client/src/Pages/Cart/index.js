@@ -87,7 +87,7 @@ const Cart = () => {
                         <div className="col-md-9 pr-5">
 
                             <div className="table-responsive" >
-                                <table className='table' >
+                                <table className='table' padding="10px">
                                     <thead>
                                         <tr>
                                             <th width="40% ">Sản phẩm </th>
@@ -97,43 +97,42 @@ const Cart = () => {
                                             <th width="10% ">Xóa</th>
                                         </tr>
                                     </thead>
-                                </table>
-                                <tbody>
+                                    <tbody>
                                     {
                                         cartData?.length!==0 && cartData?.map((item,index)=>{
                                        return(
                                         <tr>
-                                        <td width="40%">
-                                            
-                                            <Link to={`/product/${item?.productId}`} >
-                                                <div className="d-flex align-items-center CartItemimgWrapper">
-                                                    <div className='imgWrapper'>
-                                                        <img src={item?.images} alt={item?.productTitle}
-                                                            className='w-100'></img>
-                                                    </div>
-                                                    <div className='info px-3'>
-                                                        <h6>{item?.productTitle?.substr(0,50)+'...'}</h6>
+                                            <td width="40%">
+                                                
+                                                <Link to={`/product/${item?.productId}`} >
+                                                    <div className="d-flex align-items-center CartItemimgWrapper">
+                                                        <div className='imgWrapper'>
+                                                            <img src={item?.images} alt={item?.productTitle}
+                                                                className='w-100'></img>
+                                                        </div>
+                                                        <div className='info px-3'>
+                                                            <h6>{item?.productTitle?.substr(0,50)+'...'}</h6>
 
-                                                        <Rating name="read-only" value={item?.rating} readOnly size="small" />
+                                                            <Rating name="read-only" value={item?.rating} readOnly size="small" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </Link>
-                                        </td>
-                                        <td width="17%">
-                                           {item?.price} 
-                                        </td >
-                                        <td width="15% ">
-                                        <span>{item?.quantity}</span> {/* Chỉ hiển thị số lượng mà không cho chỉnh sửa */}
-                                        </td>
-                                        <td width="20% ">
-                                            {item?.subTotal} VND
-                                        </td>
-                                        <td width="8% ">
-                                            <span className='remove' onClick={()=>removeItem(item?._id)}>
-                                                <IoMdClose />
-                                            </span>
-                                        </td>
-                                    </tr>
+                                                </Link>
+                                            </td>
+                                            <td width="17%">
+                                                {item?.price} 
+                                            </td >
+                                            <td width="15% ">
+                                                <span>{item?.quantity}</span> {/* Chỉ hiển thị số lượng mà không cho chỉnh sửa */}
+                                            </td>
+                                            <td width="18% ">
+                                                {item?.subTotal} VND
+                                            </td>
+                                            <td width="10% ">
+                                                <span className='remove' onClick={()=>removeItem(item?._id)}>
+                                                    <IoMdClose />
+                                                </span>
+                                            </td>
+                                        </tr>
                                        )
                                         
                                         })
@@ -141,6 +140,8 @@ const Cart = () => {
                                    
                                 
                                 </tbody>
+                                </table>
+                                
                             </div>
                         </div>
                         <div className='col-md-3'>
