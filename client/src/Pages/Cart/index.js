@@ -178,7 +178,9 @@ const Cart = () => {
                                         } VND</span>
                                 </div>
                                 <br />
+                                <Link to="/checkout">
                                 <Button className="btn-blue bg-red btn-lg btn-big  ml-3"><CiShoppingCart />Thanh toán</Button>
+                                </Link>
                             </div>
                         </div>
                     </div>

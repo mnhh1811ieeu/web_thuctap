@@ -15,9 +15,11 @@ import SignUp from "./Pages/SignUp/SignUp";
 import Orders from "./Pages/Orders";
 import SearchPage from "./Pages/Search";
 import MyAccount from "./Pages/MyAccount"
+import Checkout from "./Pages/Checkout";
 import { fetchDataFromApi} from "./utils/api";
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import PaymentSuccess from "./Pages/Payment Success/paymentsuccess";
 const MyContext = createContext();
 
 function App() {
@@ -179,6 +181,8 @@ function App() {
           <Route path="/my-account" exact={true} element={<MyAccount />} />
 
 
+          <Route path="/checkout" exact={true} element={<Checkout />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
         {
           isHeaderFooterShow === true && <Footer/>
