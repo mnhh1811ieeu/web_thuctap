@@ -16,6 +16,7 @@ import Checkout from "./Pages/Checkout";
 import { fetchDataFromApi} from "./utils/api";
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import PaymentSuccess from "./Pages/Payment Success/paymentsuccess";
 const MyContext = createContext();
 
 function App() {
@@ -141,6 +142,7 @@ function App() {
           <Route path="/signIn" exact={true} element={<SignIn />} />
           <Route path="/signUp" exact={true} element={<SignUp />} />
           <Route path="/checkout" exact={true} element={<Checkout />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
         {
           isHeaderFooterShow === true && <Footer/>

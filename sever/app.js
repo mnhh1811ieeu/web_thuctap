@@ -18,7 +18,7 @@ app.use(express.json());
 const categoryRoutes=require('./routes/categories');
 const productRoutes=require('./routes/products');
 const productSizeRoutes = require('./routes/productSIZE.js');
-
+const paymentRoutes = require('./routes/payment');
 const userRoutes= require('./routes/user.js');
 const cart = require('./routes/cart');
 
@@ -31,7 +31,7 @@ app.use(`/api/products`,productRoutes);
 app.use(`/api/productSIZE`,productSizeRoutes);
 app.use(`/api/user`,userRoutes);
 app.use(`/api/cart`, cart);
-
+app.use(`/api/payment`, paymentRoutes);
 app.use(`/api/productReviews`,productReviewRoutes)
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
@@ -50,5 +50,10 @@ mongoose.connect(process.env.CONNECTION_STRING, {
     console.log(err);
  } 
 )
+app.post("/callback", async (req, res) => {
+    console.log("callback: ");
+    console.log(req.body);
+    return res.status(200).json(req.body);
+})
 
 
