@@ -23,6 +23,7 @@ const userRoutes= require('./routes/user.js');
 const myListSchema = require('./routes/myList.js')
 const cart = require('./routes/cart');
 const search = require('./routes/search.js')
+const orderRoutes = require('./routes/order.js')
 
 
 const productReviewRoutes= require('./routes/productReviews.js');
@@ -36,7 +37,8 @@ app.use(`/api/my-list`,myListSchema);
 app.use(`/api/cart`, cart);
 app.use(`/api/payment`, paymentRoutes);
 app.use(`/api/productReviews`,productReviewRoutes)
-app.use(`/api/search`,search)
+app.use(`/api/search`, search);
+app.use(`/api/order`, orderRoutes );
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,

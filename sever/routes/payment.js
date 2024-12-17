@@ -4,7 +4,6 @@ const axios = require('axios');
 const crypto = require('crypto');
 var accessKey = 'F8BBA842ECF85';
 var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
-const Order = require('../models/orders');
 
 router.post("/", async (req, res) => {
     const { amount } = req.body; // Lấy số tiền từ body request
@@ -76,7 +75,9 @@ router.post("/", async (req, res) => {
             message: "Lỗi server khi kết nối với MoMo"
         });
     }
+
 });
+
 router.post("/transaction-status", async (req, res) => {
     const { orderId } = req.body;
     const rawSignature = `accessKey=${accessKey}&orderId=${orderId}&partnerCode=MOMO&requestId=${orderId}`;

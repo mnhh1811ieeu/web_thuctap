@@ -1,7 +1,6 @@
 const express = require('express');
 const { RecentlyViewed } = require("../models/recentlyViewed.js");
 const { Product } = require("../models/products.js");
-
 const { Category } = require("../models/category.js");
 const router = express.Router();
 const pLimit = require('p-limit');

@@ -97,7 +97,7 @@ const Home = () => {
             <div className='col-md-9 productRow'>
               <div className='d-flex align-items-center'>
                 <div className='info w-75'>
-                  <h3 className='mb-0 hd'>sản phẩm bán chạy nhất</h3>
+                  <h3 className='mb-0 hd'>sản phẩm phổ biến</h3>
                   <p className='text-light text-sml mb-0'>Đừng bỏ lỡ các ưu đãi hiện tại cho đến hết tháng 12.</p>
                 </div>
 
@@ -165,7 +165,7 @@ const Home = () => {
 
               <div className='d-flex align-items-center mt-3'>
                 <div className='info w-75'>
-                  <h3 className='mb-0 hd'>Váy</h3>
+                  <h3 className='mb-0 hd'>Sản phẩm nổi bật</h3>
                   <p className='text-light text-sml mb-0'>Đừng bỏ lỡ các ưu đãi hiện tại cho đến hết tháng 12.</p>
                 </div>
 

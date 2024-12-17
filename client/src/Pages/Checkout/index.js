@@ -222,6 +222,7 @@ const checkout = async (e) => {
 
     // Gọi API backend để tạo thanh toán MoMo
     const response = await postDataUser('/api/payment', payload);
+    postData(`/api/order`, payload);
 
     console.log("MoMo API response:", response); // Log phản hồi từ API MoMo
 

@@ -25,32 +25,6 @@ const orderSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Tạo model
-const Order = mongoose.model('Order', orderSchema);
+exports.Order = mongoose.model('Order', orderSchema);
+exports.orderSchema = orderSchema;
 
-// Hàm tạo và lưu đơn hàng vào MongoDB
-const createOrder = async (orderData) => {
-    const { name, phoneNumber, address, pincode, email, amount, order_receipt, userid, products } = orderData;
-
-    try {
-        const newOrder = new Order({
-            name,
-            phoneNumber,
-            address,
-            pincode,
-            email,
-            amount,
-            order_receipt,
-            userid,
-            products
-        });
-
-        // Lưu vào MongoDB
-        const savedOrder = await newOrder.save();
-        return savedOrder;
-    } catch (error) {
-        console.error('Error saving order:', error);
-        throw new Error('Failed to save order');
-    }
-};
-
-module.exports = { createOrder };

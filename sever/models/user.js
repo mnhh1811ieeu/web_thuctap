@@ -8,17 +8,15 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        required: true,
         unique: true,
     },
     email: {
         type: String,
         required: true,
-        unique: true,
+        unique: false,
     },
     password: {
         type: String,
-        required: true,
     },
     images: [
         {
