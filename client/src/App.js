@@ -63,18 +63,7 @@ function App() {
 
 
   let [cartFields, setCarFields] = useState([]);
-  // useEffect( () => {
-  //  //getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
-  //   getCountry("https://countriesnow.space/api/v0.1/countries/");
-  // }, []);
-
-  // const getCountry =async(url) => {
-  //   const responsive = await axios.get(url).then( (res) =>{
-  //       setCountryList(res.data.data)
-  //       console.log(res.data.data)
-  //   })
-  // }
-
+  
   const getCountry = async (url) => {
     const responsive = await axios.get(url).then((res) => {
       setCountryList(res.data.data);
@@ -105,19 +94,7 @@ function App() {
       setIsLogin(false);
     }
   }, [isLogin])
-  
-  // const addtoCart=(data)=> {
-  //   // console.log(data)
-  //   postData(`/api/cart/add`, data).then((res) => {
-  //     if(res!==null && res!==undefined && res!==""){
-  //       setAlertBox({
-  //         open: true,
-  //         error: false,
-  //         msg: "San pham da duoc them vao gio hang"
-  //       })
-  //     }
-  //   })
-  // }
+ 
   useEffect(() => {
     if (isOpenProductModal?.id) {
         const controller = new AbortController();
@@ -156,7 +133,7 @@ function App() {
     setActiveCat,
     alertBox,
     setAlertBox,
-    // addtoCart,
+   
     cartFields,
     setCarFields,
     setSearchData,

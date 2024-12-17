@@ -423,5 +423,22 @@ router.put('/:id', upload.array('images', 10), async (req, res) => {
         });
     }
 });
+router.get(`/get/count`, async (req, res) => {
+    try {
+        // Gọi countDocuments để đếm tổng số sản phẩm
+        const productCount = await Product.countDocuments();
+
+        // Kiểm tra nếu không có sản phẩm
+        if (productCount === 0) {
+            return res.status(404).json({  message: 'Không có sản phẩm nào!' });
+        }
+
+        // Trả về số lượng sản phẩm
+        res.status(200).json({  productCount });
+    } catch (error) {
+        // Trả về lỗi nếu có vấn đề trong truy vấn
+        res.status(500).json({  error: error.message });
+    }
+});
 
 module.exports = router;

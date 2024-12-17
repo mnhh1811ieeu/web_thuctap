@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
-import { deleteData, editData, fetchDataFromApi, postData, postDataUser } from '../../utils/api';
+import {  fetchDataFromApi, postData, postDataUser } from '../../utils/api';
 import { MyContext } from '../../App';
 
 // import { User } from '../../../../sever/models/user';
@@ -22,11 +22,29 @@ const Checkout = () => {
   })
 
   const [cartData, setCartData] = useState([]);
+  // useEffect(() => {
+  //   fetchDataFromApi(`/api/cart`).then((res) => {
+  //     setCartData(res);
+  //   })
+  // }, [])
   useEffect(() => {
-    fetchDataFromApi(`/api/cart`).then((res) => {
-      setCartData(res);
-    })
-  }, [])
+    const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
+    const userId = user ? user.userId : null; // Lấy userId từ thông tin user
+
+    if (userId) {
+      // Gọi API với userId nếu có
+      fetchDataFromApi(`/api/cart?userId=${userId}`)
+        .then((res) => {
+          setCartData(res);
+        })
+        .catch((error) => {
+          console.error("Lỗi khi lấy giỏ hàng:", error);
+        });
+    } else {
+      // Nếu không có userId, có thể xử lý trường hợp giỏ hàng trống hoặc không làm gì
+      setCartData([]);
+    }
+  }, []); // Chạy 1 lần khi component được mount
 
   const onChangeInput = (e) => {
     setFormFields(() => ({
@@ -37,54 +55,7 @@ const Checkout = () => {
 
   const context = useContext(MyContext);
   
-  
-//   const checkout = async (e) => {
-//     e.preventDefault();
 
-//     // Validate form fields
-//     for (const [key, value] of Object.entries(formFields)) {
-//         if (!value) {
-//             context.setAlertBox({
-//                 open: true,
-//                 error: true,
-//                 msg: `Please fill ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}`
-//             });
-//             return;
-//         }
-//     }
-
-//     // Calculate total amount from cart
-//     const totalAmount = cartData?.length !== 0 && cartData.map(item => parseInt(item.price) * item.quantity).reduce((total, value) => total + value, 0);
-
-//     const addressInfo = {
-//         name: formFields.fullName,
-//         phoneNumber: formFields.phoneNumber,
-//         address: `${formFields.streetAddressLine1} ${formFields.streetAddressLine2}`,
-//         pincode: formFields.zipCode,
-//         email: formFields.email,
-//     };
-
-//     try {
-//         const payload = {
-//             ...addressInfo,
-//             amount: totalAmount,
-//             order_receipt: `order_rcptid_${formFields.fullName}`,
-//         };
-
-//         // Call backend API to create MoMo payment
-//         const response = await postData('/api/payment', payload);
-
-//         if (response.payUrl) {
-//             window.location.href = response.payUrl; // Redirect to MoMo payment page
-//         } else {
-//             console.error('Failed to create payment:', response);
-//         }
-//     } catch (error) {
-//         console.error('Error during checkout:', error);
-//     }
-// };
-
-//22
 // const checkout = async (e) => {
 //   e.preventDefault();
 
@@ -99,49 +70,78 @@ const Checkout = () => {
 //       return;
 //     }
 //   }
-//   // chỗ nàyyynàyyy
-// const user=JSON.parse(localStorage.getItem("user"));
-//   // Calculate total amount from cart
+
+//   // Lấy thông tin người dùng từ localStorage
+//   const user = JSON.parse(localStorage.getItem("user"));
+//   if (!user) {
+//     context.setAlertBox({
+//       open: true,
+//       error: true,
+//       msg: 'User not found. Please log in again.',
+//     });
+//     return;
+//   }
+
+//   // Tính tổng số tiền từ giỏ hàng
 //   const totalAmount =
 //     cartData?.length !== 0 &&
 //     cartData
 //       .map((item) => parseInt(item.price) * item.quantity)
 //       .reduce((total, value) => total + value, 0);
 
+//   // Kiểm tra xem tổng số tiền có hợp lệ không
+//   if (!totalAmount || totalAmount <= 0) {
+//     context.setAlertBox({
+//       open: true,
+//       error: true,
+//       msg: 'Total amount is not valid.',
+//     });
+//     return;
+//   }
+
+//   // Thông tin địa chỉ
 //   const addressInfo = {
 //     name: formFields.fullName,
 //     phoneNumber: formFields.phoneNumber,
 //     address: `${formFields.streetAddressLine1} ${formFields.streetAddressLine2}`,
 //     pincode: formFields.zipCode,
-//     //đâyđây
-//     //email: formFields.email,
-//     email:user.email,
-    
+//     email: user.email, // Lấy email từ thông tin người dùng
 //   };
 
 //   try {
 //     const payload = {
 //       ...addressInfo,
 //       amount: totalAmount,
-//       order_receipt: `order_rcptid_${formFields.fullName}`,
-//       //đâyđây
-//       userid: user.userId,
-//       products:cartData
+//       order_receipt: `order_rcptid_${formFields.fullName}`, // Thêm order_receipt với thông tin tạm thời
+//       userid: user.userId, // Lấy userId từ thông tin người dùng
+//       products: cartData, // Giỏ hàng
 //     };
 
 //     console.log("Payload being sent:", payload); // Log payload trước khi gửi
 
-//     // Call backend API to create MoMo payment
+//     // Gọi API backend để tạo thanh toán MoMo
 //     const response = await postDataUser('/api/payment', payload);
+//     // postData(`/api/order`, payload); // Bỏ qua gọi API tạo đơn hàng trước
 
 //     console.log("MoMo API response:", response); // Log phản hồi từ API MoMo
 
-//     // Kiểm tra nếu phản hồi chứa shortLink và chuyển hướng đến trang thanh toán của MoMo
-//     if (response && response.shortLink) {
+//     // Kiểm tra nếu phản hồi chứa orderId từ MoMo
+//     if (response && response.orderId) {
+//       // Cập nhật lại order_receipt với orderId từ MoMo
+//       const updatedPayload = {
+//         ...payload,
+//         order_receipt: response.orderId, // Dùng orderId của MoMo
+//       };
+
+//       console.log("Updated Payload with MoMo orderId:", updatedPayload);
+
+//       // Lưu updatedPayload vào MongoDB (không gọi lại API MoMo)
+//       await postData(`/api/order`, updatedPayload); // Gọi API lưu đơn hàng với orderId
+
 //       console.log("Redirecting to MoMo:", response.shortLink); // Log shortLink
-//       //window.location.href = response.shortLink; // Chuyển hướng đến MoMo
+//       window.location.href = response.shortLink; // Chuyển hướng đến MoMo
 //     } else {
-//       console.error("Failed to create payment. Response doesn't contain shortLink");
+//       console.error("Failed to create payment. Response doesn't contain orderId");
 //       context.setAlertBox({
 //         open: true,
 //         error: true,
@@ -160,13 +160,13 @@ const Checkout = () => {
 const checkout = async (e) => {
   e.preventDefault();
 
-  // Validate form fields
+  // Kiểm tra các trường form
   for (const [key, value] of Object.entries(formFields)) {
     if (!value) {
       context.setAlertBox({
         open: true,
         error: true,
-        msg: `Please fill ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}`,
+        msg: `Vui lòng điền vào ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}`,
       });
       return;
     }
@@ -178,16 +178,14 @@ const checkout = async (e) => {
     context.setAlertBox({
       open: true,
       error: true,
-      msg: 'User not found. Please log in again.',
+      msg: 'Người dùng không tìm thấy. Vui lòng đăng nhập lại.',
     });
     return;
   }
 
   // Tính tổng số tiền từ giỏ hàng
-  const totalAmount =
-    cartData?.length !== 0 &&
-    cartData
-      .map((item) => parseInt(item.price) * item.quantity)
+  const totalAmount = cartData?.length !== 0 &&
+    cartData.map((item) => parseInt(item.price) * item.quantity)
       .reduce((total, value) => total + value, 0);
 
   // Kiểm tra xem tổng số tiền có hợp lệ không
@@ -195,7 +193,7 @@ const checkout = async (e) => {
     context.setAlertBox({
       open: true,
       error: true,
-      msg: 'Total amount is not valid.',
+      msg: 'Tổng số tiền không hợp lệ.',
     });
     return;
   }
@@ -206,50 +204,60 @@ const checkout = async (e) => {
     phoneNumber: formFields.phoneNumber,
     address: `${formFields.streetAddressLine1} ${formFields.streetAddressLine2}`,
     pincode: formFields.zipCode,
-    email: user.email, // Lấy email từ thông tin người dùng
+    email: user.email,
   };
 
   try {
     const payload = {
       ...addressInfo,
       amount: totalAmount,
-      order_receipt: `order_rcptid_${formFields.fullName}`,
-      userid: user.userId, // Lấy userId từ thông tin người dùng
+      order_receipt: `order_rcptid_${formFields.fullName}`, // Thêm order_receipt
+      userid: user.userId,
       products: cartData, // Giỏ hàng
     };
 
-    console.log("Payload being sent:", payload); // Log payload trước khi gửi
+    console.log("Payload being sent:", payload);
 
     // Gọi API backend để tạo thanh toán MoMo
     const response = await postDataUser('/api/payment', payload);
 
-    console.log("MoMo API response:", response); // Log phản hồi từ API MoMo
+    console.log("Phản hồi từ MoMo API:", response);
 
-    // Kiểm tra nếu phản hồi chứa shortLink và chuyển hướng đến trang thanh toán của MoMo
-    if (response && response.shortLink) {
-      console.log("Redirecting to MoMo:", response.shortLink); // Log shortLink
-      //window.location.href = response.shortLink; // Chuyển hướng đến MoMo
+    if (response && response.orderId) {
+      const updatedPayload = {
+        ...payload,
+        order_receipt: response.orderId, // Dùng orderId của MoMo
+      };
+
+      console.log("Payload đã được cập nhật với orderId của MoMo:", updatedPayload);
+
+      // Lưu updatedPayload vào MongoDB (không gọi lại API MoMo)
+      await postData(`/api/order`, updatedPayload); // Gọi API lưu đơn hàng với orderId
+
+      console.log("Chuyển hướng đến MoMo:", response.shortLink); // Log shortLink
+      window.location.href = response.shortLink; // Chuyển hướng đến MoMo
+
+      // Không xóa giỏ hàng ở đây, chỉ xóa sau khi nhận phản hồi từ MoMo
     } else {
-      console.error("Failed to create payment. Response doesn't contain shortLink");
+      console.error("Không thể tạo thanh toán. Phản hồi không chứa orderId");
       context.setAlertBox({
         open: true,
         error: true,
-        msg: 'Failed to create payment. Please try again.',
+        msg: 'Không thể tạo thanh toán. Vui lòng thử lại.',
       });
     }
   } catch (error) {
-    console.error('Error during checkout:', error);
+    console.error('Lỗi trong quá trình thanh toán:', error);
     context.setAlertBox({
       open: true,
       error: true,
-      msg: 'An error occurred during checkout. Please try again.',
+      msg: 'Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại.',
     });
   }
 };
 
 
-
-  return (
+return (
     <section className='section'>
       <div className='container'>
         <form className='checkoutForm' onSubmit={checkout}>

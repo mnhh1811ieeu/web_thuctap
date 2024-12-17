@@ -5,8 +5,7 @@ import gg from "../../assets/images/gg.png";
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import axios để gọi API
-import { fetchDataFromApi, postDataUser } from '../../utils/api';
+import { postDataUser } from '../../utils/api';
 
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);

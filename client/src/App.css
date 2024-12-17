@@ -1398,7 +1398,6 @@ font-weight: bold;
 .checkoutForm .form-group{
   margin-bottom: 20px;
 }
-
 .orderInfo {
   background: #fafafa !important;
   padding: 25px !important;
@@ -1407,4 +1406,54 @@ font-weight: bold;
 .orderInfo thead {
   border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Dialog overlay để tạo nền mờ khi mở dialog */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style cho dialog */
+.dialog {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+/* Mỗi sản phẩm trong dialog sẽ có khoảng cách giữa chúng */
+.dialog ul {
+  list-style-type: none;
+  padding-left: 0; /* Bỏ viền trái của danh sách */
+}
+
+.dialog li {
+  margin-bottom: 15px; /* Thêm khoảng cách giữa các sản phẩm */
+  padding: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Thêm border dưới sản phẩm */
+}
+
+.dialog li:last-child {
+  margin-bottom: 0; /* Không có khoảng cách dưới cùng sản phẩm cuối */
+}
+
+/* Nút đóng dialog */
+button {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
 }
