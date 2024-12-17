@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
-import QuantityBox from '../../Components/QuantityBox/QuantityBox';
+
 import { MyContext } from '../../App';
 import { deleteData, editData, fetchDataFromApi } from '../../utils/api';
 
@@ -19,13 +19,32 @@ const Cart = () => {
     }
     const context=useContext(MyContext);
     const [cartData, setCartData] =useState([]);
-    useEffect(()=>{
-        fetchDataFromApi(`/api/cart`).then((res)=>{
+    // useEffect(()=>{
+    //     fetchDataFromApi(`/api/cart`).then((res)=>{
+    //         setCartData(res);
+    //         console.log(res)
+    //     })
+    // },[]);
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.userId; // Lấy userId từ localStorage
+    
+        if (userId) {
+          // Gửi request với userId để lọc giỏ hàng
+          fetchDataFromApi(`/api/cart?userId=${userId}`).then((res) => {
             setCartData(res);
-            console.log(res)
-        })
-    },[]);
-   
+            setIsLoading(false);
+            console.log(res);
+          }).catch((error) => {
+            setIsLoading(false);
+            console.error("Lỗi khi lấy dữ liệu giỏ hàng:", error);
+          });
+        } else {
+          setIsLoading(false);
+          console.log("Không tìm thấy userId trong localStorage");
+        }
+      }, []); // Chỉ chạy 1 lần khi component mount
+
     
     const selectedItem = (item, quantityVal) => {
         setIsLoading(true);

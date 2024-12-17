@@ -114,7 +114,7 @@ const Header = () => {
                                                         <MenuItem onClick={handleClose}>
                                                             <AddShoppingCartIcon /> &nbsp; Sản phẩm đã mua
                                                         </MenuItem>
-                                                        
+
                                                     </Link>
 
                                                     <MenuItem onClick={handleClose}>
@@ -136,10 +136,10 @@ const Header = () => {
                                     }
 
 
-                                    <div className='m1-auto cartTab d-flex align-items-center'>
+                                    {/* <div className='m1-auto cartTab d-flex align-items-center'>
 
                                         <div className='position-relative ml-2'>
-                                            <Link to="/cart"> {/* Chuyển hướng đến trang giỏ hàng */}
+                                            <Link to="/cart">
                                                 <Button className="circle">
                                                     <BsHandbagFill />
                                                 </Button>
@@ -147,7 +147,35 @@ const Header = () => {
 
                                         </div>
 
+                                    </div> */}
+                                    <div className='m1-auto cartTab d-flex align-items-center'>
+                                        <div className='position-relative ml-2'>
+                                            <Button
+                                                className="circle"
+                                                onClick={() => {
+                                                    const token = localStorage.getItem("token"); // Kiểm tra token trong localStorage
+
+                                                    if (!token) {
+                                                        // Nếu chưa đăng nhập, hiển thị thông báo và chuyển hướng đến trang đăng nhập
+                                                        context.setAlertBox({
+                                                            open: true,
+                                                            error: false,
+                                                            msg: "Bạn cần đăng nhập để xem giỏ hàng",
+                                                        });
+                                                        setTimeout(() => {
+                                                            window.location.href = "/signin"; // Chuyển hướng đến trang đăng nhập sau 2 giây
+                                                        }, 1000);
+                                                    } else {
+                                                        // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
+                                                        window.location.href = "/cart";
+                                                    }
+                                                }}
+                                            >
+                                                <BsHandbagFill />
+                                            </Button>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
