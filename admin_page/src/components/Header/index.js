@@ -1,19 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/images/logo1.png';
 import Button from '@mui/material/Button';
-import { MdMenuOpen } from "react-icons/md";
-import { IoMenuOutline } from "react-icons/io5";
 import SearchBox from "../SearchBox";
 import { CiLight } from "react-icons/ci";
-import { MdDarkMode } from "react-icons/md";
 import { TiShoppingCart } from "react-icons/ti";
 import { MdOutlineEmail } from "react-icons/md";
 import { FaRegBell } from "react-icons/fa";
 import { FaShieldAlt } from "react-icons/fa";
-
-
-
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -23,16 +17,13 @@ import Divider from '@mui/material/Divider';
 import { MyContext } from '../../App';
 import { useContext } from 'react';
 import { MenuOpen, MenuOutlined } from '@mui/icons-material';
-import UserAvatarImgComponent from '../userAvatarimg';
 
-import { useLocation } from 'react-router-dom';
 const Header = () => {
-
+    const [isLoading, setIsLoading] = useState(true);  // Trạng thái loading
     const [anchorEl, setAnchorEl] = useState(null);
     const [isOpennotificationDrop, setisOpennotificationDrop] = useState(false);
     const openNotifications = Boolean(isOpennotificationDrop);
     const openMyAcc = Boolean(anchorEl);
-
     const [isLogin, setIsLogin] = useState(false);
     const history = useNavigate();
     const context = useContext(MyContext);
@@ -63,6 +54,22 @@ const Header = () => {
             history("/login");
         }, 1000);
     }
+    useEffect(() => {
+        // Kiểm tra trạng thái đăng nhập khi component render
+        const token = localStorage.getItem("token");
+        if (!token) {
+            // Nếu không có token, hiển thị thông báo yêu cầu đăng nhập
+            context.setAlertBox({
+                open: true,
+                error: true,  // Đánh dấu đây là lỗi
+                msg: "Vui lòng đăng nhập để tiếp tục!"
+            });
+            setTimeout(() => {
+                history("/login");  // Chuyển hướng về trang đăng nhập
+            }, 2000);  // Chuyển hướng sau 2 giây để người dùng đọc thông báo
+        }
+    }, [history]);
+
     return (
 
         <header className="d-flex align-items-center">
@@ -117,282 +124,6 @@ const Header = () => {
                                                 <div className="userImg">
                                                     <span className="rounded-circle">
                                                         <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" alt="image dog cartoon" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="dropdownInfo">
-                                                <h4>
-                                                    <span>
-                                                        <b>
-                                                            Mahmudul
-                                                        </b> added to his favortite list <b>Leather belt steve madden</b>
-                                                    </span>
-                                                </h4>
-                                                <p className="text-sky mb-0">
-                                                    few seconds ago
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleClosenotificationsDrop}>
-                                        <div className="d-flex ">
-                                            <div>
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
                                                     </span>
                                                 </div>
                                             </div>

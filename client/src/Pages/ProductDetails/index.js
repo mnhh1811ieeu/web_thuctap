@@ -250,14 +250,14 @@ const ProductDetails = () => {
                         <ul className='list list-inline'>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center'>
-                                    <span className=' mr-2' > Brands :</span>
+                                    <span className=' mr-2' > Thương hiệu :</span>
                                     <span>{productData?.brand}</span>
                                 </div>
                             </li>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center'>
                                     <Rating className='read-only' value={parseInt(productData?.rating)} precision={0.5} readOnly size="small" />
-                                    <span className='text-light cursor ml-2'>1 Review</span>
+                                    <span className='text-light cursor ml-2'>1 đánh giá</span>
                                 </div>
                             </li>
                         </ul>
@@ -267,7 +267,7 @@ const ProductDetails = () => {
                             <span class='netPrice text-danger ml-2'>{productData?.price}Đ</span>
                         </div>
 
-                            <span className='badge badge-success'>IN STOCK</span>
+                            <span className='badge badge-success'>Còn hàng</span>
 
                             <p className='mt-3'>{productData?.description}</p>
 
@@ -317,13 +317,13 @@ const ProductDetails = () => {
                                 <li className='list-inline-item'>
                                     <Button className={` ${activeTabs === 0 && 'active'}`}
                                         onClick={() => { setActiveTabs(0) }}>
-                                        Decription
+                                        Mô tả sản phẩm
                                     </Button>
                                 </li>
                                 <li className='list-inline-item'>
                                     <Button className={` ${activeTabs === 1 && 'active'}`}
                                         onClick={() => { setActiveTabs(1) }}>
-                                        Additional info
+                                       Thông tin chi tiết
                                     </Button>
                                 </li>
                                 <li className='list-inline-item'>
@@ -332,7 +332,7 @@ const ProductDetails = () => {
                                             setActiveTabs(2)
 
                                         }}>
-                                        Reviews (3)
+                                      Đánh giá
                                     </Button>
                                 </li>
 
