@@ -20,33 +20,33 @@ router.post("/authWithGoogle", async (req, res) => {
         hashedPassword = await bcrypt.hash(password, saltRounds);
         }
 
-        // Tạo người dùng mới
+        
         const newUser = await User.create({
-        name,
-        phone,
-        email,
+        name: name,
+        email: email,
         password: hashedPassword, // Sử dụng mật khẩu đã mã hóa
-        images,
+        images: images,
+        phone: phone,
         });
 
         // Tạo JWT token
         const token = jwt.sign(
-        { email: newUser.email, id: newUser._id },
-        process.env.JSON_WEB_TOKEN_SECRET_KEY,
-        { expiresIn: "1h" } // Token hết hạn sau 1 giờ
+            { email: newUser.email, id: newUser._id },
+            process.env.JSON_WEB_TOKEN_SECRET_KEY,
+            { expiresIn: "1h" } // Token hết hạn sau 1 giờ
         );
 
         // Trả về thông tin người dùng và token
         res.status(200).json({
-        user: newUser,
-        token,
-        msg: "Login success!!", // Sửa typo từ mag thành msg
+            user: newUser,
+            token: token,
+            msg: "Login success!!", // Sửa typo từ mag thành msg
         });    
     } else {
         const existingUser = await User.findOne( { email: email});
         const token = jwt.sign({ email: existingUser.email, id: existingUser._id}, process.env.JSON_WEB_TOKEN_SECRET_KEY);
 
-        return res.status(200).send({
+        res.status(200).json({
             user: existingUser,
             token: token,
             msg: "Login Successfully"

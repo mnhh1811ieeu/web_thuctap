@@ -71,6 +71,7 @@ const Cart = () => {
         })
          })
     };
+    
     useEffect(() => {
         console.log("Updated cartFields:", cartFields);
       }, [cartFields]); // Theo dõi sự thay đổi của cartFields
@@ -95,6 +96,9 @@ const Cart = () => {
             });
         });
     }
+
+   
+      
     
     return (
         <>
@@ -198,7 +202,7 @@ const Cart = () => {
                                 </div>
                                 <br />
                                 <Link to="/checkout">
-                                <Button className="btn-blue bg-red btn-lg btn-big  ml-3"><CiShoppingCart />Thanh toán</Button>
+                                    <Button className="btn-blue bg-red btn-lg btn-big  ml-3"><CiShoppingCart />Thanh toán</Button>
                                 </Link>
                             </div>
                         </div>

@@ -4,9 +4,8 @@ import logo1 from "../../assets/images/logo1.png";
 import gg from "../../assets/images/gg.png";
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import axios để gọi API
-import { fetchDataFromApi, postData, postDataUser } from '../../utils/api';
+import { Link,  useNavigate } from 'react-router-dom';
+import {  postDataUser } from '../../utils/api';
 
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { firebaseApp } from '../../firebase';
@@ -21,7 +20,7 @@ const SignIn = () => {
   const context = useContext(MyContext); // Dùng context để cập nhật isLogin
  
   const [error, setError] = useState(""); // Lưu thông báo lỗi khi đăng nhập
-  const history = useNavigate();
+  //const history = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -79,82 +78,10 @@ const SignIn = () => {
   };
   useEffect(() => {
     context.setIsHeaderFooterShow(false);
-  }, [context]);
+  }, []);
   
 
-  // const signInWithGoogle = () => {
-  //   signInWithPopup( auth, googleProvider).then( (result) => {
-  //       const credential = GoogleAuthProvider.credentialFromResult(result);
-  //       const token = credential.accessToken;
 
-  //       const user = result.user;
-
-  //       const fields= {
-  //         name: user.providerData[0].displayName,
-  //         email: user.providerData[0].email,
-  //         password: null,
-  //         images: user.providerData[0].photoURL,
-  //         phone: user.providerData[0].phoneNumber,
-
-  //       }
-
-  //       postData("/api/user/authWithGoogle", fields).then( (res) => {
-  //         try {
-  //           if( res.error !== true ){
-  //             localStorage.setItem( "token", res.token);
-
-  //             const user = {
-  //               name: res.user?.name,
-  //               email: res.user?.email,
-  //               userId: res.user?.id,
-  //             };
-  
-  //             localStorage.setItem("user", JSON.stringify(user));
-  
-  //             context.setAlertBox( {
-  //               open: true,
-  //               error: false,
-  //               msg: res.msg
-  //             })
-  
-  //             setTimeout( () => {
-  //               setIsLoading(false);
-  //               window.location.href = "/";
-  //             }, 2000);
-  //           } else {
-  //             context.setAlertBox( {
-  //               open: true,
-  //               error: false,
-  //               msg: res.msg
-  //             });
-  //             setIsLoading(false);
-  //           }
-  //         } catch (error) {
-  //           console.log(error);
-  //           setIsLoading(false);
-  //         }
-  //       });
-
-  //       context.setAlertBox( {
-  //         open: true,
-  //         error: false,
-  //         msg: "authentication Successfully!"
-  //       });
-  //     })
-  //     .catch( (error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-
-  //       const email = error.customData.email;
-
-  //       const credential = GoogleAuthProvider.credentialFromError(error);
-  //       context.setAlertBox( {
-  //         open: true,
-  //         error: false,
-  //         msg: errorMessage,
-  //       });
-  //     });
-  // }
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, googleProvider)
@@ -170,10 +97,12 @@ const SignIn = () => {
           images: user.providerData[0]?.photoURL,
           phone: user.providerData[0]?.phoneNumber,
         };
+        console.log(fields);
   
-        postData("/api/user/authWithGoogle", fields).then((res) => {
+        postDataUser("/api/user/authWithGoogle", fields).then( (res) => {
           try {
-            if (res.error === false) {
+            console.log(res);
+            if (res.error !== true) {
               localStorage.setItem("token", res.token);
   
               const user = {
@@ -190,9 +119,9 @@ const SignIn = () => {
                 msg: "Đăng nhập thành công",
               });
   
-              setTimeout(() => {
+              setTimeout( () => {
+                setIsLoading(false);
                 window.location.href = "/";
-                history('/')
               }, 1000);
             } else {
               context.setAlertBox({

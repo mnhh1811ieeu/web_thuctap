@@ -135,6 +135,22 @@ router.delete('/:id', async (req, res) => {
     })
 });
 
+router.delete("/:userId", async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const result = await Cart.deleteMany({ userId });
+        if (result.deletedCount > 0) {
+            return res.status(200).json({ message: "Giỏ hàng đã được xóa thành công" });
+        } else {
+            return res.status(404).json({ message: "Không tìm thấy giỏ hàng để xóa" });
+        }
+    } catch (error) {
+        console.error("Lỗi khi xóa giỏ hàng:", error.message);
+        return res.status(500).json({ message: "Lỗi khi xóa giỏ hàng", error: error.message });
+    }
+});
+
 router.put('/:id', async (req, res) => {
 
     const cartList = await Cart.findByIdAndUpdate(

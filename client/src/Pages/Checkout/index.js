@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
-import {  fetchDataFromApi, postData, postDataUser } from '../../utils/api';
+import {  deleteData, fetchDataFromApi, postData, postDataUser } from '../../utils/api';
 import { MyContext } from '../../App';
 
 // import { User } from '../../../../sever/models/user';
@@ -220,7 +220,6 @@ const checkout = async (e) => {
 
     // Gọi API backend để tạo thanh toán MoMo
     const response = await postDataUser('/api/payment', payload);
-    postData(`/api/order`, payload);
 
     console.log("Phản hồi từ MoMo API:", response);
 
@@ -229,16 +228,16 @@ const checkout = async (e) => {
         ...payload,
         order_receipt: response.orderId, // Dùng orderId của MoMo
       };
-
       console.log("Payload đã được cập nhật với orderId của MoMo:", updatedPayload);
 
       // Lưu updatedPayload vào MongoDB (không gọi lại API MoMo)
       await postData(`/api/order`, updatedPayload); // Gọi API lưu đơn hàng với orderId
 
       console.log("Chuyển hướng đến MoMo:", response.shortLink); // Log shortLink
-      window.location.href = response.shortLink; // Chuyển hướng đến MoMo
+      //window.location.href = response.shortLink; // Chuyển hướng đến MoMo
 
       // Không xóa giỏ hàng ở đây, chỉ xóa sau khi nhận phản hồi từ MoMo
+      //handleTransaction();
     } else {
       console.error("Không thể tạo thanh toán. Phản hồi không chứa orderId");
       context.setAlertBox({
@@ -256,6 +255,47 @@ const checkout = async (e) => {
     });
   }
 };
+
+ const checkTransactionStatus = async (orderId) => {
+        try {
+          const response = await fetch(`/api/payment/transaction-status`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId }),
+          });
+          console.log(`/api/payment/transaction-status`)
+      
+          if (response.ok) {
+            const data = await response.json();
+            return data;
+          } else {
+            throw new Error("Failed to query transaction status");
+          }
+        } catch (error) {
+          throw error;
+        }
+      };
+
+      const handleTransaction = async (orderId) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.userId; // Lấy userId từ localStorage
+        try {
+          const statusResponse = await checkTransactionStatus(orderId);
+      
+          if (statusResponse.resultCode === 0) { // TRANSACTION_SUCCESS
+            deleteData(`/api/cart/${userId}`)
+          } else if (statusResponse.resultCode === 9000) { // TRANSACTION_PENDING
+            console.log("Giao dịch đang chờ xử lý.");
+            alert("Giao dịch đang được xử lý. Vui lòng chờ một chút!");
+          } else {
+            console.log("Giao dịch thất bại.");
+            alert("Giao dịch thất bại. Vui lòng thử lại.");
+          }
+        } catch (error) {
+          console.error("Lỗi khi kiểm tra trạng thái giao dịch:", error);
+          alert("Không thể kiểm tra trạng thái giao dịch. Vui lòng thử lại.");
+        }
+      };
 
 
 return (
