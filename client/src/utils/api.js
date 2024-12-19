@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchDataFromApi=async(url)=>{
     try{
         //const {data}=await axios.get(process.env.BASE_URL+url)
-        const {data}=await axios.get("http://localhost:4000"+url)
+        const {data}=await axios.get(`${process.env.REACT_APP_BASE_URL}${url}`)
         return data;
     } catch(error){
         console.log(error);
@@ -17,7 +17,7 @@ export const postData=async(url, formData)=>{
 }
 export const postDataProduct = async (url, formData) => {
     try {
-        const response = await axios.post("http://localhost:4000" + url, formData, {
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}${url}`, formData, {
             headers: { "Content-Type": "multipart/form-data" }, // Đảm bảo đúng Content-Type cho formData
         });
         return response.data; // Trả về dữ liệu từ phản hồi
@@ -28,7 +28,7 @@ export const postDataProduct = async (url, formData) => {
 };
 export const postDataUser = async (url, formData) => {
     try {
-        const response = await axios.post("http://localhost:4000" + url, formData);
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}${url}`, formData);
         return response.data; // Đảm bảo trả về dữ liệu chính xác từ response
     } catch (error) {
         console.error("Error in postData:", error.response?.data || error.message);
@@ -36,10 +36,10 @@ export const postDataUser = async (url, formData) => {
     }
 };
 export const editData= async(url, updateData)=>{
-    const {res}= await axios.put(`http://localhost:4000${url}`,updateData)
+    const {res}= await axios.put(`${process.env.REACT_APP_BASE_URL}${url}`,updateData)
     return res;
 }
 export const deleteData= async(url)=>{
-    const {res}= await axios.delete(`http://localhost:4000${url}`)
+    const {res}= await axios.delete(`${process.env.REACT_APP_BASE_URL}${url}`)
     return res;
 }

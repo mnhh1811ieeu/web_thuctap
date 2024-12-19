@@ -234,7 +234,7 @@ const checkout = async (e) => {
       await postData(`/api/order`, updatedPayload); // Gọi API lưu đơn hàng với orderId
 
       console.log("Chuyển hướng đến MoMo:", response.shortLink); // Log shortLink
-      //window.location.href = response.shortLink; // Chuyển hướng đến MoMo
+      window.location.href = response.shortLink; // Chuyển hướng đến MoMo
 
       // Không xóa giỏ hàng ở đây, chỉ xóa sau khi nhận phản hồi từ MoMo
       //handleTransaction();

@@ -47,7 +47,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
     console.log('database connection is ready...')
     //sever
     app.listen(process.env.PORT, () => {
-        console.log(`sever is running http://localhost:${process.env.PORT}`);
+        console.log(`sever is running ${process.env.REACT_APP_BASE_URL}`);
     })
 
  }  )

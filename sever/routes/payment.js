@@ -1,4 +1,6 @@
 const express = require('express');
+const { Cart } = require('../models/cart');
+const { Product } = require("../models/products.js");
 const router = express.Router();
 const axios = require('axios');
 const crypto = require('crypto');
@@ -6,7 +8,7 @@ var accessKey = 'F8BBA842ECF85';
 var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 
 router.post("/", async (req, res) => {
-    const { amount } = req.body; // Lấy số tiền từ body request
+    const { amount, userid } = req.body; // Lấy số tiền từ body request
 
     // Kiểm tra xem amount có tồn tại không
     if (!amount || isNaN(amount)) {
@@ -16,7 +18,7 @@ router.post("/", async (req, res) => {
     // Các thông tin thanh toán
     const orderInfo = 'Pay with MoMo';
     const partnerCode = 'MOMO';
-    const redirectUrl = "http://localhost:3000/orders";
+    const redirectUrl = `${process.env.CLIENT_BASE_URL}/orders`;
 
     //const redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b'; // URL trả về sau khi thanh toán
     const ipnUrl = 'https://810b-42-113-220-239.ngrok-free.app/callback'; // URL nhận kết quả IPN
@@ -67,7 +69,30 @@ router.post("/", async (req, res) => {
 
     try {
         const result = await axios(options); // Gửi yêu cầu tới MoMo
-        return res.status(200).json(result.data); // Trả về kết quả từ MoMo
+        //return res.status(200).json(result.data); // Trả về kết quả từ MoMo
+        if (result.data && result.data.orderId) {
+
+           // Lấy giỏ hàng của người dùng
+            const cartItems = await Cart.find({ userId: userid });
+
+            // Cập nhật số lượng tồn kho
+            for (const item of cartItems) {
+                await Product.findByIdAndUpdate(
+                    item.productId,
+                    { $inc: { countInStock: -item.quantity } },
+                    { new: true }
+                );
+            }
+
+            // Xóa giỏ hàng
+            await Cart.deleteMany({ userId: userid });
+
+            return res.status(200).json(result.data);
+        } else {
+            return res.status(400).json({
+                message: "Không thể tạo thanh toán."
+            });
+        }
     } catch (error) {
         console.error("Error in MoMo API:", error); // Ghi log lỗi
         return res.status(500).json({
@@ -77,6 +102,7 @@ router.post("/", async (req, res) => {
     }
 
 });
+
 
 router.post("/transaction-status", async (req, res) => {
     const { orderId } = req.body;

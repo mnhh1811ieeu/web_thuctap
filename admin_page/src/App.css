@@ -11,6 +11,7 @@ body {
 }
 
 ::-webkit-scrollbar{
+
   width: 5px !important;
   height: 5px !important;
 
@@ -1443,3 +1444,24 @@ button:hover {
 button {
   cursor: pointer;
 }
+.zoomSliderBig{ width: 70% !important;}
+.zoomSlider{padding-top: 30px ;}
+.zoomSlider .slick-slide {
+  padding-right: 20px !important;
+}
+.zoomSlider *{outline :none !important;}
+.zoomSlider .item{ 
+  border: 2px solid transparent !important;
+  overflow: hidden;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.zoomSlider .slick-current .item{
+  border: 2px solid #3bb77e !important;
+}
+.zoomSlider .slick-arrow{
+  top: 55% !important;
+  zoom: 80% !important;
+}
+.zoomSlider .slick-arrow.slick-next{ right: -2px !important;}
+.zoomSlider .slick-arrow.slick-prev{ left: -5% !important;}
