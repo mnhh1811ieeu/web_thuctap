@@ -77,7 +77,7 @@ const Listing = () => {
                         
 
                         <div className='ml-auto showByFilter'>
-                          <Button  onClick={handleClick}>Show 9 <FaAngleDown/> </Button>
+                          <Button  onClick={handleClick}>Hiển thị <FaAngleDown/> </Button>
                           <Menu
                             className='w-100 showPerPageDropdown'
                             id="basic-menu"

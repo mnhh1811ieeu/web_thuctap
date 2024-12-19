@@ -19,6 +19,7 @@ import LoadingBar from 'react-top-loading-bar'
 import Editproduct from './pages/Products/proEdit';
 import { fetchDataFromApi } from './utils/api';
 import AddProductSIZE from './pages/Products/addProductSIZE';
+import Orders from './pages/Orders';
 
 const MyContext = createContext();
 
@@ -132,7 +133,7 @@ function App() {
             <Routes>
               <Route path="/" exact={true} element={<Dashboard />} />
               <Route path="/dashboard" exact={true} element={<Dashboard />} />
-
+              <Route path="/order" exact={true} element={<Orders />} />
               <Route path="/login" exact={true} element={<Login />} />
               <Route path="/signup" exact={true} element={<SignUp />} />
               <Route path="/product/upload" exact={true} element={<ProductUpload />} />

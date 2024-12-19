@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchDataFromApi } from '../../utils/api'; // Đảm bảo import đúng
+import { fetchDataFromApi, fetchDataFromApii } from '../../utils/api'; // Đảm bảo import đúng
 
 const Orders = () => {
     const [orders, setOrders] = useState([]); // State lưu danh sách đơn hàng
@@ -7,6 +7,7 @@ const Orders = () => {
     const [error, setError] = useState(null); // Thêm state để xử lý lỗi
     const [isDialogOpen, setIsDialogOpen] = useState(false); // Trạng thái mở/đóng dialog
     const [selectedProducts, setSelectedProducts] = useState([]); // Sản phẩm được chọn
+    const [transactionStatus, setTransactionStatus] = useState({});
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
@@ -29,18 +30,38 @@ const Orders = () => {
     const handleCloseDialog = () => {
         setIsDialogOpen(false); // Đóng dialog
     };
-
+    const checkTransactionStatus = async (orderId) => {
+        try {
+            const response = await fetchDataFromApii("/api/payment/transaction-status", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId }),
+            });
+    
+            setTransactionStatus((prevStatus) => ({
+                ...prevStatus,
+                [orderId]: response.resultCode === 0 ? "Thành công" : "Giao dịch đã hết hạn hoặc không tồn tại.",
+            }));
+        } catch (error) {
+            console.error("Lỗi khi kiểm tra trạng thái thanh toán:", error);
+            setTransactionStatus((prevStatus) => ({
+                ...prevStatus,
+                [orderId]: "Lỗi khi kiểm tra",
+            }));
+        }
+    };
+    
     // Hàm gọi API để lấy đơn hàng
     const fetchOrders = async (userId) => {
         try {
             setLoading(true); // Bắt đầu loading
-            const response = await fetchDataFromApi(`/api/order?userid=${userId}`);
+            const response = await fetchDataFromApi(`/api/order/all`);
 
             // Kiểm tra dữ liệu trả về và gán dữ liệu vào state
             if (response && response.success && response.data) {
                 setOrders(response.data); // Lưu dữ liệu vào state orders
             } else {
-                console.log("Không có đơn hàng cho userId:", userId);
+                console.log("Không có đơn hàng cho :", userId);
                 setOrders([]); // Nếu không có dữ liệu, set state là mảng rỗng
             }
         } catch (error) {
@@ -65,7 +86,7 @@ const Orders = () => {
                         <table className='table table-striped'>
                             <thead className='thead-dark'>
                                 <tr>
-                                <th>Mã thanh toán</th>
+                                    <th>Mã thanh toán</th>
                                     <th>Sản phẩm</th>
                                     <th>Tên người mua</th>
                                     <th>SDT</th>
@@ -73,15 +94,20 @@ const Orders = () => {
                                     <th>Mã</th>
                                     <th>Tổng tiền</th>
                                     <th>Email</th>
-                                    {/* <th>Mã người dùng</th> */}
+                                    <th>Mã người dùng</th>
                                     <th>Ngày</th>
+                                    <th>Trạng thái thanh toán</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {orders.length > 0 ? (
                                     orders.map((order, index) => (
                                         <tr key={index}>
-                                            <td>{order.order_receipt}</td>
+                                            {/* <td>{order.order_receipt}</td> */}
+                                            <td>
+                                                <td>{order.order_receipt}</td>
+                                            </td>
+
                                             <td>
                                                 {/* Nút Xem sản phẩm */}
                                                 <button onClick={() => handleOpenDialog(order.products)}>Xem sản phẩm</button>
@@ -92,8 +118,24 @@ const Orders = () => {
                                             <td>{order.pincode}</td>
                                             <td>{order.amount} VNĐ</td>
                                             <td>{order.email}</td>
-                                            {/* <td>{order.userid}</td> */}
+                                            <td>{order.userid}</td>
                                             <td>{new Date(order.createdAt).toLocaleString()}</td>
+                                            <td>
+                                                {transactionStatus[order.order_receipt] ? (
+                                                    // Hiển thị kết quả trạng thái thanh toán
+                                                    <span>{transactionStatus[order.order_receipt]}</span>
+                                                ) : (
+                                                    // Nút kiểm tra thanh toán nếu chưa có kết quả
+                                                    <button
+                                                        onClick={() =>
+                                                            checkTransactionStatus(order.order_receipt)
+                                                        }
+                                                    >
+                                                        Kiểm Tra Thanh Toán
+                                                    </button>
+                                                )}
+                                            </td>
+
                                         </tr>
                                     ))
                                 ) : (

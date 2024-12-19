@@ -304,12 +304,13 @@ return (
         <form className='checkoutForm' onSubmit={checkout}>
           <div className='row'>
             <div className='col-md-8'>
-              <h2 className='hd'>BILLING DETAILS</h2>
+              <h2 className='hd'>Thông tin giao hàng</h2>
 
               <div className='row mt-3'>
                 <div className='col-md-6'>
                   <div className='form-group'>
-                    <TextField label="Full name" variant="outlined" className='w-100' name='fullName' onChange={onChangeInput} />
+                  <h6>Họ và tên</h6>
+                    <TextField label="Điền họ và tên" variant="outlined" className='w-100' name='fullName' onChange={onChangeInput} />
                   </div>
                 </div>
 
@@ -326,15 +327,15 @@ return (
                 </div> */}
               </div>
 
-              <h6>Street address</h6>
+              <h6>Địa chỉ</h6>
 
               <div className='row'>
                 <div className='col-md-12'>
                   <div className='form-group'>
-                    <TextField label="House number and street name" variant="outlined" className='w-100' name='streetAddressLine1' onChange={onChangeInput} />
+                    <TextField label="Số nhà và tên đường" variant="outlined" className='w-100' name='streetAddressLine1' onChange={onChangeInput} />
                   </div>
                   <div className='form-group'>
-                    <TextField label="Aparterment, suite, unit ,etc" variant="outlined" className='w-100' name='streetAddressLine2' onChange={onChangeInput} />
+                    <TextField label="Quận, huyện, thành phố, tỉnh" variant="outlined" className='w-100' name='streetAddressLine2' onChange={onChangeInput} />
                   </div>
                 </div>
               </div>
@@ -359,7 +360,7 @@ return (
                 </div>
               </div> */}
 
-              <h6>Postcode/ Zip</h6>
+              <h6>MÃ</h6>
 
               <div className='row'>
                 <div className='col-md-12'>
@@ -370,14 +371,18 @@ return (
               </div>
 
               <div className='row'>
+            
                 <div className='col-md-6'>
                   <div className='form-group'>
-                    <TextField label="Phone Number" variant="outlined" className='w-100' name='phoneNumber' onChange={onChangeInput} />
+                  <h6>Số điện thoại</h6>
+                    <TextField label="Số điện thoại" variant="outlined" className='w-100' name='phoneNumber' onChange={onChangeInput} />
                   </div>
                 </div>
+                
                 <div className='col-md-6'>
                   <div className='form-group'>
-                    <TextField label="Email Address" variant="outlined" className='w-100' name='email' onChange={onChangeInput} />
+                  <h6>Email</h6>
+                    <TextField label="Email" variant="outlined" className='w-100' name='email' onChange={onChangeInput} />
                   </div>
                 </div>
               </div>
@@ -387,13 +392,13 @@ return (
 
             <div className='col-md-4'>
               <div className='card orderInfo'>
-                <h4 className='hd'>YOUR ORDER</h4>
+                <h4 className='hd'>Đơn hàng của bạn</h4>
                 <div className='table-responsive mt-3'>
                   <table className='table table-borderless'>
                     <thead>
                       <tr>
-                        <th>Product</th>
-                        <th>Subtotal</th>
+                        <th>Sản phẩm</th>
+                        <th>Số tiền</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -411,7 +416,7 @@ return (
                       }
 
                       <tr>
-                        <td>Subtotal</td>
+                        <td>Tổng số tiền</td>
                         <td>
                           {
                             cartData.length !== 0 && cartData.map(item => parseInt(item.price) * item.quantity).reduce((total, value) => total + value, 0)

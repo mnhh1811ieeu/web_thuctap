@@ -49,7 +49,7 @@ const Sidebar = (props) => {
     <div className='sidebar'>
       
         <div className='filterBox'>
-            <h6>PRODUCT CATEGORIES</h6>
+            <h6>Phân loại theo sản phẩm</h6>
 
             <div className='scroll'>
             <RadioGroup
@@ -89,7 +89,7 @@ const Sidebar = (props) => {
         </div>
 
         <div className='filterBox'>
-            <h6>BRANDS</h6>
+            <h6>Số sao</h6>
 
             <div className='scroll'>
               

@@ -7,10 +7,6 @@ import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from '@mui/material/Button';
-import { FaUserCircle } from "react-icons/fa";
-import { IoMdCart } from "react-icons/io";
-import { LuShoppingBag } from "react-icons/lu";
-import { GiStarsStack } from "react-icons/gi";
 import FormControl from '@mui/material/FormControl';
 import { FaEye } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
@@ -135,12 +131,7 @@ const Products = () => {
                 </div>
                 <div className="row dashboardBoxWrapperRow">
                     <div className="col-md-8">
-                        <div className="dashboardBoxWrapper d-flex">
-                            <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} grow={true} />
-                            <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<IoMdCart />} />
-                            <DashboardBox color={["#2c78e5", "#60aff5"]} icon={<LuShoppingBag />} />
-                            <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<GiStarsStack />} />
-                        </div>
+                        
                     </div>
 
 
@@ -150,7 +141,7 @@ const Products = () => {
                     <h3 className="hd">Best Selling Products</h3>
 
                     <div className="row cardFilters mt-3">
-                        <div className="col-md-3">
+                        {/* <div className="col-md-3">
                             <h4>Show by</h4>
                             <FormControl sx={{ m: 1, minWidth: 120 }}>
                                 <Select
@@ -169,7 +160,7 @@ const Products = () => {
                                     <MenuItem value={30}>Thirty</MenuItem>
                                 </Select>
                             </FormControl>
-                        </div>
+                        </div> */}
                         <div className="col-md-3">
                             <h4>Category By</h4>
                             <FormControl sx={{ m: 1, minWidth: 120 }}>

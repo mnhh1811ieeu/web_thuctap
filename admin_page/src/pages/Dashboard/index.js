@@ -21,6 +21,7 @@ import { MyContext } from "../../App";
 
 const Dashboard = () => {
     const context = useContext(MyContext);
+    const [totalQuantity, setTotalQuantity] = useState(0);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [showBy, setshowBy] = React.useState('');
     const [showBysetCatBy, setCatBy] = React.useState('');
@@ -54,6 +55,8 @@ const Dashboard = () => {
             context.setProgress(100);
         })
     }, []);
+   
+
     const fetchUserCount = async () => await fetchDataFromApi('/api/user/get/count');
     const fetchProductCount = async () => await fetchDataFromApi('/api/products/get/count');
     const fetchOrderCount = async () => await fetchDataFromApi('/api/order/get/count');
@@ -126,25 +129,25 @@ const Dashboard = () => {
         backgroundColor: "#fff",
         chartArea: { width: "85%", height: "65%" },
         hAxis: {
-          title: "Ngày",
-          textStyle: { color: "#333", fontSize: 12 }, // Đổi màu và size chữ trục X
-          gridlines: { color: "#ddd" }, // Màu lưới trục X
+            title: "Ngày",
+            textStyle: { color: "#333", fontSize: 12 }, // Đổi màu và size chữ trục X
+            gridlines: { color: "#ddd" }, // Màu lưới trục X
         },
         vAxis: {
-          title: "Doanh thu (VND)",
-          textStyle: { color: "#333", fontSize: 12 }, // Đổi màu và size chữ trục Y
-          gridlines: { color: "#ddd" }, // Màu lưới trục Y
+            title: "Doanh thu (VND)",
+            textStyle: { color: "#333", fontSize: 12 }, // Đổi màu và size chữ trục Y
+            gridlines: { color: "#ddd" }, // Màu lưới trục Y
         },
         legend: { position: "top", alignment: "center" }, // Chú thích đặt ở trên
         series: {
-          0: { color: "#ff5733", lineWidth: 3, pointShape: "circle" },
+            0: { color: "#ff5733", lineWidth: 3, pointShape: "circle" },
         },
         pointsVisible: true,
         pointSize: 7,
         tooltip: { isHtml: true }, // Hiển thị tooltip chi tiết
         colors: ["#ff5733"], // Màu chính
-      };
-      const fetchData = async () => {
+    };
+    const fetchData = async () => {
         try {
             setLoading(true);
             const result = await fetchDataFromApi("/api/order/all"); // Sử dụng hàm fetchDataFromApi
@@ -165,6 +168,27 @@ const Dashboard = () => {
     useEffect(() => {
         fetchData();
     }, []);
+    const fetchTotalQuantity = async () => {
+        try {
+            const result = await fetchDataFromApi("/api/order/all"); // Gọi API dùng hàm chung
+            if (result.success) {
+                const totalQuantity = result.data.reduce((acc, order) => {
+                    // Tính tổng quantity trong mảng products của từng order
+                    const productQuantity = order.products.reduce((sum, product) => {
+                        return sum + (product.quantity || 0);
+                    }, 0);
+    
+                    return acc + productQuantity;
+                }, 0);
+                return { count: totalQuantity }; // Trả về count
+            } else {
+                return { count: 0 }; // Trả về 0 nếu API không thành công
+            }
+        } catch (error) {
+            return { count: 0 }; // Trả về 0 nếu lỗi
+        }
+    };
+    
     
     return (
         <>
@@ -195,10 +219,16 @@ const Dashboard = () => {
                                 fetchUrl={fetchOrderCount}
 
                             />
-                            <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<GiStarsStack />} />
+                            <DashboardBox
+                                title="Tổng sản phẩm bán được"
+                                color={["#e1950e", "#f3cd29"]}
+                                icon={<GiStarsStack />}
+                                fetchUrl={fetchTotalQuantity} // Truyền hàm fetchUrl để DashboardBox gọi API
+                                grow={true} // Tùy chỉnh grow nếu cần
+                            />
                         </div>
                     </div>
-                    
+
                     <div className="box graphBox">
                         <div className="d-flex align-items-center w-100 bottomEle">
                             <h6 className="text-white mb-0 mt-0">Tổng doanh thu</h6>
@@ -236,7 +266,7 @@ const Dashboard = () => {
                         </div>
 
                         <h3 className="text-white font-weight-bold">{total.toLocaleString("vi-VN")} VND</h3>
-                        <p>$20,000,000 tháng trước</p>
+                        <p>$ tháng trước</p>
                         <Chart
                             chartType="LineChart"
                             width="100%"
@@ -251,7 +281,7 @@ const Dashboard = () => {
                     <h3 className="hd">Best Selling Products</h3>
 
                     <div className="row cardFilters mt-3">
-                        <div className="col-md-3">
+                        {/* <div className="col-md-3">
                             <h4>Show by</h4>
                             <FormControl sx={{ m: 1, minWidth: 120 }}>
                                 <Select
@@ -270,7 +300,7 @@ const Dashboard = () => {
                                     <MenuItem value={30}>Thirty</MenuItem>
                                 </Select>
                             </FormControl>
-                        </div>
+                        </div> */}
                         <div className="col-md-3">
                             <h4>Category By</h4>
                             <FormControl sx={{ m: 1, minWidth: 120 }}>
