@@ -120,41 +120,41 @@ const ProductUpload = () => {
     //         console.log(error)
     //     }
     // }
+//22
+    // const onChangeFile = async (e, apiEndPoint) => {
+    //     try {
+    //         const files = e.target.files;
 
-    const onChangeFile = async (e, apiEndPoint) => {
-        try {
-            const files = e.target.files;
-
-            const formData = new FormData();
+    //         const formData = new FormData();
             
-            Array.from(files).forEach(file => formData.append('images', file));
+    //         Array.from(files).forEach(file => formData.append('images', file));
     
-            const res = await postDataProduct(apiEndPoint, formData);
+    //         const res = await postDataProduct(apiEndPoint, formData);
     
-            if (res.images && res.images.length > 0) {
-                setFormFields((prev) => ({
-                    ...prev,
-                    images: res.images // Lưu lại URL ảnh vào formFields
-                }));
+    //         if (res.images && res.images.length > 0) {
+    //             setFormFields((prev) => ({
+    //                 ...prev,
+    //                 images: res.images // Lưu lại URL ảnh vào formFields
+    //             }));
     
-                console.log("Ảnh đã được tải lên thành công:", res.images);
-            } else {
-                context.setAlertBox({
-                    open: true,
-                    error: true,
-                    msg: "Không có ảnh nào được tải lên"
+    //             console.log("Ảnh đã được tải lên thành công:", res.images);
+    //         } else {
+    //             context.setAlertBox({
+    //                 open: true,
+    //                 error: true,
+    //                 msg: "Không có ảnh nào được tải lên"
 
-                });
-            }
-        } catch (error) {
-            console.error("Lỗi khi tải ảnh lên:", error);
-            context.setAlertBox({
-                open: true,
-                error: true,
-                msg: "Đã xảy ra lỗi khi tải ảnh lên"
-            });
-        }
-    };
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error("Lỗi khi tải ảnh lên:", error);
+    //         context.setAlertBox({
+    //             open: true,
+    //             error: true,
+    //             msg: "Đã xảy ra lỗi khi tải ảnh lên"
+    //         });
+    //     }
+    // };
     const inputChange = (e) => {
         setFormFields(() => ({
             ...formFields,
@@ -402,7 +402,213 @@ const ProductUpload = () => {
     //     })
 
     // }
+   
+    // const editProduct = async (e) => {
+    //     e.preventDefault();
+    
+    //     if (!formFields.images || formFields.images.length === 0) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu thêm ảnh",
+    //             error: true
+    //         });
+    //         return false;
+    //     }
+    
+    //     // Chuẩn bị FormData
+    //     const formdata = new FormData();
+    //     formdata.append('name', formFields.name);
+    //     formdata.append('description', formFields.description);
+    //     formdata.append('price', formFields.price);
+    //     formdata.append('oldPrice', formFields.oldPrice);
+    //     formdata.append('catName', formFields.catName);
+    //     formdata.append('category', formFields.category);
+    //     formdata.append('countInStock', formFields.countInStock);
+    //     formdata.append('rating', formFields.rating);
+    //     formdata.append('isFeatured', formFields.isFeatured);
+    //     formdata.append('discount', formFields.discount);
+    //     formdata.append('productSIZE', formFields.productSIZE);
 
+    //     if (formFields.name === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền tên sản phẩm",
+    //             error: true
+    //         });
+
+    //         return false;
+    //     };
+    //     if (formFields.brand === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền hãng",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.description === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền mô tả sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.price === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền giá sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.oldPrice === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền giá cũ sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.category === "") {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu chọn loại sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.countInStock === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu điền số sản phẩm",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.rating === 0) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu chọn số sao",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     if (formFields.isFeatured === null) {
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: "Yêu cầu chọn có yt k",
+    //             error: true
+    //         });
+    //         return false;
+    //     };
+    //     // if (formFields.images.length === 0) {
+    //     //     context.setAlertBox({
+    //     //         open: true,
+    //     //         msg: "Yêu cầu thêm ảnh",
+    //     //         error: true
+    //     //     });
+    //     //     return false;
+    //     // };
+        
+    
+    //     // Thêm ảnh vào FormData (đảm bảo ảnh là URL hoặc là file)
+    //     if (formFields.images && formFields.images.length > 0) {
+    //         formFields.images.forEach((image) => {
+    //             formdata.append('images[]', image);  // Đảm bảo rằng các ảnh được gửi trong cùng một trường 'images[]'
+    //         });
+    //     }
+    
+    //     console.log("FormData gửi đi:", formdata);
+    //     console.log("Danh sách các dữ liệu trong FormData:", [...formdata.entries()]);
+    
+    //     setIsLoading(true);
+    
+    //     try {
+    //         const res = await editData(`/api/products/${id}`, formdata);  // Gửi request PUT
+    //         console.log("Phản hồi từ server khi chỉnh sửa sản phẩm:", res);
+    
+    //         if (res && res.status === true) {
+    //             context.setAlertBox({
+    //                 open: true,
+    //                 msg: 'Đã sửa sản phẩm thành công',
+    //                 error: false
+    //             });
+    //             history('/product/list');  // Điều hướng về danh sách sản phẩm
+    //         } else {
+    //             console.error("Phản hồi không có status true:", res);
+    //             context.setAlertBox({
+    //                 open: true,
+    //                 msg: 'Có lỗi xảy ra khi sửa sản phẩm',
+    //                 error: true
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error("Lỗi khi sửa sản phẩm:", error);
+    //         context.setAlertBox({
+    //             open: true,
+    //             msg: 'Có lỗi xảy ra',
+    //             error: true
+    //         });
+    //         setIsLoading(false);
+    //         setFormFields({
+    //             name: '',
+    //             description: '',
+    //             //images: [],
+    //             brand: '',
+    //             price: 0,
+    //             oldPrice: 0,
+    //             catName: '',
+    //             category: '',
+    //             countInStock: 0,
+    //             rating: 0,
+    //             isFeatured: false,
+    //             discount: 0,
+    //             productSIZE:[]
+                
+    //         });
+    //         history('/product/list');
+    //         // return true;
+    //     }
+
+    //     finally {
+    //         setIsLoading(false);  // Tắt loading
+    //     }
+    // };
+    const onChangeFile = async (e, apiEndPoint) => {
+        try {
+            const files = e.target.files;
+            const formData = new FormData();
+    
+            // Đính kèm file ảnh vào formData
+            Array.from(files).forEach(file => formData.append('images', file));
+    
+            const res = await postDataProduct(apiEndPoint, formData);
+    
+            if (res.images && res.images.length > 0) {
+                setFormFields((prev) => ({
+                    ...prev,
+                    images: res.images
+                }));
+    
+                console.log("Ảnh đã được tải lên thành công:", res.images);
+            } else {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: "Không có ảnh nào được tải lên"
+                });
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải ảnh lên:", error);
+            context.setAlertBox({
+                open: true,
+                error: true,
+                msg: "Đã xảy ra lỗi khi tải ảnh lên"
+            });
+        }
+    };
+    
     const editProduct = async (e) => {
         e.preventDefault();
     
@@ -415,7 +621,6 @@ const ProductUpload = () => {
             return false;
         }
     
-        // Chuẩn bị FormData
         const formdata = new FormData();
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
@@ -428,94 +633,24 @@ const ProductUpload = () => {
         formdata.append('isFeatured', formFields.isFeatured);
         formdata.append('discount', formFields.discount);
         formdata.append('productSIZE', formFields.productSIZE);
-
+    
+        // Kiểm tra các trường hợp thiếu thông tin
         if (formFields.name === "") {
             context.setAlertBox({
                 open: true,
                 msg: "Yêu cầu điền tên sản phẩm",
                 error: true
             });
-
             return false;
-        };
-        if (formFields.brand === "") {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền hãng",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.description === "") {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền mô tả sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.price === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền giá sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.oldPrice === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền giá cũ sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.category === "") {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu chọn loại sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.countInStock === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu điền số sản phẩm",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.rating === 0) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu chọn số sao",
-                error: true
-            });
-            return false;
-        };
-        if (formFields.isFeatured === null) {
-            context.setAlertBox({
-                open: true,
-                msg: "Yêu cầu chọn có yt k",
-                error: true
-            });
-            return false;
-        };
-        // if (formFields.images.length === 0) {
-        //     context.setAlertBox({
-        //         open: true,
-        //         msg: "Yêu cầu thêm ảnh",
-        //         error: true
-        //     });
-        //     return false;
-        // };
-        
+        }
     
-        // Thêm ảnh vào FormData (đảm bảo ảnh là URL hoặc là file)
         if (formFields.images && formFields.images.length > 0) {
             formFields.images.forEach((image) => {
-                formdata.append('images[]', image);  // Đảm bảo rằng các ảnh được gửi trong cùng một trường 'images[]'
+                if (typeof image === 'string') {
+                    formdata.append('images[]', image);  // Đẩy URL ảnh vào formData
+                } else {
+                    formdata.append('images', image);  // Đẩy file ảnh vào formData
+                }
             });
         }
     
@@ -554,7 +689,6 @@ const ProductUpload = () => {
             setFormFields({
                 name: '',
                 description: '',
-                //images: [],
                 brand: '',
                 price: 0,
                 oldPrice: 0,
@@ -564,14 +698,10 @@ const ProductUpload = () => {
                 rating: 0,
                 isFeatured: false,
                 discount: 0,
-                productSIZE:[]
-                
+                productSIZE: []
             });
             history('/product/list');
-            // return true;
-        }
-
-        finally {
+        } finally {
             setIsLoading(false);  // Tắt loading
         }
     };

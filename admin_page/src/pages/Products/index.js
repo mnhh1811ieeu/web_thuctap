@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import DashboardBox from '../Dashboard/components/dashboardBox';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import HomeIcon from '@mui/icons-material/Home';
 import { emphasize, styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import { FaEye } from "react-icons/fa";
@@ -14,7 +13,6 @@ import { MdDelete } from "react-icons/md";
 import Pagination from '@mui/material/Pagination';
 import { Link } from "react-router-dom";
 import { deleteData, fetchDataFromApi } from '../../utils/api';
-import { CheckBox } from '@mui/icons-material';
 import { MyContext } from '../../App';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {

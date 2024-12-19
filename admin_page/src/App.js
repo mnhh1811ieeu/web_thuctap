@@ -138,7 +138,8 @@ function App() {
               <Route path="/signup" exact={true} element={<SignUp />} />
               <Route path="/product/upload" exact={true} element={<ProductUpload />} />
               <Route path="/product/list" exact={true} element={<Products />} />
-              <Route path="/product/details" exact={true} element={<ProductDetails />} />
+              <Route path="/product/details/:id" exact={true} element={<ProductDetails />} />
+
               <Route path="/category/add" exact={true} element={<CategoryAdd />} />
               <Route path="/category" exact={true} element={<Category />} />
               <Route path="/product/edit/:id" exact={true} element={<Editproduct />} />

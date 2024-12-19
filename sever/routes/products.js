@@ -423,6 +423,7 @@ router.put('/:id', upload.array('images', 10), async (req, res) => {
         });
     }
 });
+
 router.get(`/get/count`, async (req, res) => {
     try {
         // Gọi countDocuments để đếm tổng số sản phẩm

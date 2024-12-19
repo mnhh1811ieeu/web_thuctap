@@ -8,7 +8,7 @@ const Orders = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false); // Trạng thái mở/đóng dialog
     const [selectedProducts, setSelectedProducts] = useState([]); // Sản phẩm được chọn
     const [transactionStatus, setTransactionStatus] = useState({});
-
+    const [products, setProducts] = useState([]);
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
         const userId = user ? user.userId : null; // Lấy userId từ thông tin user
@@ -50,7 +50,14 @@ const Orders = () => {
             }));
         }
     };
-    
+    useEffect(() => {
+        fetchDataFromApi('/api/products')
+            .then((data) => {
+                setProducts(data.products);
+                console.log("Fetched products:", data);
+            })
+            .catch((error) => console.error("Error:", error));
+    }, []); // [] đảm bảo chỉ gọi một lần khi component mount
     // Hàm gọi API để lấy đơn hàng
     const fetchOrders = async (userId) => {
         try {

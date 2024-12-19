@@ -1457,3 +1457,118 @@ button {
 button:hover {
   background-color: #45a049;
 }
+/* Cho phần container chứa đơn hàng */
+.table-responsive {
+  max-height: 500px; /* Đặt chiều cao tối đa cho bảng */
+  overflow-y: auto; /* Thêm thanh cuộn dọc khi bảng vượt quá chiều cao */
+  margin-top: 20px; /* Thêm khoảng cách trên cho bảng */
+}
+
+/* Định dạng cho bảng */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #f4f4f4;
+}
+
+thead th {
+  padding: 10px;
+  text-align: left;
+  font-weight: bold;
+}
+
+tbody td {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+/* Cải thiện giao diện cho dialog */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  overflow-y: auto;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+/* Dialog overlay */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Dialog container */
+.dialog {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh; /* Giới hạn chiều cao tối đa của dialog */
+  overflow-y: auto; /* Thêm thanh cuộn dọc khi danh sách sản phẩm quá dài */
+}
+
+/* Phần hiển thị danh sách sản phẩm trong dialog */
+.dialog ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dialog li {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
