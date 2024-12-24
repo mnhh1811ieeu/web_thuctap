@@ -37,7 +37,7 @@ function App() {
   const [isHideSiderbarAndHeader, setisHideSiderbarAndHeader] = useState(false);
   const [progress, setProgress] = useState(0);
   const [catData, setCatData] = useState([]);
-  const [baseUrl, setBaseUrl] = useState("http://localhost:4000");
+  const [baseUrl, setBaseUrl] = useState("https://webbhm-server.onrender.com");
   const [alertBox, setAlertBox] = useState({
     msg: '',
     error: false,

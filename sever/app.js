@@ -5,10 +5,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 //import axios from "axios";
 require('dotenv/config');
+
 const authJwt = require('./helper/jwt.js');
 
 app.use(cors());
 app.options('*', cors())
+
+
 
 //middleware
 app.use(bodyParser.json());
