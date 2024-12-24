@@ -1,11 +1,10 @@
-import React, { useRef, useState } from 'react'
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 import InnerImageZoom from 'react-inner-image-zoom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-
+import React, { useEffect, useState, useRef } from 'react';
 const ProductZoom = (props) => {
 
     const [slideIndex, setSlideIndex] = useState(0);

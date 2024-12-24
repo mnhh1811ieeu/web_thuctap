@@ -1465,3 +1465,21 @@ button {
 }
 .zoomSlider .slick-arrow.slick-next{ right: -2px !important;}
 .zoomSlider .slick-arrow.slick-prev{ left: -5% !important;}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tabs button {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #1bb938;
+}
+.tabs button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+

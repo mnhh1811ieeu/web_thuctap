@@ -135,6 +135,29 @@ router.get('/all', async (req, res) => {
       });
   }
 });
+router.post('/update-status', async (req, res) => {
+  const { orderReceipt, newStatus } = req.body;
+
+  try {
+      // Tìm đơn hàng theo order_receipt
+      const order = await Order.findOne({ order_receipt: orderReceipt });
+
+      if (!order) {
+          return res.status(404).json({ success: false, message: "Order not found" });
+      }
+
+      // Cập nhật trạng thái
+      order.orderStatus = newStatus;
+      order.updatedAt = Date.now();
+      await order.save();
+
+      res.json({ success: true, message: "Order status updated successfully", order });
+  } catch (error) {
+      console.error("Error updating order status:", error);
+      res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 
 
 module.exports = router;

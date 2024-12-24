@@ -22,6 +22,7 @@ const orderSchema = new mongoose.Schema({
             rating: { type: Number },
         },
     ],
+    orderStatus: { type: String, default: "pending" }, // Thêm trạng thái
 }, { timestamps: true });
 
 // Tạo model

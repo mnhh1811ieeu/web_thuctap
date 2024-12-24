@@ -1,11 +1,9 @@
 import React, { useContext,useState,useEffect } from 'react'
-
 import Rating from '@mui/material/Rating';
 import { Link } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
-
 import { MyContext } from '../../App';
 import { deleteData, editData, fetchDataFromApi } from '../../utils/api';
 
@@ -19,12 +17,7 @@ const Cart = () => {
     }
     const context=useContext(MyContext);
     const [cartData, setCartData] =useState([]);
-    // useEffect(()=>{
-    //     fetchDataFromApi(`/api/cart`).then((res)=>{
-    //         setCartData(res);
-    //         console.log(res)
-    //     })
-    // },[]);
+   
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
         const userId = user?.userId; // Lấy userId từ localStorage
