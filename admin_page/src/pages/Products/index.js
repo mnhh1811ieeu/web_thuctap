@@ -239,7 +239,7 @@ const Products = () => {
 
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
-                                                        <Link to="/product/details">
+                                                        <Link to={`/product/details/{items.id}`}>
                                                             <Button className="secondary" color="secondary"><FaEye /></Button>
                                                         </Link>
                                                         <Button className="success" color="success">

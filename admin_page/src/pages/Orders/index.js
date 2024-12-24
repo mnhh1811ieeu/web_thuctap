@@ -1,131 +1,194 @@
+
 import React, { useEffect, useState } from 'react';
-import { fetchDataFromApi, fetchDataFromApii } from '../../utils/api'; // Đảm bảo import đúng
+import { fetchDataFromApi, fetchDataFromApii, postDataUser } from '../../utils/api'; // Đảm bảo import đúng
 
 const Orders = () => {
-    const [orders, setOrders] = useState([]); // State lưu danh sách đơn hàng
-    const [loading, setLoading] = useState(true); // State quản lý trạng thái loading
-    const [error, setError] = useState(null); // Thêm state để xử lý lỗi
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // Trạng thái mở/đóng dialog
-    const [selectedProducts, setSelectedProducts] = useState([]); // Sản phẩm được chọn
-    const [transactionStatus, setTransactionStatus] = useState({});
-    const [products, setProducts] = useState([]);
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
-        const userId = user ? user.userId : null; // Lấy userId từ thông tin user
+    const [orders, setOrders] = useState([]); // Danh sách đơn hàng
+    const [loading, setLoading] = useState(true); // Trạng thái loading
+    const [error, setError] = useState(null); // Lỗi
+    const [selectedTab, setSelectedTab] = useState('pending'); // Tab được chọn
+    const [isDialogOpen, setIsDialogOpen] = useState(false); // Dialog mở/đóng
+    const [selectedProducts, setSelectedProducts] = useState([]); // Sản phẩm trong dialog
+    const [transactionStatus, setTransactionStatus] = useState({}); // Trạng thái giao dịch
 
-        if (userId) {
-            // Nếu có userId, gọi API lấy đơn hàng
-            fetchOrders(userId);
+    const getPaymentMethod = (orderReceipt) => {
+        if (orderReceipt.startsWith("MOMO")) {
+            return "online";
+        } else if (orderReceipt.startsWith("order_rcptid_")) {
+            return "cod";
         } else {
-            console.log('User ID không có trong localStorage');
-            setLoading(false); // Nếu không có userId, dừng loading
+            return "unknown";
         }
-    }, []); // Empty dependency array để chạy 1 lần khi component mount
+    };
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                setLoading(true);
+                const response = await fetchDataFromApi('/api/order/all');
+                if (response && response.success && response.data) {
+                    setOrders(response.data);
+                } else {
+                    setOrders([]);
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+                setError('Có lỗi xảy ra khi lấy danh sách đơn hàng.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, []);
 
     const handleOpenDialog = (products) => {
-        setSelectedProducts(products); // Cập nhật sản phẩm đã chọn
-        setIsDialogOpen(true); // Mở dialog
+        setSelectedProducts(products);
+        setIsDialogOpen(true);
     };
 
     const handleCloseDialog = () => {
-        setIsDialogOpen(false); // Đóng dialog
+        setIsDialogOpen(false);
     };
-    const checkTransactionStatus = async (orderId) => {
+    const checkTransactionStatus = async (orderId, paymentMethod) => {
+        if (paymentMethod === "cod") {
+            // Với COD, trạng thái mặc định là "Thanh toán COD"
+            setTransactionStatus((prevStatus) => ({
+                ...prevStatus,
+                [orderId]: "Thanh toán COD",
+            }));
+            return;
+        }
+
         try {
             const response = await fetchDataFromApii("/api/payment/transaction-status", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ orderId }),
             });
-    
+
             setTransactionStatus((prevStatus) => ({
                 ...prevStatus,
-                [orderId]: response.resultCode === 0 ? "Thành công" : "Giao dịch đã hết hạn hoặc không tồn tại.",
+                [orderId]: response.resultCode === 0 ? "Thành công" : "Giao dịch thất bại",
             }));
         } catch (error) {
             console.error("Lỗi khi kiểm tra trạng thái thanh toán:", error);
             setTransactionStatus((prevStatus) => ({
                 ...prevStatus,
-                [orderId]: "Lỗi khi kiểm tra",
+                [orderId]: "Lỗi khi kiểm tra trạng thái",
             }));
         }
     };
-    useEffect(() => {
-        fetchDataFromApi('/api/products')
-            .then((data) => {
-                setProducts(data.products);
-                console.log("Fetched products:", data);
-            })
-            .catch((error) => console.error("Error:", error));
-    }, []); // [] đảm bảo chỉ gọi một lần khi component mount
-    // Hàm gọi API để lấy đơn hàng
-    const fetchOrders = async (userId) => {
+    const handleStatusChange = async (orderReceipt, newStatus) => {
         try {
-            setLoading(true); // Bắt đầu loading
-            const response = await fetchDataFromApi(`/api/order/all`);
-
-            // Kiểm tra dữ liệu trả về và gán dữ liệu vào state
-            if (response && response.success && response.data) {
-                setOrders(response.data); // Lưu dữ liệu vào state orders
+            const response = await postDataUser("/api/order/update-status", {
+                orderReceipt,
+                newStatus,
+            });
+            if (response && response.success) {
+                setOrders((prevOrders) =>
+                    prevOrders.map((order) =>
+                        order.order_receipt === orderReceipt
+                            ? { ...order, orderStatus: newStatus }
+                            : order
+                    )
+                );
+                alert("Cập nhật trạng thái đơn hàng thành công!");
             } else {
-                console.log("Không có đơn hàng cho :", userId);
-                setOrders([]); // Nếu không có dữ liệu, set state là mảng rỗng
+                alert(`Cập nhật thất bại: ${response.message || "Lỗi không xác định."}`);
             }
         } catch (error) {
-            console.error('Error fetching orders:', error);
-            setError('Có lỗi xảy ra khi lấy đơn hàng.');
-        } finally {
-            setLoading(false); // Kết thúc loading
+            console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error.message);
+            alert("Đã xảy ra lỗi khi kết nối đến server. Vui lòng thử lại sau.");
         }
     };
 
+    // Lọc đơn hàng theo trạng thái
+    const filteredOrders = orders.filter(order => order.orderStatus === selectedTab);
+
     return (
         <section className="section">
-            <div className='container'>
-                <h2 className='hd'>Đơn hàng</h2>
+            <div className="container">
+                <h2 className="hd">Đơn hàng</h2>
+
+                <div className="tabs">
+                    <button
+                        className={selectedTab === 'pending' ? 'active' : ''}
+                        onClick={() => setSelectedTab('pending')}
+                    >
+                        Hàng đang chuẩn bị
+                    </button>
+                    <button
+                        className={selectedTab === 'shipping' ? 'active' : ''}
+                        onClick={() => setSelectedTab('shipping')}
+                    >
+                        Hàng đang giao
+                    </button>
+                    <button
+                        className={selectedTab === 'delivered' ? 'active' : ''}
+                        onClick={() => setSelectedTab('delivered')}
+                    >
+                        Hàng giao thành công
+                    </button>
+                </div>
 
                 {loading ? (
-                    <div>Loading...</div> // Hiển thị loading nếu đang tải dữ liệu
+                    <div>Loading...</div>
                 ) : error ? (
-                    <div>{error}</div> // Hiển thị thông báo lỗi nếu có
+                    <div>{error}</div>
                 ) : (
-                    <div className='table-responsive'>
-                        <table className='table table-striped'>
-                            <thead className='thead-dark'>
+                    <div className="table-responsive">
+                        <table className="table table-striped">
+                            <thead className="thead-dark">
                                 <tr>
-                                    <th>Mã thanh toán</th>
+                                    <th>Loại thanh toán</th>
                                     <th>Sản phẩm</th>
                                     <th>Tên người mua</th>
                                     <th>SDT</th>
                                     <th>Địa chỉ</th>
-                                    <th>Mã</th>
+                                    <th>Trạng thái đơn hàng</th>
                                     <th>Tổng tiền</th>
                                     <th>Email</th>
-                                    <th>Mã người dùng</th>
                                     <th>Ngày</th>
                                     <th>Trạng thái thanh toán</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {orders.length > 0 ? (
-                                    orders.map((order, index) => (
+                                {filteredOrders.length > 0 ? (
+                                    filteredOrders.map((order, index) => (
                                         <tr key={index}>
-                                            {/* <td>{order.order_receipt}</td> */}
+                                            <td>{getPaymentMethod(order.order_receipt) === "online" ? "Online" : "COD"}</td>
                                             <td>
-                                                <td>{order.order_receipt}</td>
-                                            </td>
-
-                                            <td>
-                                                {/* Nút Xem sản phẩm */}
                                                 <button onClick={() => handleOpenDialog(order.products)}>Xem sản phẩm</button>
                                             </td>
                                             <td>{order.name}</td>
                                             <td>{order.phoneNumber}</td>
                                             <td>{order.address}</td>
-                                            <td>{order.pincode}</td>
+                                            <td>
+                                                {order.orderStatus === "delivered" ? (
+                                                    <span>Vận chuyển thành công</span> // Nếu trạng thái là "delivered", chỉ hiển thị trạng thái.
+                                                ) : (
+                                                    <select
+                                                        value={order.orderStatus}
+                                                        onChange={(e) => handleStatusChange(order.order_receipt, e.target.value)}
+                                                        disabled={order.orderStatus === "delivered"} // Disable nếu đã vận chuyển thành công
+                                                    >
+                                                        {order.orderStatus === "pending" && (
+                                                            <option value="pending">Đang chuẩn bị hàng</option>
+                                                        )}
+                                                        {order.orderStatus !== "delivered" && (
+                                                            <option value="shipping">Đang vận chuyển</option> // Chỉ cho phép chọn "Đang vận chuyển" khi không phải "delivered"
+                                                        )}
+                                                        {order.orderStatus === "shipping" && (
+                                                            <option value="delivered">Vận chuyển thành công</option> // Chỉ cho phép chọn "Vận chuyển thành công" khi trạng thái là "shipping"
+                                                        )}
+                                                    </select>
+                                                )}
+                                            </td>
+
+
                                             <td>{order.amount} VNĐ</td>
                                             <td>{order.email}</td>
-                                            <td>{order.userid}</td>
                                             <td>{new Date(order.createdAt).toLocaleString()}</td>
                                             <td>
                                                 {transactionStatus[order.order_receipt] ? (
@@ -135,7 +198,10 @@ const Orders = () => {
                                                     // Nút kiểm tra thanh toán nếu chưa có kết quả
                                                     <button
                                                         onClick={() =>
-                                                            checkTransactionStatus(order.order_receipt)
+                                                            checkTransactionStatus(
+                                                                order.order_receipt,
+                                                                getPaymentMethod(order.order_receipt)
+                                                            )
                                                         }
                                                     >
                                                         Kiểm Tra Thanh Toán
@@ -147,34 +213,33 @@ const Orders = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="10">No orders found.</td>
+                                        <td colSpan="9">Không có đơn hàng trong mục này.</td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
                     </div>
                 )}
-            </div>
 
-            {/* Dialog hiển thị sản phẩm */}
-            {isDialogOpen && (
-                <div className="dialog-overlay">
-                    <div className="dialog">
-                        <h3>Sản phẩm trong đơn hàng</h3>
-                        <ul>
-                            {selectedProducts.map((product, index) => (
-                                <li key={index}>
-                                    <p><strong>ID Sản phẩm:</strong> {product.productId}</p>
-                                    <p><strong>Tên sản phẩm:</strong> {product.productTitle}</p>
-                                    <p><strong>Số lượng:</strong> {product.quantity}</p>
-                                    <p><strong>Giá:</strong> {product.subTotal} VNĐ</p>
-                                </li>
-                            ))}
-                        </ul>
-                        <button onClick={handleCloseDialog}>Đóng</button>
+                {isDialogOpen && (
+                    <div className="dialog-overlay">
+                        <div className="dialog">
+                            <h3>Sản phẩm trong đơn hàng</h3>
+                            <ul>
+                                {selectedProducts.map((product, index) => (
+                                    <li key={index}>
+                                        <p><strong>ID Sản phẩm:</strong> {product.productId}</p>
+                                        <p><strong>Tên sản phẩm:</strong> {product.productTitle}</p>
+                                        <p><strong>Số lượng:</strong> {product.quantity}</p>
+                                        <p><strong>Giá:</strong> {product.subTotal} VNĐ</p>
+                                    </li>
+                                ))}
+                            </ul>
+                            <button onClick={handleCloseDialog}>Đóng</button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </section>
     );
 };

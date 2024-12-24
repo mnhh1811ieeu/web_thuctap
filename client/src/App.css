@@ -1571,4 +1571,20 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tabs button {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #1bb938;
+}
+.tabs button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
 

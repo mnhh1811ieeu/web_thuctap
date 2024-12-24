@@ -393,7 +393,7 @@ const ProductDetails = () => {
                                                                     </div>
 
                                                                 </div>
-                                                                <h6 className='text-light'> {item?.dateCreated}</h6>
+                                                                <h6 className='text-light'> { new Date(item?.dateCreated).toLocaleString()}</h6>
                                                                 <p> {item?.review} </p>
                                                             </div>
                                                         </div>
