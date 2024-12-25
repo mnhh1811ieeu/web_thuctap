@@ -21,13 +21,35 @@ const Orders = () => {
         }
     };
 
+    // useEffect(() => {
+    //     const fetchOrders = async () => {
+    //         try {
+    //             setLoading(true);
+    //             const response = await fetchDataFromApi('/api/order/all');
+    //             if (response && response.success && response.data) {
+    //                 setOrders(response.data);
+    //             } else {
+    //                 setOrders([]);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching orders:', error);
+    //             setError('Có lỗi xảy ra khi lấy danh sách đơn hàng.');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchOrders();
+    // }, []);
     useEffect(() => {
         const fetchOrders = async () => {
             try {
                 setLoading(true);
                 const response = await fetchDataFromApi('/api/order/all');
                 if (response && response.success && response.data) {
-                    setOrders(response.data);
+                    // Sort the orders by the 'createdAt' field in descending order
+                    const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    setOrders(sortedOrders);
                 } else {
                     setOrders([]);
                 }
@@ -41,7 +63,6 @@ const Orders = () => {
 
         fetchOrders();
     }, []);
-
     const handleOpenDialog = (products) => {
         setSelectedProducts(products);
         setIsDialogOpen(true);

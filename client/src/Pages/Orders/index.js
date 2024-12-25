@@ -37,12 +37,31 @@ const Orders = () => {
         setIsDialogOpen(false);
     };
 
+    // const fetchOrders = async (userId) => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await fetchDataFromApi(`/api/order?userid=${userId}`);
+    //         if (response && response.success && response.data) {
+    //             setOrders(response.data);
+    //         } else {
+    //             console.log("Không có đơn hàng cho userId:", userId);
+    //             setOrders([]);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching orders:', error);
+    //         setError('Có lỗi xảy ra khi lấy đơn hàng.');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
     const fetchOrders = async (userId) => {
         try {
             setLoading(true);
             const response = await fetchDataFromApi(`/api/order?userid=${userId}`);
             if (response && response.success && response.data) {
-                setOrders(response.data);
+                // Sort the orders by 'createdAt' in descending order
+                const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setOrders(sortedOrders);
             } else {
                 console.log("Không có đơn hàng cho userId:", userId);
                 setOrders([]);
@@ -54,7 +73,7 @@ const Orders = () => {
             setLoading(false);
         }
     };
-
+    
     const handleStatusChange = async (orderReceipt) => {
         try {
             const response = await postDataUser("/api/order/update-status", {
