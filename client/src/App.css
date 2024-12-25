@@ -1582,3 +1582,14 @@ button {
   border-color: #007bff;
 }
 
+
+/* When the chat wrapper is opened */
+div.chat-wrapper[opened="true"] {
+  height: 400px;              /* Set the height when open */
+  opacity: 1;                 /* Make it fully visible */
+  transform: translate3d(0px, 0px, 0px) scale(1, 1); /* Reset position and scale */
+  transition: transform 0.2s ease, opacity 0.2s ease-in; /* Transition for position and opacity */
+}
+
+
+

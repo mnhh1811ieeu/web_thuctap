@@ -266,7 +266,7 @@ const Dashboard = () => {
                         </div>
 
                         <h3 className="text-white font-weight-bold">{total.toLocaleString("vi-VN")} VND</h3>
-                        <p>$ tháng trước</p>
+                        
                         <Chart
                             chartType="LineChart"
                             width="100%"

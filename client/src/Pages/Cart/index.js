@@ -1,82 +1,83 @@
-import React, { useContext,useState,useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react';
+
 import Rating from '@mui/material/Rating';
 import { Link } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
+
 import { MyContext } from '../../App';
 import { deleteCartData, deleteData, editData, fetchDataFromApi, fetchDataFromApii } from '../../utils/api';
+import QuantityBox from '../../Components/QuantityBox/QuantityBox';
 
 const Cart = () => {
-  const [isLoading,setIsLoading]=useState(false);
-    const [productQuantity, setProductQuantity] = useState();
-    const [cartFields,setCartField] = useState({}); // Khởi tạo đối tượng cartFields
-    const quantity = (val) => {
-        setProductQuantity(val);
-       
-    }
-    const context=useContext(MyContext);
-    const [cartData, setCartData] =useState([]);
-   
+    const [isLoading, setIsLoading] = useState(false);
+    const [productQuantity, setProductQuantity] = useState(); // Giữ lại state này
+    const context = useContext(MyContext);
+    const [cartData, setCartData] = useState([]);
+
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
-        const userId = user?.userId; // Lấy userId từ localStorage
-    
+        const userId = user?.userId;
+
         if (userId) {
-          // Gửi request với userId để lọc giỏ hàng
-          fetchDataFromApi(`/api/cart?userId=${userId}`).then((res) => {
-            setCartData(res);
-            setIsLoading(false);
-            console.log(res);
-          }).catch((error) => {
-            setIsLoading(false);
-            console.error("Lỗi khi lấy dữ liệu giỏ hàng:", error);
-          });
+            fetchDataFromApi(`/api/cart?userId=${userId}`).then((res) => {
+                setCartData(res);
+                setIsLoading(false);
+            }).catch((error) => {
+                setIsLoading(false);
+                console.error("Lỗi khi lấy dữ liệu giỏ hàng:", error);
+            });
         } else {
-          setIsLoading(false);
-          console.log("Không tìm thấy userId trong localStorage");
-        }
-    }, []); // Chỉ chạy 1 lần khi component mount
-
-    
-    const selectedItem = (item, quantityVal) => {
-        setIsLoading(true);
-        const user = JSON.parse(localStorage.getItem("user"));
-        
-        // Kiểm tra và sử dụng đúng trường `productId` nếu có
-        setCartField({
-            productTitle: item?.productTitle,
-            images: item?.images[0], // Nếu images là mảng
-            rating: item?.rating,
-            price: item?.price,
-            quantity: quantityVal,
-            subTotal: parseInt(item?.price * quantityVal),
-            productId: item?.productId,  // Sử dụng đúng trường productId
-            userId: user.userId
-        });
-        editData(`/api/cart/${item?._id}`, cartFields).then((res) => {
-           setTimeout(()=>{
             setIsLoading(false);
-           },1000);
-           fetchDataFromApi(`/api/cart`).then((res)=>{
-            setCartData(res);
-            console.log(res)
-        })
-         })
-    };
+            console.log("Không tìm thấy userId trong localStorage");
+        }
+    }, []);
 
+    const handleQuantityChange = (item, newQuantity) => {
+        const updatedItem = {
+            ...item,
+            quantity: newQuantity,
+            subTotal: newQuantity * item.price,
+        };
     
-    useEffect(() => {
-        console.log("Updated cartFields:", cartFields);
-      }, [cartFields]); // Theo dõi sự thay đổi của cartFields
+        setIsLoading(true);
+        editData(`/api/cart/${item._id}`, updatedItem)
+            .then(() => {
+                // Cập nhật trạng thái giỏ hàng ngay lập tức
+                setCartData((prevData) =>
+                    prevData.map((i) => (i._id === item._id ? updatedItem : i))
+                );
+                setIsLoading(false);
     
-      const removeItem = (id) => {
-        deleteData(`/api/cart/${id}`).then((res) => {
-            // Hiển thị thông báo sản phẩm đã bị xóa
+                // Hiển thị thông báo thành công
+                context.setAlertBox({
+                    open: true,
+                    error: false,
+                    msg: `Cập nhật số lượng của sản phẩm "${item.productTitle}" thành công!`,
+                });
+            })
+            .catch(() => {
+                setIsLoading(false);
+    
+                // Hiển thị thông báo thất bại
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: `Cập nhật số lượng sản phẩm "${item.productTitle}" thất bại!`,
+                });
+            });
+    };
+    
+    
+
+    const removeItem = (id) => {
+        deleteData(`/api/cart/${id}`).then(() => {
+            setCartData((prevData) => prevData.filter((item) => item._id !== id));
             context.setAlertBox({
                 open: true,
                 error: false,
-                msg: "Sản phẩm đã được xóa khỏi giỏ hàng"
+                msg: "Sản phẩm đã được xóa khỏi giỏ hàng",
             });
     
             // Tải lại trang sau khi xóa thành công
@@ -86,7 +87,7 @@ const Cart = () => {
             context.setAlertBox({
                 open: true,
                 error: true,
-                msg: "Xóa sản phẩm thất bại"
+                msg: "Xóa sản phẩm thất bại",
             });
         });
     }
@@ -157,115 +158,111 @@ const Cart = () => {
         <>
             <section className="section cartPage">
                 <div className="container">
-                    <h2 className="hd mb-1">Cart</h2>
-                    <p>Có <b className='text-red'>{cartData?.length}</b> sản phẩm trong giỏ hàng của bạn</p>
+                    <h2 className="hd mb-1">Giỏ hàng</h2>
+                    <p>Có <b className='text-red'>{cartData.length}</b> sản phẩm trong giỏ hàng của bạn</p>
                     <div className='row'>
                         <div className="col-md-9 pr-5">
-
-                            <div className="table-responsive" >
+                            <div className="table-responsive">
                                 <table className='table' padding="10px">
                                     <thead>
                                         <tr>
-                                            <th width="40% ">Sản phẩm </th>
-                                            <th width="17% ">Giá sản phẩm</th>
-                                            <th width="15% ">Số lượng</th>
-                                            <th width="18% ">Tổng đơn</th>
-                                            <th width="10% ">Xóa</th>
+                                            <th width="35%">Sản phẩm</th>
+                                            <th width="15%">Giá sản phẩm</th>
+                                            <th width="30%">Số lượng</th>
+                                            <th width="18%">Tổng đơn</th>
+                                            <th width="5%">Xóa</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {
-                                        cartData?.length!==0 && cartData?.map((item,index)=>{
-                                       return(
-                                        <tr>
-                                            <td width="40%">
-                                                
-                                                <Link to={`/product/${item?.productId}`} >
-                                                    <div className="d-flex align-items-center CartItemimgWrapper">
-                                                        <div className='imgWrapper'>
-                                                            <img src={item?.images} alt={item?.productTitle}
-                                                                className='w-100'></img>
+                                        {cartData.map((item) => (
+                                            <tr key={item._id}>
+                                                <td width="40%">
+                                                    <Link to={`/product/${item.productId}`}>
+                                                        <div className="d-flex align-items-center CartItemimgWrapper">
+                                                            <div className="imgWrapper">
+                                                                <img src={item.images} alt={item.productTitle} className="w-100" />
+                                                            </div>
+                                                            <div className="info px-3">
+                                                                <h6>{item.productTitle}</h6>
+                                                                <Rating name="read-only" value={item.rating} readOnly size="small" />
+                                                            </div>
                                                         </div>
-                                                        <div className='info px-3'>
-                                                            <h6>{item?.productTitle?.substr(0,50)+'...'}</h6>
+                                                    </Link>
+                                                </td>
+                                                <td width="17%">{(item.price).toLocaleString()} VND</td>
+                                                <td width="20%">
+                                                    <QuantityBox
+                                                        initialQuantity={item.quantity}
+                                                        onQuantityChange={(newQuantity) => handleQuantityChange(item, newQuantity)}
+                                                    />
+                                                </td>
+                                                <td width="18%">{(item.subTotal).toLocaleString()} VND</td>
+                                                <td width="5%">
+                                                    <span className="remove" onClick={() => removeItem(item._id)}>
+                                                        <IoMdClose />
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
 
-                                                            <Rating name="read-only" value={item?.rating} readOnly size="small" />
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            </td>
-                                            <td width="17%">
-                                                {item?.price} 
-                                            </td >
-                                            <td width="15% ">
-                                                <span>{item?.quantity}</span> {/* Chỉ hiển thị số lượng mà không cho chỉnh sửa */}
-                                            </td>
-                                            <td width="18% ">
-                                                {item?.subTotal} VND
-                                            </td>
-                                            <td width="10% ">
-                                                <span className='remove' onClick={()=>removeItem(item?._id)}>
-                                                    <IoMdClose />
-                                                </span>
-                                            </td>
-                                        </tr>
-                                       )
-                                        
-                                        })
-                                    }
-                                   
-                                
-                                </tbody>
                                 </table>
-                                
                             </div>
                         </div>
                         <div className='col-md-3'>
                             <div className='card border p-3 cartDetails'>
                                 <h4>Tổng giỏ hàng</h4>
-                                <div className='d-flex align-items-center mb-3 '>
-
-                                    <span>
-                                        Tổng đơn hàng
-                                    </span>
-                                    <span className='ml-auto text-red font-weight-bold'>{
-                                        cartData.length!==0 && cartData.map(item=>parseInt(item.price)*item.quantity).reduce((total,value)=>total+value,0)
-                                        } VND
-                                    </span>
-                                </div>
-                                <div className='d-flex align-items-center mb-3'>
-                                    <span>
-                                        Phí vận chuyển
-                                    </span>
-                                    <span className='ml-auto  '> <b>0 VND </b></span>
-                                </div>
-                                <div className='d-flex align-items-center mb-3'>
-                                    <span>
-                                        Áp dụng cho
-                                    </span>
-                                    <span className='ml-auto '><b>Bắc Giang </b></span>
-                                </div>
-                                <div className='d-flex align-items-center mb-3'>
-                                    <span>
-                                        Tổng hóa đơn
-                                    </span>
-                                    <span className='ml-auto text-red font-weight-bold'>{
-                                        cartData.length!==0 && cartData.map(item=>parseInt(item.price)*item.quantity).reduce((total,value)=>total+value,0)
-                                        } VND</span>
+                                <div className='table-responsive mt-3'>
+                                    <table className='table table-borderless'>
+                                        <thead>
+                                            <tr>
+                                                <th>Sản phẩm</th>
+                                                <th>Số lượng</th>
+                                                <th>Số tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                cartData?.length !== 0 && cartData?.map((item, index) => (
+                                                    <tr key={index}>
+                                                        <td>{item?.productTitle?.substr(0,10) + '...'}</td>
+                                                        <td>{item?.quantity}</td> {/* Chỉ hiển thị số lượng đã thay đổi ở phần giỏ hàng */}
+                                                        <td>{(item?.price * item?.quantity).toLocaleString()} VNĐ</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                            <tr>
+                                                <td><b>Tổng số tiền</b></td>
+                                                <td></td>
+                                                <td>
+                                                    {
+                                                        cartData.length !== 0 &&
+                                                        cartData.map(item => item.price * item.quantity)
+                                                            .reduce((total, value) => total + value, 0)
+                                                            .toLocaleString()
+                                                    }
+                                                    VNĐ
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <br />
                                 <Link to="/checkout">
-                                    <Button className="btn-blue bg-red btn-lg btn-big  ml-3"><CiShoppingCart />Thanh toán</Button>
+                                    <Button className="btn-blue bg-red btn-lg btn-big ml-3">
+                                        <CiShoppingCart />Thanh toán
+                                    </Button>
                                 </Link>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             </section>
-            {isLoading===true && <div className='loading'></div>  }
-         
+            {isLoading && <div className='loading'></div>}
         </>
-    )
-}
+    );
+};
 
-export default Cart
+export default Cart;

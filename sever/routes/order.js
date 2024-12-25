@@ -40,10 +40,10 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
       // Lấy dữ liệu từ body của request
-      const { name, phoneNumber, address, pincode, email, amount, order_receipt, userid, products } = req.body;
+      const { name, phoneNumber, address, email, amount, order_receipt, userid, products } = req.body;
   
       // Kiểm tra dữ liệu đầu vào
-      if (!name || !phoneNumber || !address || !pincode || !email || !amount || !order_receipt || !userid || !products) {
+      if (!name || !phoneNumber || !address || !email || !amount || !order_receipt || !userid || !products) {
         return res.status(400).json({
           message: 'Thiếu thông tin cần thiết để tạo đơn hàng.',
         });
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
         name,
         phoneNumber,
         address,
-        pincode,
+        // pincode,
         email,
         amount,
         order_receipt,

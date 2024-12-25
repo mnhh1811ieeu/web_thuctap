@@ -9,24 +9,49 @@ import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState('online'); // Default là online
-const history= useNavigate();
+  const history = useNavigate();
   const [formFields, setFormFields] = useState({
     fullName: "",
     streetAddressLine1: "",
     streetAddressLine2: "",
-    zipCode: "",
+   // zipCode: "",
     phoneNumber: "",
     email: ""
   })
 
   const [cartData, setCartData] = useState([]);
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
-    const userId = user ? user.userId : null; // Lấy userId từ thông tin user
+  // useEffect(() => {
+  //   const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
+  //   const userId = user ? user.userId : null; // Lấy userId từ thông tin user
 
+  //   if (userId) {
+  //     // Gọi API với userId nếu có
+  //     fetchDataFromApi(`/api/cart?userId=${userId}`)
+  //       .then((res) => {
+  //         setCartData(res);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Lỗi khi lấy giỏ hàng:", error);
+  //       });
+  //   } else {
+  //     // Nếu không có userId, có thể xử lý trường hợp giỏ hàng trống hoặc không làm gì
+  //     setCartData([]);
+  //   }
+  // }, []); // Chạy 1 lần khi component được mount
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+    if (user) {
+      setFormFields((prevFields) => ({
+        ...prevFields,
+        fullName: user.name || "", // Gán giá trị mặc định cho họ và tên
+        email: user.email || "",  // Gán giá trị mặc định cho email
+      }));
+    }
+
+    const userId = user ? user.userId : null;
     if (userId) {
-      // Gọi API với userId nếu có
+      // Gọi API để lấy giỏ hàng
       fetchDataFromApi(`/api/cart?userId=${userId}`)
         .then((res) => {
           setCartData(res);
@@ -35,18 +60,23 @@ const history= useNavigate();
           console.error("Lỗi khi lấy giỏ hàng:", error);
         });
     } else {
-      // Nếu không có userId, có thể xử lý trường hợp giỏ hàng trống hoặc không làm gì
       setCartData([]);
     }
-  }, []); // Chạy 1 lần khi component được mount
+  }, []);
 
+  // const onChangeInput = (e) => {
+  //   setFormFields(() => ({
+  //     ...formFields,
+  //     [e.target.name]: e.target.value
+  //   }))
+  // }
   const onChangeInput = (e) => {
-    setFormFields(() => ({
-      ...formFields,
-      [e.target.name]: e.target.value
-    }))
-  }
-
+    const { name, value } = e.target;
+    setFormFields((prevFields) => ({
+      ...prevFields,
+      [name]: value,
+    }));
+  };
   const context = useContext(MyContext);
 
   // const checkout = async (e) => {
@@ -149,7 +179,7 @@ const history= useNavigate();
   // };
   const checkout = async (e) => {
     e.preventDefault();
-  
+
     // Kiểm tra các trường form như trước
     for (const [key, value] of Object.entries(formFields)) {
       if (!value) {
@@ -161,7 +191,7 @@ const history= useNavigate();
         return;
       }
     }
-  
+
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       context.setAlertBox({
@@ -171,11 +201,11 @@ const history= useNavigate();
       });
       return;
     }
-  
+
     const totalAmount = cartData?.length !== 0 &&
       cartData.map((item) => parseInt(item.price) * item.quantity)
         .reduce((total, value) => total + value, 0);
-  
+
     if (!totalAmount || totalAmount <= 0) {
       context.setAlertBox({
         open: true,
@@ -184,15 +214,15 @@ const history= useNavigate();
       });
       return;
     }
-  
+
     const addressInfo = {
       name: formFields.fullName,
       phoneNumber: formFields.phoneNumber,
       address: `${formFields.streetAddressLine1} ${formFields.streetAddressLine2}`,
-      pincode: formFields.zipCode,
+      // pincode: formFields.zipCode,
       email: user.email,
     };
-  
+
     try {
       const payload = {
         ...addressInfo,
@@ -202,11 +232,11 @@ const history= useNavigate();
         products: cartData,
         paymentMethod, // Thêm loại thanh toán vào payload
       };
-  
+
       if (paymentMethod === 'online') {
         // Xử lý thanh toán online
         const response = await postDataUser('/api/payment', payload);
-  
+
         if (response && response.orderId) {
           const updatedPayload = {
             ...payload,
@@ -246,7 +276,7 @@ const history= useNavigate();
       });
     }
   };
-  
+
 
   return (
     <section className='section'>
@@ -260,7 +290,14 @@ const history= useNavigate();
                 <div className='col-md-6'>
                   <div className='form-group'>
                     <h6>Họ và tên</h6>
-                    <TextField label="Điền họ và tên" variant="outlined" className='w-100' name='fullName' onChange={onChangeInput} />
+                    {/* <TextField label="Điền họ và tên" variant="outlined" className='w-100' name='fullName' onChange={onChangeInput} /> */}
+                    <TextField
+                      variant="outlined"
+                      className="w-100"
+                      name="fullName"
+                      value={formFields.fullName} // Hiển thị giá trị từ state
+                      onChange={onChangeInput} // Xử lý khi người dùng nhập
+                    />
                   </div>
                 </div>
 
@@ -280,15 +317,15 @@ const history= useNavigate();
               </div>
 
 
-              <h6>MÃ</h6>
+              {/* <h6>MÃ</h6> */}
 
-              <div className='row'>
+              {/* <div className='row'>
                 <div className='col-md-12'>
                   <div className='form-group'>
                     <TextField label="ZIP Code" variant="outlined" className='w-100' name='zipCode' onChange={onChangeInput} />
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className='row'>
 
@@ -302,7 +339,15 @@ const history= useNavigate();
                 <div className='col-md-6'>
                   <div className='form-group'>
                     <h6>Email</h6>
-                    <TextField label="Email" variant="outlined" className='w-100' name='email' onChange={onChangeInput} />
+                    {/* <TextField label="Email" variant="outlined" className='w-100' name='email' onChange={onChangeInput} /> */}
+                    <TextField
+
+                      variant="outlined"
+                      className="w-100"
+                      name="email"
+                      value={formFields.email} // Hiển thị giá trị từ state
+                      onChange={onChangeInput} // Xử lý khi người dùng nhập
+                    />
                   </div>
                 </div>
               </div>

@@ -29,6 +29,7 @@ const search = require('./routes/search.js')
 const orderRoutes = require('./routes/order.js')
 
 
+
 const productReviewRoutes= require('./routes/productReviews.js');
 // app.use(authJwt());
 app.use("/uploads",express.static("uploads"));
