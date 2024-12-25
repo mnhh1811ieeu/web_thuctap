@@ -135,19 +135,18 @@ router.delete('/:id', async (req, res) => {
     })
 });
 
-router.delete("/:userId", async (req, res) => {
-    const { userId } = req.params;
-
+router.delete("/", async (req, res) => {
+    const { userId } = req.query; // Lấy userId từ query string
+    
+    if (!userId) {
+        return res.status(400).json({ message: "Missing userId in query string" });  // Kiểm tra nếu thiếu userId
+    }
     try {
-        const result = await Cart.deleteMany({ userId });
-        if (result.deletedCount > 0) {
-            return res.status(200).json({ message: "Giỏ hàng đã được xóa thành công" });
-        } else {
-            return res.status(404).json({ message: "Không tìm thấy giỏ hàng để xóa" });
-        }
+        await Cart.deleteMany({ userId }); // Xóa giỏhàng theo userId
+        res.status(200).json({ message: 'Cart cleared successfully' });
     } catch (error) {
-        console.error("Lỗi khi xóa giỏ hàng:", error.message);
-        return res.status(500).json({ message: "Lỗi khi xóa giỏ hàng", error: error.message });
+        console.error(error);
+        res.status(500).json({ message: 'Error clearing cart' });
     }
 });
 

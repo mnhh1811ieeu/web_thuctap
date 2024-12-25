@@ -66,6 +66,7 @@ const Orders = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ orderId }),
             });
+            console.log(response)
 
             setTransactionStatus((prevStatus) => ({
                 ...prevStatus,

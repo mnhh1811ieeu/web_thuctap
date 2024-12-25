@@ -5,7 +5,7 @@ import { IoMdClose } from "react-icons/io";
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
 import { MyContext } from '../../App';
-import { deleteData, editData, fetchDataFromApi } from '../../utils/api';
+import { deleteCartData, deleteData, editData, fetchDataFromApi, fetchDataFromApii } from '../../utils/api';
 
 const Cart = () => {
   const [isLoading,setIsLoading]=useState(false);
@@ -36,7 +36,7 @@ const Cart = () => {
           setIsLoading(false);
           console.log("Không tìm thấy userId trong localStorage");
         }
-      }, []); // Chỉ chạy 1 lần khi component mount
+    }, []); // Chỉ chạy 1 lần khi component mount
 
     
     const selectedItem = (item, quantityVal) => {
@@ -64,6 +64,7 @@ const Cart = () => {
         })
          })
     };
+
     
     useEffect(() => {
         console.log("Updated cartFields:", cartFields);
@@ -79,7 +80,7 @@ const Cart = () => {
             });
     
             // Tải lại trang sau khi xóa thành công
-            window.location.reload();  // Tải lại trang
+            window.location.href=window.location.href
         }).catch((error) => {
             // Xử lý lỗi nếu có
             context.setAlertBox({
@@ -90,8 +91,67 @@ const Cart = () => {
         });
     }
 
-   
-      
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.userId;
+
+        if (userId) {
+            fetchDataFromApi(`/api/order?userid=${userId}`)
+                .then((orderResponse) => {
+                    console.log("Danh sách đơn hàng:", orderResponse.data);
+                    
+                    // Lấy orderId của phần tử cuối cùng
+                    const data = orderResponse.data[orderResponse.data.length - 1];
+                    const orderId = data.order_receipt;
+                    console.log("Order ID của phần tử cuối cùng:", orderId);
+                    
+                    // Gọi API để lấy giỏ hàng
+                    return fetchDataFromApi(`/api/cart?userId=${userId}`).then((cartResponse) => {
+                        console.log("Danh sách giỏ hàng:", cartResponse);
+                        
+                        // So sánh _id của các sản phẩm trong cart và order
+                        const cartProductIds = cartResponse.map((cartItem) => cartItem._id);
+                        const orderProductIds = data.products.map((product) => product._id);
+
+                        // Kiểm tra hai mảng phải giống nhau hoàn toàn (bao gồm cả thứ tự)
+                        const areArraysEqual = (array1, array2) => {
+                            if (array1.length !== array2.length) return false; // Kiểm tra độ dài
+                            return array1.every((value, index) => value === array2[index]); // So sánh từng phần tử
+                        };
+        
+                        const isMatching = areArraysEqual(orderProductIds, cartProductIds);
+        
+                        if (isMatching) {
+        
+                            // Kiểm tra trạng thái giao dịch
+                            return fetchDataFromApii("/api/payment/transaction-status", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ orderId }),
+                            });
+                        } else {
+                            throw new Error("Không khớp sản phẩm giữa cart và order.");
+                        }
+                    });
+                })
+                .then((paymentResponse) => {
+                    console.log("Trạng thái giao dịch:", paymentResponse);
+        
+                    // Kiểm tra nếu giao dịch thành công
+                    if (paymentResponse.message === 'Thành công.' && paymentResponse.resultCode === 0) {
+                        return deleteCartData(`/api/cart?userId=${userId}`)
+                    } else {
+                        console.log("Giao dịch không thành công.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Lỗi trong quá trình xử lý:", error);
+                });
+        }
+        
+        
+    }, []);
+
     
     return (
         <>

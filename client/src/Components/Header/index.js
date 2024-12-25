@@ -168,8 +168,8 @@ const Header = () => {
                                                         }, 1000);
                                                     } else {
                                                         // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
-                                                        // window.location.href = "/cart";
-                                                        history('/cart');
+                                                        window.location.href = "/cart";
+                                                        //history('/cart');
                                                     }
                                                 }}
                                             >

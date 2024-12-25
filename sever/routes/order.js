@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
       if (!userid) {
         return res.status(400).json({
           success: false,
-          message: "UserId không hợp lệ",
+          message: "UserId không hợp lệ ~~~",
         });
       }
   

@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
-import {  deleteData, fetchDataFromApi, postData, postDataUser } from '../../utils/api';
+import {  deleteCartData, deleteData, fetchDataFromApi, postData, postDataUser } from '../../utils/api';
 import { MyContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 
@@ -225,6 +225,9 @@ const history= useNavigate();
       } else if (paymentMethod === 'cod') {
         // Xử lý thanh toán COD
         await postData(`/api/order`, payload);
+        const userId = user.userId;
+        await deleteCartData(`/api/cart?userId=${userId}`);
+
         context.setAlertBox({
           open: true,
           error: false,
