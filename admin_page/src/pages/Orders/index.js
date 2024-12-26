@@ -74,6 +74,8 @@ const Orders = () => {
                 body: JSON.stringify({ orderId }),
             });
 
+            console.log(response)
+
             setTransactionStatus((prevStatus) => ({
                 ...prevStatus,
                 [orderId]: response.resultCode === 0 ? "Thành công" : "Giao dịch thất bại",
