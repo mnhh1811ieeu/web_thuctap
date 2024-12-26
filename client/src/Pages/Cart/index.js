@@ -12,65 +12,158 @@ import QuantityBox from '../../Components/QuantityBox/QuantityBox';
 
 const Cart = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [productQuantity, setProductQuantity] = useState(); // Giữ lại state này
+    const [productDetails, setProductDetails] = useState({});
     const context = useContext(MyContext);
     const [cartData, setCartData] = useState([]);
 
+    // useEffect(() => {
+    //     const user = JSON.parse(localStorage.getItem("user"));
+    //     const userId = user?.userId;
+
+    //     if (userId) {
+    //         fetchDataFromApi(`/api/cart?userId=${userId}`).then((res) => {
+    //             setCartData(res);
+    //             setIsLoading(false);
+    //         }).catch((error) => {
+    //             setIsLoading(false);
+    //             console.error("Lỗi khi lấy dữ liệu giỏ hàng:", error);
+    //         });
+    //     } else {
+    //         setIsLoading(false);
+    //         console.log("Không tìm thấy userId trong localStorage");
+    //     }
+    // }, []);
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
         const userId = user?.userId;
 
         if (userId) {
-            fetchDataFromApi(`/api/cart?userId=${userId}`).then((res) => {
-                setCartData(res);
-                setIsLoading(false);
-            }).catch((error) => {
-                setIsLoading(false);
-                console.error("Lỗi khi lấy dữ liệu giỏ hàng:", error);
-            });
+            // Fetch cart items first
+            fetchDataFromApi(`/api/cart?userId=${userId}`)
+                .then((cartRes) => {
+                    setCartData(cartRes); // Set cart data
+
+                    // Fetch product details for each productId in the cart
+                    const productIds = cartRes.map(item => item.productId);
+                    
+                    // Get product details (e.g., countInStock)
+                    Promise.all(
+                        productIds.map(productId =>
+                            fetchDataFromApi(`/api/products/${productId}`)
+                                .then((productRes) => {
+                                    setProductDetails(prevState => ({
+                                        ...prevState,
+                                        [productId]: productRes, // Store product details in the state
+                                    }));
+                                })
+                                .catch((error) => {
+                                    console.error(`Lỗi khi lấy thông tin sản phẩm ${productId}:`, error);
+                                })
+                        )
+                    ).finally(() => {
+                        setIsLoading(false); // Set loading state to false after all API calls
+                    });
+                })
+                .catch((error) => {
+                    setIsLoading(false);
+                    console.error("Lỗi khi lấy dữ liệu giỏ hàng:", error);
+                });
         } else {
             setIsLoading(false);
             console.log("Không tìm thấy userId trong localStorage");
         }
     }, []);
-
+    // const handleQuantityChange = (item, newQuantity) => {
+    //     const updatedItem = {
+    //         ...item,
+    //         quantity: newQuantity,
+    //         subTotal: newQuantity * item.price,
+    //     };
+    
+    //     setIsLoading(true);
+    //     editData(`/api/cart/${item._id}`, updatedItem)
+    //         .then(() => {
+    //             // Cập nhật trạng thái giỏ hàng ngay lập tức
+    //             setCartData((prevData) =>
+    //                 prevData.map((i) => (i._id === item._id ? updatedItem : i))
+    //             );
+    //             setIsLoading(false);
+    
+    //             // Hiển thị thông báo thành công
+    //             context.setAlertBox({
+    //                 open: true,
+    //                 error: false,
+    //                 msg: `Cập nhật số lượng của sản phẩm "${item.productTitle}" thành công!`,
+    //             });
+    //         })
+    //         .catch(() => {
+    //             setIsLoading(false);
+    
+    //             // Hiển thị thông báo thất bại
+    //             context.setAlertBox({
+    //                 open: true,
+    //                 error: true,
+    //                 msg: `Cập nhật số lượng sản phẩm "${item.productTitle}" thất bại!`,
+    //             });
+    //         });
+    // };
     const handleQuantityChange = (item, newQuantity) => {
-        const updatedItem = {
-            ...item,
-            quantity: newQuantity,
-            subTotal: newQuantity * item.price,
-        };
-    
-        setIsLoading(true);
-        editData(`/api/cart/${item._id}`, updatedItem)
-            .then(() => {
-                // Cập nhật trạng thái giỏ hàng ngay lập tức
-                setCartData((prevData) =>
-                    prevData.map((i) => (i._id === item._id ? updatedItem : i))
-                );
-                setIsLoading(false);
-    
-                // Hiển thị thông báo thành công
-                context.setAlertBox({
-                    open: true,
-                    error: false,
-                    msg: `Cập nhật số lượng của sản phẩm "${item.productTitle}" thành công!`,
-                });
-            })
-            .catch(() => {
-                setIsLoading(false);
-    
-                // Hiển thị thông báo thất bại
+        // Lấy thông tin sản phẩm từ API
+        fetchDataFromApi(`/api/products/${item.productId}`).then((product) => {
+            // Kiểm tra nếu số lượng mới vượt quá số lượng tồn kho
+            if (newQuantity > product.countInStock) {
+                // Hiển thị thông báo lỗi nếu số lượng yêu cầu vượt quá tồn kho
                 context.setAlertBox({
                     open: true,
                     error: true,
-                    msg: `Cập nhật số lượng sản phẩm "${item.productTitle}" thất bại!`,
+                    msg: `Số lượng yêu cầu (${newQuantity}) vượt quá số lượng tồn kho (${product.countInStock})!`,
                 });
+                return; // Dừng việc thay đổi số lượng nếu vượt quá tồn kho
+            }
+    
+            // Nếu số lượng hợp lệ, tiến hành cập nhật giỏ hàng
+            const updatedItem = {
+                ...item,
+                quantity: newQuantity,
+                subTotal: newQuantity * item.price,
+            };
+    
+            setIsLoading(true);
+            editData(`/api/cart/${item._id}`, updatedItem)
+                .then(() => {
+                    // Cập nhật trạng thái giỏ hàng ngay lập tức
+                    setCartData((prevData) =>
+                        prevData.map((i) => (i._id === item._id ? updatedItem : i))
+                    );
+                    setIsLoading(false);
+    
+                    // Hiển thị thông báo thành công
+                    context.setAlertBox({
+                        open: true,
+                        error: false,
+                        msg: `Cập nhật số lượng của sản phẩm "${item.productTitle}" thành công!`,
+                    });
+                })
+                .catch(() => {
+                    setIsLoading(false);
+    
+                    // Hiển thị thông báo thất bại
+                    context.setAlertBox({
+                        open: true,
+                        error: true,
+                        msg: `Cập nhật số lượng sản phẩm "${item.productTitle}" thất bại!`,
+                    });
+                });
+        }).catch((error) => {
+            console.error("Error fetching product data:", error);
+            context.setAlertBox({
+                open: true,
+                error: true,
+                msg: "Lỗi khi lấy dữ liệu sản phẩm, vui lòng thử lại!",
             });
+        });
     };
     
-    
-
     const removeItem = (id) => {
         deleteData(`/api/cart/${id}`).then(() => {
             setCartData((prevData) => prevData.filter((item) => item._id !== id));

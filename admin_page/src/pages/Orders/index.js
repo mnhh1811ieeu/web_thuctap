@@ -21,26 +21,6 @@ const Orders = () => {
         }
     };
 
-    // useEffect(() => {
-    //     const fetchOrders = async () => {
-    //         try {
-    //             setLoading(true);
-    //             const response = await fetchDataFromApi('/api/order/all');
-    //             if (response && response.success && response.data) {
-    //                 setOrders(response.data);
-    //             } else {
-    //                 setOrders([]);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching orders:', error);
-    //             setError('Có lỗi xảy ra khi lấy danh sách đơn hàng.');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchOrders();
-    // }, []);
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -50,6 +30,12 @@ const Orders = () => {
                     // Sort the orders by the 'createdAt' field in descending order
                     const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                     setOrders(sortedOrders);
+
+                    // Tự động kiểm tra trạng thái thanh toán cho từng đơn hàng
+                    sortedOrders.forEach(order => {
+                        const paymentMethod = getPaymentMethod(order.order_receipt);
+                        checkTransactionStatus(order.order_receipt, paymentMethod);
+                    });
                 } else {
                     setOrders([]);
                 }
@@ -126,7 +112,30 @@ const Orders = () => {
     };
 
     // Lọc đơn hàng theo trạng thái
-    const filteredOrders = orders.filter(order => order.orderStatus === selectedTab);
+
+    // const filteredOrders = orders.filter(order => {
+    //     if (selectedTab === 'failed') {
+    //         return transactionStatus[order.order_receipt] === 'Giao dịch thất bại';
+    //     }
+
+    //     return (
+    //         transactionStatus[order.order_receipt] !== 'Giao dịch thất bại' &&
+    //         order.orderStatus === selectedTab
+    //     );
+    // });
+    const filteredOrders = orders.filter(order => {
+        if (selectedTab === 'failed') {
+            return (
+                transactionStatus[order.order_receipt] === 'Giao dịch thất bại' ||
+                order.orderStatus === 'failed' // Thêm điều kiện cho trạng thái 'canceled'
+            );
+        }
+
+        return (
+            transactionStatus[order.order_receipt] !== 'Giao dịch thất bại' &&
+            order.orderStatus === selectedTab
+        );
+    });
 
     return (
         <section className="section">
@@ -152,6 +161,14 @@ const Orders = () => {
                     >
                         Hàng giao thành công
                     </button>
+                    <button
+                        className={selectedTab === 'failed' ? 'active' : ''}
+                        onClick={() => setSelectedTab('failed')}
+                    >
+                        Giao dịch thất bại / Đơn đã hủy
+                    </button>
+
+
                 </div>
 
                 {loading ? (
@@ -186,7 +203,7 @@ const Orders = () => {
                                             <td>{order.name}</td>
                                             <td>{order.phoneNumber}</td>
                                             <td>{order.address}</td>
-                                            <td>
+                                            {/* <td>
                                                 {order.orderStatus === "delivered" ? (
                                                     <span>Vận chuyển thành công</span> // Nếu trạng thái là "delivered", chỉ hiển thị trạng thái.
                                                 ) : (
@@ -206,6 +223,31 @@ const Orders = () => {
                                                         )}
                                                     </select>
                                                 )}
+                                            </td> */}
+                                            <td>
+                                                {transactionStatus[order.order_receipt] === 'Giao dịch thất bại' ? (
+                                                    <span>Giao dịch thất bại</span>
+                                                ) : order.orderStatus === 'failed' ? (
+                                                    <span>Đơn đã hủy</span>
+                                                ) : order.orderStatus === "delivered" ? (
+                                                    <span>Vận chuyển thành công</span>
+                                                ) : (
+                                                    <select
+                                                        value={order.orderStatus}
+                                                        onChange={(e) => handleStatusChange(order.order_receipt, e.target.value)}
+                                                        disabled={order.orderStatus === "delivered"}
+                                                    >
+                                                        {order.orderStatus === "pending" && (
+                                                            <option value="pending">Đang chuẩn bị hàng</option>
+                                                        )}
+                                                        {order.orderStatus !== "delivered" && (
+                                                            <option value="shipping">Đang vận chuyển</option>
+                                                        )}
+                                                        {order.orderStatus === "shipping" && (
+                                                            <option value="delivered">Vận chuyển thành công</option>
+                                                        )}
+                                                    </select>
+                                                )}
                                             </td>
 
 
@@ -217,17 +259,8 @@ const Orders = () => {
                                                     // Hiển thị kết quả trạng thái thanh toán
                                                     <span>{transactionStatus[order.order_receipt]}</span>
                                                 ) : (
-                                                    // Nút kiểm tra thanh toán nếu chưa có kết quả
-                                                    <button
-                                                        onClick={() =>
-                                                            checkTransactionStatus(
-                                                                order.order_receipt,
-                                                                getPaymentMethod(order.order_receipt)
-                                                            )
-                                                        }
-                                                    >
-                                                        Kiểm Tra Thanh Toán
-                                                    </button>
+                                                    // Nếu chưa có kết quả, có thể hiển thị trạng thái "Đang kiểm tra" hoặc không gì cả
+                                                    <span>Đang kiểm tra...</span>
                                                 )}
                                             </td>
 

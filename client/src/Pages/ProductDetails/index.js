@@ -7,7 +7,6 @@ import { FaRegHeart } from "react-icons/fa";
 import Tooltip from '@mui/material/Tooltip';
 import RelatedProducts from './RelatedProducts/RelatedProducts';
 import CircularProgress from '@mui/material/CircularProgress';
-
 import { useParams } from 'react-router-dom';
 import { MyContext } from '../../App';
 import { fetchDataFromApi, postData, postDataUser } from '../../utils/api';
@@ -22,14 +21,14 @@ const ProductDetails = () => {
     const [tabError, setTabError] = useState(false);
     const [addingInCart, setAddingInCart] = useState(false);
     const context = useContext(MyContext);
-   
+
     const [productData, setProductData] = useState([]);
     const [relatedProductData, setRelatedProductData] = useState([]);
     const [recentlyViewed, setRecentlyViewed] = useState([]);
 
-    
-    const {id} = useParams();
-    
+
+    const { id } = useParams();
+
     const isActive = (index) => {
         setActiveSize(index);
         setTabError(false);
@@ -47,8 +46,8 @@ const ProductDetails = () => {
         fetchDataFromApi(`/api/products/${id}`).then((res) => {
             setProductData(res)
             console.log(res)
-            fetchDataFromApi(`/api/products?catName=${res.catName}`).then( (res) => {
-                const filterdData = res?.products?.filter( item => item.id !== id);
+            fetchDataFromApi(`/api/products?catName=${res.catName}`).then((res) => {
+                const filterdData = res?.products?.filter(item => item.id !== id);
                 setRelatedProductData(filterdData);
                 console.log(filterdData);
             })
@@ -56,8 +55,8 @@ const ProductDetails = () => {
             //     fetchDataFromApi(`/api/products/recentlyViewed`).then( (response) => {
             //         const uniqueItems = Array.from(new Set(response.map(item => item.id)))
             //              .map(id => {
-                //              return response.find(item => item.id === id)            
-                //})
+            //              return response.find(item => item.id === id)            
+            //})
             //         setRecentlyViewed(uniqueItems);
             //     })
             // })
@@ -65,7 +64,7 @@ const ProductDetails = () => {
         fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res => {
             setReviewData(res)
         }))
-        if(productData?.productSIZE===undefined){
+        if (productData?.productSIZE === undefined) {
             setActiveTabs(1);
         }
     }, [id])
@@ -125,11 +124,9 @@ const ProductDetails = () => {
     }
 
     // const addtoCart = () => {
-       
     //     if (activeSize !== null) {
-        
     //         const user = JSON.parse(localStorage.getItem("user"));
-    
+
     //         if (!user) {
     //             context.setAlertBox({
     //                 open: true,
@@ -138,68 +135,94 @@ const ProductDetails = () => {
     //             });
     //             return;
     //         }
-    
-    //         if (!productData || !productData.id || !productData.name || !productData.images || !productData.price || !productData.rating) {
+
+    //         // Kiểm tra tính hợp lệ của dữ liệu sản phẩm
+    //         if (!productData || !productData.id || !productData.name || !productData.images?.length || !productData.price || !productData.rating) {
     //             context.setAlertBox({
     //                 open: true,
     //                 error: true,
-    //                 msg: "Thông tin sản phẩm không đầy đủ!"
+    //                 msg: "Thông tin sản phẩm không đầy đủ hoặc không hợp lệ!"
     //             });
     //             return;
     //         }
-    
-    //         const cartFields = {
-    //             productTitle: productData.name,
-    //             images: productData.images[0], // Sử dụng ảnh đầu tiên
-    //             rating: productData.rating,
-    //             price: productData.price,
-    //             quantity: productQuantity,
-    //             subTotal: productData.price * productQuantity,
-    //             productId: productData.id,
-    //             userId: user.userId
-    //         };
-    
-    //         console.log("Cart Fields:", cartFields);
-    
-    //         // Bắt đầu quá trình thêm sản phẩm, bật trạng thái "đang xử lý"
-    //         setAddingInCart(true);
-    
-    //         postDataUser(`/api/cart/add`, cartFields)
-    //             .then((res) => {
-    //                 console.log("API Response:", res);
-    
-    //                 if (res && res.success) {
-    //                     context.setAlertBox({
-    //                         open: true,
-    //                         error: false,
-    //                         msg: res.message || "Sản phẩm đã được thêm vào giỏ hàng!"
-    //                     });
-    //                 } else {
-    //                     context.setAlertBox({
-    //                         open: true,
-    //                         error: true,
-    //                         msg: res?.message || "Sản phẩm đã trong danh sách giỏ hàng!"
-    //                     });
-    //                 }
-    //             })
-    //             .catch((error) => {
-    //                 console.error("Error from API call:", error);
+
+    //         // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+    //         fetchDataFromApi(`/api/cart?userId=${user.userId}`).then((cartItems) => {
+    //             const existingItem = cartItems.find((item) => item.productId === productData.id);
+
+    //             if (existingItem) {
+    //                 // Nếu sản phẩm đã tồn tại, hiện thông báo
     //                 context.setAlertBox({
     //                     open: true,
     //                     error: true,
-    //                     msg: "Có lỗi trong quá trình xử lý, vui lòng thử lại!"
+    //                     msg: "Sản phẩm đã có trong giỏ hàng!"
     //                 });
-    //             })
-    //             .finally(() => {
-    //                 // Kết thúc quá trình thêm sản phẩm, tắt trạng thái "đang xử lý"
-    //                 setTimeout(()=>{
-    //                     setAddingInCart(false);
-    //                 },1000);
-                    
+    //             } else {
+    //                 // Nếu sản phẩm chưa tồn tại, thêm sản phẩm vào giỏ hàng
+    //                 const cartFields = {
+    //                     productTitle: productData.name,
+    //                     images: productData.images[0] || '/path-to-default-image.jpg', // Dùng ảnh mặc định nếu thiếu
+    //                     rating: productData.rating,
+    //                     price: productData.price,
+    //                     quantity: productQuantity || 1, // Giá trị mặc định là 1 nếu `productQuantity` không tồn tại
+    //                     subTotal: productData.price * (productQuantity || 1),
+    //                     productId: productData.id,
+    //                     userId: user.userId
+    //                 };
+
+    //                 console.log("Cart Fields:", cartFields);
+
+    //                 // Bắt đầu quá trình thêm sản phẩm
+    //                 setAddingInCart(true);
+
+    //                 postDataUser(`/api/cart/add`, cartFields)
+    //                     .then((res) => {
+    //                         console.log("API Response:", res);
+
+    //                         if (res?.success) {
+    //                             context.setAlertBox({
+    //                                 open: true,
+    //                                 error: false,
+    //                                 msg: res.message || "Sản phẩm đã được thêm vào giỏ hàng!"
+    //                             });
+    //                         } else {
+    //                             context.setAlertBox({
+    //                                 open: true,
+    //                                 error: true,
+    //                                 msg: res?.message || "Không thể thêm sản phẩm vào giỏ hàng!"
+    //                             });
+    //                         }
+    //                     })
+    //                     .catch((error) => {
+    //                         console.error("Error from API call:", error);
+    //                         context.setAlertBox({
+    //                             open: true,
+    //                             error: true,
+    //                             msg: "Có lỗi trong quá trình xử lý, vui lòng thử lại!"
+    //                         });
+    //                     })
+    //                     .finally(() => {
+    //                         // Kết thúc quá trình xử lý
+    //                         setTimeout(() => {
+    //                             setAddingInCart(false);
+    //                         }, 1000);
+    //                     });
+    //             }
+    //         }).catch((error) => {
+    //             console.error("Error fetching cart items:", error);
+    //             context.setAlertBox({
+    //                 open: true,
+    //                 error: true,
+    //                 msg: "Có lỗi trong quá trình kiểm tra giỏ hàng, vui lòng thử lại!"
     //             });
-    
+    //         });
     //     } else {
     //         setTabError(true);
+    //         context.setAlertBox({
+    //             open: true,
+    //             error: true,
+    //             msg: "Vui lòng chọn kích thước sản phẩm trước khi đặt hàng!"
+    //         });
     //     }
     // };
     const addtoCart = () => {
@@ -225,6 +248,17 @@ const ProductDetails = () => {
                 return;
             }
     
+            // Kiểm tra tồn kho (frontend check)
+            const quantity = productQuantity || 1; // Giá trị mặc định nếu không có quantity
+            if (quantity > productData.countInStock) {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: `Số lượng yêu cầu (${quantity}) vượt quá hàng tồn kho (${productData.countInStock}).`
+                });
+                return; // Dừng lại, không tiếp tục gửi request
+            }
+    
             // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
             fetchDataFromApi(`/api/cart?userId=${user.userId}`).then((cartItems) => {
                 const existingItem = cartItems.find((item) => item.productId === productData.id);
@@ -243,8 +277,8 @@ const ProductDetails = () => {
                         images: productData.images[0] || '/path-to-default-image.jpg', // Dùng ảnh mặc định nếu thiếu
                         rating: productData.rating,
                         price: productData.price,
-                        quantity: productQuantity || 1, // Giá trị mặc định là 1 nếu `productQuantity` không tồn tại
-                        subTotal: productData.price * (productQuantity || 1),
+                        quantity: quantity,
+                        subTotal: productData.price * quantity,
                         productId: productData.id,
                         userId: user.userId
                     };
@@ -304,41 +338,46 @@ const ProductDetails = () => {
             });
         }
     };
-    const selectedItem=()=>{
+    
+    
+    const handleQuantityChange = (value) => {
+        setProductQuantity(value); // Cập nhật số lượng
+    };
+    const selectedItem = () => {
 
     }
 
-  return (
-    <>
-        <section className="productDetails section">
-            <div className='container'>
-                <div className='row'>
-                    <div className='productZoom col-md-5 pl-5'>
-                        <ProductZoom images={productData?.images} discount={productData?.discount}/>
-                    </div>
-                    
-
-                    <div className='col-md-7 pl-5 pr-5'>
-                        <h2 className='hd text-text-capitalize'>{productData?.name}</h2>
-                        <ul className='list list-inline'>
-                            <li className='list-inline-item'>
-                                <div className='d-flex align-items-center'>
-                                    <span className=' mr-2' > Thương hiệu :</span>
-                                    <span>{productData?.brand}</span>
-                                </div>
-                            </li>
-                            <li className='list-inline-item'>
-                                <div className='d-flex align-items-center'>
-                                    <Rating className='read-only' value={parseInt(productData?.rating)} precision={0.5} readOnly size="small" />
-                                    <span className='text-light cursor ml-2'>1 đánh giá</span>
-                                </div>
-                            </li>
-                        </ul>
-
-                        <div class='d-flex info mb-4'>
-                            <span class='oldPrice'>{productData?.oldPrice}Đ</span>
-                            <span class='netPrice text-danger ml-2'>{productData?.price}Đ</span>
+    return (
+        <>
+            <section className="productDetails section">
+                <div className='container'>
+                    <div className='row'>
+                        <div className='productZoom col-md-5 pl-5'>
+                            <ProductZoom images={productData?.images} discount={productData?.discount} />
                         </div>
+
+
+                        <div className='col-md-7 pl-5 pr-5'>
+                            <h2 className='hd text-text-capitalize'>{productData?.name}</h2>
+                            <ul className='list list-inline'>
+                                <li className='list-inline-item'>
+                                    <div className='d-flex align-items-center'>
+                                        <span className=' mr-2' > Thương hiệu :</span>
+                                        <span>{productData?.brand}</span>
+                                    </div>
+                                </li>
+                                <li className='list-inline-item'>
+                                    <div className='d-flex align-items-center'>
+                                        <Rating className='read-only' value={parseInt(productData?.rating)} precision={0.5} readOnly size="small" />
+                                        <span className='text-light cursor ml-2'>1 đánh giá</span>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div class='d-flex info mb-4'>
+                                <span class='oldPrice'>{productData?.oldPrice}Đ</span>
+                                <span class='netPrice text-danger ml-2'>{productData?.price}Đ</span>
+                            </div>
 
                             <span className='badge badge-success'>Còn hàng</span>
 
@@ -364,10 +403,14 @@ const ProductDetails = () => {
 
 
                             <div className='d-flex align-items-center mt-4 '>
-                                <QuantityBox quantity={quantity} selectedItem={selectedItem}/>
+                                {/* <QuantityBox quantity={quantity} selectedItem={selectedItem}/> */}
+                                <QuantityBox
+                                    initialQuantity={productQuantity} // Giá trị số lượng ban đầu
+                                    onQuantityChange={handleQuantityChange} // Callback khi số lượng thay đổi
+                                />
                                 <Button className='btn-blue btn-lg btn-big btn-round ml-4' onClick={addtoCart}>
-                                    <IoCart /> &nbsp; {addingInCart===true?"Đang thêm...":"Thêm vào giỏ hàng"
-                                }
+                                    <IoCart /> &nbsp; {addingInCart === true ? "Đang thêm..." : "Thêm vào giỏ hàng"
+                                    }
                                 </Button>
 
                                 <Tooltip title="Add to Wishlist" placement="top">
@@ -396,7 +439,7 @@ const ProductDetails = () => {
                                 <li className='list-inline-item'>
                                     <Button className={` ${activeTabs === 1 && 'active'}`}
                                         onClick={() => { setActiveTabs(1) }}>
-                                       Thông tin chi tiết
+                                        Thông tin chi tiết
                                     </Button>
                                 </li>
                                 <li className='list-inline-item'>
@@ -405,7 +448,7 @@ const ProductDetails = () => {
                                             setActiveTabs(2)
 
                                         }}>
-                                      Đánh giá
+                                        Đánh giá
                                     </Button>
                                 </li>
 
@@ -413,12 +456,12 @@ const ProductDetails = () => {
 
                             <br />
 
-                        {
-                            activeTabs === 0 &&
-                            <div className='tabContent'>
-                                <p>{productData?.description}</p>
-                            </div>
-                        }
+                            {
+                                activeTabs === 0 &&
+                                <div className='tabContent'>
+                                    <p>{productData?.description}</p>
+                                </div>
+                            }
 
                             {
                                 activeTabs === 1 &&
@@ -466,7 +509,7 @@ const ProductDetails = () => {
                                                                     </div>
 
                                                                 </div>
-                                                                <h6 className='text-light'> { new Date(item?.dateCreated).toLocaleString()}</h6>
+                                                                <h6 className='text-light'> {new Date(item?.dateCreated).toLocaleString()}</h6>
                                                                 <p> {item?.review} </p>
                                                             </div>
                                                         </div>
@@ -537,8 +580,8 @@ const ProductDetails = () => {
 
                     <br />
 
-                <RelatedProducts title="sản phẩm liên quan " data={relatedProductData}/>
-                {/* {
+                    <RelatedProducts title="sản phẩm liên quan " data={relatedProductData} />
+                    {/* {
                     recentlyViewed?.length!==0 &&
                     <RelatedProducts title="sản phẩm đã xem gần đây" itemView={"recentlyViewed"} data={recentlyViewed}/>
                 } */}

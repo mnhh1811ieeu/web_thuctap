@@ -61,6 +61,7 @@ export const deleteData= async(url)=>{
     const {res}= await axios.delete(`${process.env.REACT_APP_BASE_URL}${url}`)
     return res;
 }
+
 export const deleteCartData = async (url) => {
     try {
         const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}${url}`);
