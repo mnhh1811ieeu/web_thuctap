@@ -292,6 +292,31 @@ router.get('/recentlyViewed', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
+router.put(`/:id/reduce-stock`, async (req, res) => {
+    const { countInStock } = req.body;
+
+
+    try {
+        // Giảm số lượng tồn kho bằng `$inc`
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            { $inc: { countInStock: parseInt(countInStock, 10) } }, // Giảm số lượng tồn kho
+            { new: true } // Trả về sản phẩm sau khi cập nhật
+        );
+
+        res.status(200).json({
+            message: 'Giảm tồn kho thành công',
+            product, // Trả về sản phẩm đã cập nhật
+        });
+    } catch (error) {
+        console.error('Lỗi khi giảm tồn kho:', error);
+        res.status(500).json({ message: 'Lỗi server', error: error.message });
+    }
+});
+
+
+
 router.post('/recentlyViewed', async (req, res) => {
     try {
         let findProduct = await RecentlyViewed.find({proId: req.body.id});

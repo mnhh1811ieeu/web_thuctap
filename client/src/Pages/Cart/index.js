@@ -98,7 +98,7 @@ const Cart = () => {
 
         if (userId) {
             fetchDataFromApi(`/api/order?userid=${userId}`)
-                .then((orderResponse) => {
+                .then(async (orderResponse) => {
                     console.log("Danh sách đơn hàng:", orderResponse.data);
                     
                     // Lấy orderId của phần tử cuối cùng
@@ -107,40 +107,56 @@ const Cart = () => {
                     console.log("Order ID của phần tử cuối cùng:", orderId);
                     
                     // Gọi API để lấy giỏ hàng
-                    return fetchDataFromApi(`/api/cart?userId=${userId}`).then((cartResponse) => {
-                        console.log("Danh sách giỏ hàng:", cartResponse);
-                        
-                        // So sánh _id của các sản phẩm trong cart và order
-                        const cartProductIds = cartResponse.map((cartItem) => cartItem._id);
-                        const orderProductIds = data.products.map((product) => product._id);
-
-                        // Kiểm tra hai mảng phải giống nhau hoàn toàn (bao gồm cả thứ tự)
-                        const areArraysEqual = (array1, array2) => {
-                            if (array1.length !== array2.length) return false; // Kiểm tra độ dài
-                            return array1.every((value, index) => value === array2[index]); // So sánh từng phần tử
-                        };
-        
-                        const isMatching = areArraysEqual(orderProductIds, cartProductIds);
-        
-                        if (isMatching) {
-        
-                            // Kiểm tra trạng thái giao dịch
-                            return fetchDataFromApii("/api/payment/transaction-status", {
-                                method: "POST",
+                    const cartResponse = await fetchDataFromApi(`/api/cart?userId=${userId}`);
+                    console.log("Danh sách giỏ hàng:", cartResponse);
+                    
+                    
+                    
+                    // So sánh _id của các sản phẩm trong cart và order
+                    const cartProductIds = cartResponse.map((cartItem) => cartItem._id);
+                    const orderProductIds = data.products.map((product) => product._id);
+                    // Kiểm tra hai mảng phải giống nhau hoàn toàn (bao gồm cả thứ tự)
+                    const areArraysEqual = (array1_1, array2) => {
+                        if (array1_1.length !== array2.length) return false; // Kiểm tra độ dài
+                        return array1_1.every((value, index) => value === array2[index]); // So sánh từng phần tử
+                    };
+                    const isMatching = areArraysEqual(orderProductIds, cartProductIds);
+                    if (isMatching) {
+                        const cartProducts = cartResponse.map((item) => ({
+                            productId: item.productId,
+                            quantity: item.quantity,
+                        }));
+                        console.log(cartProducts)
+                        for (const cartProduct of cartProducts) {
+                            await fetchDataFromApii(`/api/products/${cartProduct.productId}/reduce-stock`, {
+                                method: "PUT",
                                 headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ orderId }),
+                                body: JSON.stringify({
+                                    countInStock: -cartProduct.quantity, // Giảm số lượng tồn kho
+                                }),
                             });
-                        } else {
-                            throw new Error("Không khớp sản phẩm giữa cart và order.");
+                            
                         }
-                    });
+
+
+                        // Kiểm tra trạng thái giao dịch
+                        return fetchDataFromApii("/api/payment/transaction-status", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ orderId }),
+                        });
+                    } else {
+                        throw new Error("Không khớp sản phẩm giữa cart và order.");
+                    }
                 })
                 .then((paymentResponse) => {
                     console.log("Trạng thái giao dịch:", paymentResponse);
         
                     // Kiểm tra nếu giao dịch thành công
                     if (paymentResponse.message === 'Thành công.' && paymentResponse.resultCode === 0) {
-                        return deleteCartData(`/api/cart?userId=${userId}`)
+                        return deleteCartData(`/api/cart?userId=${userId}`).then(
+                            window.location.reload(true)
+                        )
                     } else {
                         console.log("Giao dịch không thành công.");
                     }

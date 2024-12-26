@@ -113,6 +113,8 @@ const MyAccount = () => {
 
     useEffect( () => {
         window.scrollTo(0,0);
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.userId;
 
         const token = localStorage.getItem("token");
         if(token !== '' && token !== undefined && token !== null){
@@ -122,7 +124,8 @@ const MyAccount = () => {
             history("/signIn")
         }
 
-        fetchDataFromApi(`/api/user/${id}`).then( (res) => {
+        fetchDataFromApi(`/api/user/${userId}`).then( (res) => {
+            console.log(res)
             setUserData(res)
             setPreviews(res.images)
             setFormFields({
@@ -130,6 +133,7 @@ const MyAccount = () => {
                 email: res.email,
                 phone: res.phone,
             });
+            console.log(formFields)
         })
 
 
@@ -138,6 +142,9 @@ const MyAccount = () => {
     const editUser = (e) => {
         e.preventDefault();
 
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.userId;
+
         formdata.append('name', formFields.name);
         formdata.append('email', formFields.email);
         formdata.append('phone', formFields.phone);
@@ -145,7 +152,7 @@ const MyAccount = () => {
         
         if (formFields.name !== '' && formFields.email !== '' && formFields.phone !== '') {
             setIsLoading(true);
-            editData(`/api/user/${id}`, formFields).then((res) => {                
+            editData(`/api/user/${userId}`, formFields).then((res) => {
                 
                 setIsLoading(false);
                 MyContext.fetchCategory();
@@ -186,20 +193,17 @@ return (
                                 <div className='row'>
                                     <div className='col-md-6'>
                                         <div className='form-group'>
-                                            <TextField  label="User Name" variant="outlined" className='w-100' name="name" onChange={changeInput} />
-
+                                            <TextField  label="User Name" variant="outlined" className='w-100' name="name" value={formFields.name} onChange={changeInput} />
                                         </div>
                                     </div>
                                     <div className='col-md-6'>
                                         <div className='form-group'>
-                                            <TextField  label="Email" disabled variant="outlined" className='w-100' name="email" onChange={changeInput}/>
-
+                                            <TextField  label="Email" disabled variant="outlined" className='w-100' value={formFields.email} name="email" onChange={changeInput}/>
                                         </div>
                                     </div>
                                     <div className='col-md-6'>
                                         <div className='form-group'>
-                                            <TextField  label="Phone Number" variant="outlined" className='w-100' name="phone" onChange={changeInput}/>
-
+                                            <TextField  label="Phone Number" variant="outlined" className='w-100' value={formFields.phone} name="phone" onChange={changeInput}/>
                                         </div>
                                     </div>
                                     
