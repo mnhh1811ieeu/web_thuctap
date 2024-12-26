@@ -1,26 +1,13 @@
 import React from 'react'
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import HomeIcon from '@mui/icons-material/Home';
-import ExpandMoreIcon from'@mui/icons-material/ExpandMore';
 import { emphasize, styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
-
-import MenuItem from '@mui/material/MenuItem';
-
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
-import { MdCloudUpload } from "react-icons/md";
-
-
-import Slider from "react-slick";
 import { MdBrandingWatermark } from "react-icons/md";
 import { TbCategoryFilled } from "react-icons/tb";
-import { BsTagsFill } from "react-icons/bs";
-import { IoColorPaletteSharp } from "react-icons/io5";
 import { GiResize } from "react-icons/gi";
-import { MdPriceCheck } from "react-icons/md";
-import { AiOutlineStock } from "react-icons/ai";
 import { MdPreview } from "react-icons/md";
 import { MdPublishedWithChanges } from "react-icons/md";
 import { useParams } from "react-router-dom";
@@ -28,8 +15,6 @@ import { useState } from "react";
 import { fetchDataFromApi } from '../../utils/api';
 import { useEffect } from 'react';
 import ProductZoom from '../../components/ProductZoom/ProductZoom';
-
-import LinearProgress from '@mui/material/LinearProgress';
 import UserAvatarImgComponent from '../../components/userAvatarimg';
 
 

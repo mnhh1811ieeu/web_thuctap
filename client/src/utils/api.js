@@ -43,3 +43,22 @@ export const deleteData= async(url)=>{
     const {res}= await axios.delete(`http://localhost:4000${url}`)
     return res;
 }
+export const fetchDataFromApii = async (url, options = {}) => {
+    try {
+        const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+
+        const config = {
+            method: options.method || "GET", // Mặc định GET
+            headers: options.headers || {},
+            body: options.body || null,
+        };
+
+        const response = await fetch(BASE_URL + url, config);
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching data from API:", error.message || error);
+        throw error;
+    }
+};

@@ -222,12 +222,13 @@ const Checkout = () => {
       // pincode: formFields.zipCode,
       email: user.email,
     };
-
+    const orderReceipt = `order_rcptid_${Date.now()}`;
     try {
       const payload = {
         ...addressInfo,
         amount: totalAmount,
-        order_receipt: `order_rcptid_${formFields.fullName}`,
+        // order_receipt: `order_rcptid_${formFields.fullName}`,
+        order_receipt: orderReceipt,
         userid: user.userId,
         products: cartData,
         paymentMethod, // Thêm loại thanh toán vào payload
