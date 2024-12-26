@@ -5,7 +5,7 @@ import axios from "axios";
 export const fetchDataFromApi=async(url)=>{
     try{
         //const {data}=await axios.get(process.env.BASE_URL+url)
-        const {data}=await axios.get("http://localhost:4000"+url)
+        const {data}=await axios.get(`${process.env.REACT_APP_BASE_URL}${url}`)
         return data;
     } catch(error){
         console.log(error);
@@ -15,7 +15,7 @@ export const fetchDataFromApi=async(url)=>{
 }
 export const fetchDataFromApii = async (url, options = {}) => {
     try {
-        const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+        const BASE_URL = process.env.REACT_APP_BASE_URL ;
 
         const config = {
             method: options.method || "GET", // Mặc định GET
@@ -34,12 +34,12 @@ export const fetchDataFromApii = async (url, options = {}) => {
 };
 
 export const postData=async(url, formData)=>{
-    const {res}= await axios.post("http://localhost:4000"+url,formData)
+    const {res}= await axios.post(`${process.env.REACT_APP_BASE_URL}${url}`,formData)
     return res;
 }
 export const postDataUser = async (url, formData) => {
     try {
-        const response = await axios.post("http://localhost:4000" + url, formData);
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}${url}`, formData);
         return response.data; // Đảm bảo trả về dữ liệu chính xác từ response
     } catch (error) {
         console.error("Error in postData:", error.response?.data || error.message);
@@ -49,7 +49,7 @@ export const postDataUser = async (url, formData) => {
 
 export const postDataProduct = async (url, formData) => {
     try {
-        const response = await axios.post("http://localhost:4000" + url, formData, {
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}${url}`, formData, {
             headers: { "Content-Type": "multipart/form-data" }, // Đảm bảo đúng Content-Type cho formData
         });
         return response.data; // Trả về dữ liệu từ phản hồi
@@ -59,11 +59,10 @@ export const postDataProduct = async (url, formData) => {
     }
 };
 
-//
 
 export const postDataProduct2 = async (url, formData) => {
     try {
-        const response = await axios.post("http://localhost:4000" + url, formData, {
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}${url}`, formData, {
             headers: { "Content-Type": "multipart/form-data" }, // Đảm bảo đúng Content-Type cho formData
         });
         console.log("Phản hồi từ server:", response.data); // Kiểm tra phản hồi từ server

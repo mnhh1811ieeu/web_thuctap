@@ -4,15 +4,23 @@ import logo1 from "../../assets/images/logo1.png";
 import gg from "../../assets/images/gg.png";
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { postDataUser } from '../../utils/api';
+import { Link,  useNavigate } from 'react-router-dom';
+import {  postDataUser } from '../../utils/api';
+
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { firebaseApp } from '../../firebase';
+
+
+const auth = getAuth(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+
 
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const context = useContext(MyContext); // Dùng context để cập nhật isLogin
  
   const [error, setError] = useState(""); // Lưu thông báo lỗi khi đăng nhập
-  const history = useNavigate();
+  //const history = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -70,11 +78,77 @@ const SignIn = () => {
   };
   useEffect(() => {
     context.setIsHeaderFooterShow(false);
-  }, [context]);
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-
   }, []);
+  
+
+
+
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential ? credential.accessToken : null;
+        const user = result.user;
+  
+        const fields = {
+          name: user.providerData[0]?.displayName,
+          email: user.providerData[0]?.email,
+          password: null,
+          images: user.providerData[0]?.photoURL,
+          phone: user.providerData[0]?.phoneNumber,
+        };
+        console.log(fields);
+  
+        postDataUser("/api/user/authWithGoogle", fields).then( (res) => {
+          try {
+            console.log(res);
+            if (res.error !== true) {
+              localStorage.setItem("token", res.token);
+  
+              const user = {
+                name: res.user?.name,
+                email: res.user?.email,
+                userId: res.user?.id,
+              };
+  
+              localStorage.setItem("user", JSON.stringify(user));
+  
+              context.setAlertBox({
+                open: true,
+                error: false,
+                msg: "Đăng nhập thành công",
+              });
+  
+              setTimeout( () => {
+                setIsLoading(false);
+                window.location.href = "/";
+              }, 1000);
+            } else {
+              context.setAlertBox({
+                open: true,
+                error: true,
+                msg: res.msg,
+              });
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.log(error);
+            setIsLoading(false);
+          }
+        });
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+  
+        context.setAlertBox({
+          open: true,
+          error: true, // Đánh dấu là lỗi
+          msg: errorMessage,
+        });
+        setIsLoading(false); // Đảm bảo gọi setIsLoading
+      });
+  };
+  
 
 
 
@@ -135,7 +209,7 @@ const SignIn = () => {
             </p>
 
             <h6 className='mt-4 text-center font-weight-bold'>Hoặc tiếp tục bằng</h6>
-            <Button className='loginWithGoogle mt-2' variant='outlined'>
+            <Button onClick={signInWithGoogle} className='loginWithGoogle mt-2' variant='outlined'>
               <img src={gg} alt="" /> Sign In With Google
             </Button>
 

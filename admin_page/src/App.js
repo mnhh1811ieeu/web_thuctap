@@ -37,7 +37,7 @@ function App() {
   const [isHideSiderbarAndHeader, setisHideSiderbarAndHeader] = useState(false);
   const [progress, setProgress] = useState(0);
   const [catData, setCatData] = useState([]);
-  const [baseUrl, setBaseUrl] = useState("http://localhost:4000");
+  const [baseUrl, setBaseUrl] = useState("https://webbhm-server.onrender.com");
   const [alertBox, setAlertBox] = useState({
     msg: '',
     error: false,
@@ -138,8 +138,7 @@ function App() {
               <Route path="/signup" exact={true} element={<SignUp />} />
               <Route path="/product/upload" exact={true} element={<ProductUpload />} />
               <Route path="/product/list" exact={true} element={<Products />} />
-              <Route path="/product/details/:id" exact={true} element={<ProductDetails />} />
-
+              <Route path="/product/details/:id" exact={true} element={<ProductDetails />} />              
               <Route path="/category/add" exact={true} element={<CategoryAdd />} />
               <Route path="/category" exact={true} element={<Category />} />
               <Route path="/product/edit/:id" exact={true} element={<Editproduct />} />

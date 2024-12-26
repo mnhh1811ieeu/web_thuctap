@@ -184,6 +184,21 @@ router.delete('/:id', async (req, res) => {
     })
 });
 
+router.delete("/", async (req, res) => {
+    const { userId } = req.query; // Lấy userId từ query string
+    
+    if (!userId) {
+        return res.status(400).json({ message: "Missing userId in query string" });  // Kiểm tra nếu thiếu userId
+    }
+    try {
+        await Cart.deleteMany({ userId }); // Xóa giỏhàng theo userId
+        res.status(200).json({ message: 'Cart cleared successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error clearing cart' });
+    }
+});
+
 router.put('/:id', async (req, res) => {
 
     const cartList = await Cart.findByIdAndUpdate(

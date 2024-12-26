@@ -26,34 +26,16 @@ const Navigation = () => {
                         </Button>
                         <div className={`sidebarNav ${isOpenSidebarVal=== true ? 'open' : ''} `}>
                             <ul>
-                                <li className=''>
-                                    <Link to="/"><Button>Home<FaAngleRight className='ml-auto'/></Button></Link>
-                                    <div className='submenu'>
-                                        <Link to="/"><Button>Home</Button> </Link>
+                                {
+                                    context.categoryData?.length !==0 && context.categoryData?.slice(0, 7).map( (item, index) => {
+                                        return(
+                                            <li className='list list-inline-item'>
+                                                <Link to={`/subCat/${item?.name}`}><Button>{item?.name}</Button> </Link>
                                                 
-                                    </div>
-                                </li>
-                                <li className=''>
-                                    <Link to="/"><Button>Men<FaAngleRight className='ml-auto'/></Button></Link>
-                                    <div className='submenu'>
-                                        <Link to="/"><Button>Home</Button> </Link>
-                                        <Link to="/"><Button>Home</Button> </Link>
-                                        <Link to="/"><Button>Home</Button> </Link>                     
-                                    </div>
-                                </li>
-                                <li className=''>
-                                    <Link to="/"><Button>Women</Button> </Link>
-                                </li>
-                                <li className=''>
-                                    <Link to="/"><Button>Kids</Button> </Link>
-                                </li>
-                                <li className=''>
-                                    <Link to="/"><Button>Watches</Button> </Link>
-                                </li>
-                                <li className=''>
-                                    <Link to="/"><Button>Beauty</Button> </Link>
-                                </li>
-                            
+                                            </li>
+                                        )
+                                    })
+                                }
                             </ul>
                         </div>
                     </div>

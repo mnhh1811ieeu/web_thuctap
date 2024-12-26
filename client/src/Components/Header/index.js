@@ -163,11 +163,13 @@ const Header = () => {
                                                             msg: "Bạn cần đăng nhập để xem giỏ hàng",
                                                         });
                                                         setTimeout(() => {
-                                                            window.location.href = "/signin"; // Chuyển hướng đến trang đăng nhập sau 2 giây
+                                                            //window.location.href = "/signin"; // Chuyển hướng đến trang đăng nhập sau 2 giây
+                                                            history('/signin');
                                                         }, 1000);
                                                     } else {
                                                         // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
                                                         window.location.href = "/cart";
+                                                        //history('/cart');
                                                     }
                                                 }}
                                             >

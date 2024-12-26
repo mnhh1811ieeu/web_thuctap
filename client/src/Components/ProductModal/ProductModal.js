@@ -7,6 +7,7 @@ import QuantityBox from '../QuantityBox/QuantityBox';
 import { FaRegHeart } from "react-icons/fa";
 import { MyContext } from '../../App';
 import ProductZoom from '../ProductZoom/ProductZoom';
+import { Link } from 'react-router-dom';
 
 const ProductModal = (props) => {
 
@@ -53,11 +54,13 @@ const ProductModal = (props) => {
                     <p className='mt-2'>{props?.data?.description}</p>
 
                     <div className='d-flex align-items-center'>
-                        <QuantityBox quantity={quantity} selectedItem={selectedItem}/>
-
-                        <Button className='btn-blue btn-lg btn-big btn-round'>Add to cart</Button>
+                        <Link to={`/product/${props.data?.id}`}>
+                            <Button onClick={() =>context.setIsOpenProductModal(false)} 
+                                    className='btn-blue btn-lg btn-big btn-round'>
+                                        Xem chi tiết
+                            </Button>
+                        </Link>
                     </div>
-
 
                     <div className='d-flex align-items-center mt-3 actions'>
                         <Button className='btn-round btn-sml' variant="outlined"><FaRegHeart/> &nbsp; ADD TO WISHLIST</Button>

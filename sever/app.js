@@ -5,10 +5,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 //import axios from "axios";
 require('dotenv/config');
+
 const authJwt = require('./helper/jwt.js');
 
 app.use(cors());
 app.options('*', cors())
+
+
 
 //middleware
 app.use(bodyParser.json());
@@ -38,8 +41,7 @@ app.use(`/api/cart`, cart);
 app.use(`/api/payment`, paymentRoutes);
 app.use(`/api/productReviews`,productReviewRoutes)
 app.use(`/api/search`, search);
-app.use(`/api/order`,orderRoutes);
-
+app.use(`/api/order`, orderRoutes );
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
@@ -49,7 +51,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
     console.log('database connection is ready...')
     //sever
     app.listen(process.env.PORT, () => {
-        console.log(`sever is running http://localhost:${process.env.PORT}`);
+        console.log(`sever is running ${process.env.REACT_APP_BASE_URL}`);
     })
 
  }  )

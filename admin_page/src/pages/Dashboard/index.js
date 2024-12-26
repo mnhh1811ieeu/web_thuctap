@@ -194,7 +194,7 @@ const Dashboard = () => {
         <>
             <div className="right-content w-100">
                 <div className="row dashboardBoxWrapperRow">
-                    <div className="col-md-8">
+                    <div className="col-md-8 d-flex">
                         <div className="dashboardBoxWrapper d-flex">
                             <DashboardBox
                                 color={["#1da256", "#48d483"]}
@@ -229,7 +229,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="box graphBox">
+                    <div className="box graphBox ">
                         <div className="d-flex align-items-center w-100 bottomEle">
                             <h6 className="text-white mb-0 mt-0">Tổng doanh thu</h6>
                             <div className="ml-auto">
@@ -381,7 +381,7 @@ const Dashboard = () => {
 
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
-                                                        <Link to="/product/details">
+                                                        <Link to={`/product/details/${item.id}`}>
                                                             <Button className="secondary" color="secondary"><FaEye /></Button>
                                                         </Link>
                                                         <Button className="success" color="success">

@@ -5,6 +5,61 @@ const { User } = require('../models/user');
 const router = express.Router();
 const mongoose = require('mongoose');
 
+
+router.post("/authWithGoogle", async (req, res) => {
+  const { name, phone, email, password, images } = req.body;
+
+  try {
+    // Kiểm tra email đã tồn tại chưa
+    const existingUser = await User.findOne({ email });
+    if ( !existingUser ) {
+        // Mã hóa mật khẩu nếu có
+        let hashedPassword = null;
+        if (password) {
+        const saltRounds = 10;
+        hashedPassword = await bcrypt.hash(password, saltRounds);
+        }
+
+        
+        const newUser = await User.create({
+        name: name,
+        email: email,
+        password: hashedPassword, // Sử dụng mật khẩu đã mã hóa
+        images: images,
+        phone: phone,
+        });
+
+        // Tạo JWT token
+        const token = jwt.sign(
+            { email: newUser.email, id: newUser._id },
+            process.env.JSON_WEB_TOKEN_SECRET_KEY,
+            { expiresIn: "1h" } // Token hết hạn sau 1 giờ
+        );
+
+        // Trả về thông tin người dùng và token
+        res.status(200).json({
+            user: newUser,
+            token: token,
+            msg: "Login success!!", // Sửa typo từ mag thành msg
+        });    
+    } else {
+        const existingUser = await User.findOne( { email: email});
+        const token = jwt.sign({ email: existingUser.email, id: existingUser._id}, process.env.JSON_WEB_TOKEN_SECRET_KEY);
+
+        res.status(200).json({
+            user: existingUser,
+            token: token,
+            msg: "Login Successfully"
+        })
+    }
+
+   
+  } catch (error) {
+    console.error("Error during Google authentication:", error);
+  }
+});
+
+
 // Route đăng ký người dùng
 router.post('/signup', async (req, res) => {
     const { name, phone, email, password } = req.body;

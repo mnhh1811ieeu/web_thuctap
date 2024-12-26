@@ -27,5 +27,5 @@ const orderSchema = new mongoose.Schema({
 
 // Tạo model
 exports.Order = mongoose.model('Order', orderSchema);
-exports.orderSchema= orderSchema;
+exports.orderSchema = orderSchema;
 
