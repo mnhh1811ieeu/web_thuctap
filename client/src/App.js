@@ -20,6 +20,8 @@ import { fetchDataFromApi} from "./utils/api";
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import PaymentSuccess from "./Pages/Payment Success/paymentsuccess";
+import TawkWidget from "./Components/chat/chat";  // Import chat widget
+
 const MyContext = createContext();
 
 function App() {
@@ -79,11 +81,37 @@ function App() {
     })
   }, []);
   
-  // useEffect( () => {
-  //   fetchDataFromApi(`/api/products/${isOpenProductModal.id}`).then( (res) =>{
-  //     setProductData(res);
-  //   })
-  // }, [isOpenProductModal])
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLogin(true);
+      const userData = JSON.parse(localStorage.getItem("user"));
+      setUser(userData);
+    } else {
+      setIsLogin(false);
+    }
+  }, []);  // Chạy chỉ 1 lần khi component mount
+
+  useEffect(() => {
+    if (isOpenProductModal?.id) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      fetchDataFromApi(`/api/products/${isOpenProductModal.id}`, signal)
+        .then((res) => {
+          setProductData(res);
+        })
+        .catch((error) => {
+          if (error.name === 'AbortError') {
+            console.log('Fetch aborted');
+          } else {
+            console.error('Fetch error:', error);
+          }
+        });
+
+      return () => controller.abort(); // Cleanup khi modal đóng
+    }
+  }, [isOpenProductModal]);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token !== null && token !== "" && token !== null) {
@@ -178,6 +206,8 @@ function App() {
             {alertBox.msg}
           </Alert>
         </Snackbar>
+        {isLogin && <TawkWidget />}  {/* Render TawkWidget chỉ khi người dùng đã đăng nhập */}
+
       </MyContext.Provider> 
     </BrowserRouter>
   );

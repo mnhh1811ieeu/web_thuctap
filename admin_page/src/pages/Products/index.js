@@ -190,15 +190,15 @@ const Products = () => {
                             <thead className="thead-dark">
                                 <tr>
 
-                                    <th>Product</th>
-                                    <th>Category</th>
-                                    <th>Brand</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Rating</th>
-                                    <th>Discount</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Loại sản phẩm</th>
+                                    <th>Hãng</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Đánh giá</th>
+                                    <th>Giảm giá</th>
                                     <th>Size</th>
-                                    <th>Action</th>
+                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>

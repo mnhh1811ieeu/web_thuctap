@@ -112,7 +112,7 @@ const Header = () => {
                                                     <Divider />
                                                     <Link to="/orders">
                                                         <MenuItem onClick={handleClose}>
-                                                            <AddShoppingCartIcon /> &nbsp; Sản phẩm đã mua
+                                                            <AddShoppingCartIcon /> &nbsp; Quản lý đơn hàng
                                                         </MenuItem>
 
                                                     </Link>

@@ -100,57 +100,14 @@ const Sidebar = () => {
                         </Button>
                     </Link>
                 </li>
-                <li>
-                    <Link to='/'>
-                        <Button className={`w-100 ${activeTab === 3 ? 'active' : ''}`}
-                            onClick={() => isOpenSubmenu(3)}>
-                            <span className="icon">
-                                <MdOutlineMessage />
-                            </span>
-                            Tin nhắn
-                            <span className="arrow">
-                                <FaAngleRight />
-                            </span>
-                        </Button>
-                    </Link>
-                </li>
-                <li>
-                    <Link to='/'>
-                        <Button className={`w-100 ${activeTab === 4 ? 'active' : ''}`}
-                            onClick={() => isOpenSubmenu(4)}>
-                            <span className="icon">
-                                <IoNotificationsSharp />
-                            </span>
-                            Thông báo
-                            <span className="arrow">
-                                <FaAngleRight />
-                            </span>
-                        </Button>
-                    </Link>
-                </li>
-                <li>
-                    <Link to='/'>
-                        <Button className={`w-100 ${activeTab === 5 ? 'active' : ''}`}
-                            onClick={() => isOpenSubmenu(5)}>
-                            <span className="icon">
-                                <IoSettingsSharp />
-                            </span>
-                            Chỉnh sửa
-                            <span className="arrow">
-                                <FaAngleRight />
-                            </span>
-                        </Button>
-                    </Link>
-                </li>
-
             </ul>
 
             <br />
-            <div className='logoutWrapper'>
+            {/* <div className='logoutWrapper'>
                 <div className='logoutBox'>
                     <Button variant="contained"><IoLogOutOutline />Đăng xuất</Button>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css'; 
-import { Link } from 'react-router-dom';
 import { MyContext } from '../../App';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -12,8 +10,7 @@ import Rating from '@mui/material/Rating';
 import { Button } from '@mui/material';
 
 const Sidebar = (props) => {
-  const [value, setValue] = useState([100, 60000000]);
-  const [ value2, setValue2] =useState(0);
+  const [value, setValue] = useState([1000, 10000000]);
   const context = useContext(MyContext);
   const [cateName, setCateName]= useState(''); 
 

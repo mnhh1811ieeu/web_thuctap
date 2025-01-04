@@ -1590,6 +1590,101 @@ div.chat-wrapper[opened="true"] {
   transform: translate3d(0px, 0px, 0px) scale(1, 1); /* Reset position and scale */
   transition: transform 0.2s ease, opacity 0.2s ease-in; /* Transition for position and opacity */
 }
+/* CSS để di chuyển widget Tawk.to sang bên trái */
+#tawk_1igc48m07 {
+  position: fixed !important;
+  left: 10px !important;  /* Điều chỉnh khoảng cách từ bên trái */
+  bottom: 10px !important;  /* Điều chỉnh khoảng cách từ dưới cùng */
+  z-index: 9999 !important;  /* Đảm bảo widget hiển thị trên các phần tử khác */
+}
+.tabContent {
+  padding: 30px 0;
+  background-color: #f9f9f9;
+}
 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.reviews-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.review-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.review-card-body {
+  padding-bottom: 20px;
+}
+
+.review-header {
+  margin-bottom: 10px;
+}
+
+.customer-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.review-date {
+  font-size: 14px;
+  color: #777;
+}
+
+.review-text {
+  font-size: 16px;
+  color: #333;
+}
+
+.review-replies {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 2px solid #eee;
+}
+
+.replies-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.reply-item {
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.admin-name {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.reply-text {
+  font-size: 15px;
+  color: #555;
+}
+
+.reply-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.review-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
 
 

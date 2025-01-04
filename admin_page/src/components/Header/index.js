@@ -95,7 +95,16 @@ const Header = () => {
                     <div className="col-sm-7 d-flex align-items-center justify-content-end part3">
                         <Button className="rounded-circle mr-3"><CiLight /></Button>
                         <Button className="rounded-circle mr-3" ><TiShoppingCart /></Button>
-                        <Button className="rounded-circle mr-3"><MdOutlineEmail /></Button>
+                        <a
+                            href="https://dashboard.tawk.to/#/monitoring"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <Button className="rounded-circle mr-3">
+                                <MdOutlineEmail />
+                            </Button>
+                        </a>
+
 
 
                         <div className="dropdownWrapper position-relative">
