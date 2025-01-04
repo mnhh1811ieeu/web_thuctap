@@ -22,6 +22,7 @@ const ProductDetails = () => {
     const [tabError, setTabError] = useState(false);
     const [addingInCart, setAddingInCart] = useState(false);
     const context = useContext(MyContext);
+    const [hasPurchased, setHasPurchased] = useState(false);
 
     const [productData, setProductData] = useState([]);
     const [relatedProductData, setRelatedProductData] = useState([]);
@@ -94,28 +95,71 @@ const ProductDetails = () => {
         return data ? data.split(',') : [];
     };
     const sizes = ensureArray(productData?.productSIZE);
+    // const addReview = (e) => {
+    //     e.preventDefault();
+
+    //     const user = JSON.parse(localStorage.getItem("user"));
+    //     reviews.customerName = user?.name;
+    //     reviews.customerId = user?.userId;
+    //     reviews.productId = id;
+
+    //     setIsLoading(true);
+    //     postData("/api/productReviews/add", reviews).then((res) => {
+    //         setIsLoading(false);
+    //         reviews.customerRating = 1;
+    //         setReviews({
+    //             review: "",
+    //             customerRating: 1
+    //         })
+    //         fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res) => {
+    //             setReviewData(res)
+    //         })
+    //     })
+    // }
     const addReview = (e) => {
         e.preventDefault();
-
+    
+        // Kiểm tra nếu người dùng chưa mua sản phẩm
+        if (!hasPurchased) {
+            alert("Bạn chỉ có thể đánh giá khi đã mua sản phẩm này");
+            return;
+        }
+    
         const user = JSON.parse(localStorage.getItem("user"));
+    
+        if (!user) {
+            alert("Bạn cần đăng nhập để đánh giá");
+            return;
+        }
+    
         reviews.customerName = user?.name;
         reviews.customerId = user?.userId;
         reviews.productId = splitId(id);
         console.log(reviews.productId)
 
         setIsLoading(true);
-        postData("/api/productReviews/add", reviews).then((res) => {
-            setIsLoading(false);
-            reviews.customerRating = 1;
-            setReviews({
-                review: "",
-                customerRating: 1
-            })
+        postData("/api/productReviews/add", reviews)
+            .then((res) => {
+                setIsLoading(false);
+                reviews.customerRating = 1; // Reset rating
+                setReviews({
+                    review: "",
+                    customerRating: 1,
+                });
+    
+                
             fetchDataFromApi(`/api/productReviews?productId=${splitId(id)}`).then((res) => {
                 setReviewData(res)
             })
         })
-    }
+
+            .catch((error) => {
+                setIsLoading(false);
+                console.error("Error adding review:", error);
+                alert("Không thể thêm đánh giá. Hãy thử lại sau.");
+            });
+    };
+    
     const onChangeInput = (e) => {
         setReviews(() => ({
             ...reviews,
@@ -239,7 +283,7 @@ const ProductDetails = () => {
     const addtoCart = () => {
         if (activeSize !== null) {
             const user = JSON.parse(localStorage.getItem("user"));
-    
+
             if (!user) {
                 context.setAlertBox({
                     open: true,
@@ -248,7 +292,7 @@ const ProductDetails = () => {
                 });
                 return;
             }
-    
+
             // Kiểm tra tính hợp lệ của dữ liệu sản phẩm
             if (!productData || !productData.id || !productData.name || !productData.images?.length || !productData.price || !productData.rating) {
                 context.setAlertBox({
@@ -258,7 +302,7 @@ const ProductDetails = () => {
                 });
                 return;
             }
-    
+
             // Kiểm tra tồn kho (frontend check)
             const quantity = productQuantity || 1; // Giá trị mặc định nếu không có quantity
             if (quantity > productData.countInStock) {
@@ -269,11 +313,11 @@ const ProductDetails = () => {
                 });
                 return; // Dừng lại, không tiếp tục gửi request
             }
-    
+
             // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
             fetchDataFromApi(`/api/cart?userId=${user.userId}`).then((cartItems) => {
                 const existingItem = cartItems.find((item) => item.productId === productData.id);
-    
+
                 if (existingItem) {
                     // Nếu sản phẩm đã tồn tại, hiện thông báo
                     context.setAlertBox({
@@ -293,16 +337,16 @@ const ProductDetails = () => {
                         productId: productData.id,
                         userId: user.userId
                     };
-    
+
                     console.log("Cart Fields:", cartFields);
-    
+
                     // Bắt đầu quá trình thêm sản phẩm
                     setAddingInCart(true);
-    
+
                     postDataUser(`/api/cart/add`, cartFields)
                         .then((res) => {
                             console.log("API Response:", res);
-    
+
                             if (res?.success) {
                                 context.setAlertBox({
                                     open: true,
@@ -349,8 +393,8 @@ const ProductDetails = () => {
             });
         }
     };
-    
-    
+
+
     const handleQuantityChange = (value) => {
         setProductQuantity(value); // Cập nhật số lượng
     };
@@ -499,90 +543,72 @@ const ProductDetails = () => {
                             {
                                 activeTabs === 2 &&
 
-                                <div className='tabContent'>
-                                    <div className='row'>
-                                        <div className='col-md-8' >
-                                            <h3>Câu hỏi của khách hàng và đánh giá</h3>
-                                            <br />
+                                <div className="tabContent">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-md-8">
+                                            <h3 className="reviews-title">Câu hỏi và đánh giá của khách hàng</h3>
 
-                                            {
-                                                reviewData?.length !== 0 && reviewData?.slice(0)?.reverse()?.map((item, index) => {
-                                                    return (
-                                                        <div className='card p-4 reviewsCard flex-row' key={index}>
-                                                            <div className='info'>
-                                                                <div className='d-flex algin-items-center w-100'>
-                                                                    <h5>{item?.customerName}</h5>
-
-                                                                    <div className='ml-auto'>
-                                                                        <Rating name='half-rating-read' value={item?.customerRating} precision={0.5} readOnly size='small' />
-                                                                    </div>
-
-                                                                </div>
-                                                                <h6 className='text-light'> {new Date(item?.dateCreated).toLocaleString()}</h6>
-                                                                <p> {item?.review} </p>
+                                            {/* Lặp qua các bình luận */}
+                                            {reviewData?.length !== 0 && reviewData?.reverse().map((item, index) => (
+                                                <div className="card review-card" key={index}>
+                                                    <div className="review-card-body">
+                                                        <div className="review-header d-flex align-items-center">
+                                                            <h5 className="customer-name">{item?.customerName}</h5>
+                                                            <div className="ml-auto">
+                                                                <Rating name="half-rating-read" value={item?.customerRating} precision={0.5} readOnly size="small" />
                                                             </div>
                                                         </div>
-                                                    )
-                                                })
-                                            }
+                                                        <h6 className="review-date">{new Date(item?.dateCreated).toLocaleString()}</h6>
+                                                        <p className="review-text">{item?.review}</p>
+                                                    </div>
 
-                                            <br className='res-hide' />
+                                                    {/* Hiển thị phần phản hồi từ admin nếu có */}
+                                                    {item?.replies?.length > 0 && (
+                                                        <div className="review-replies">
+                                                            <h6 className="replies-title">Phản hồi từ Admin:</h6>
+                                                            {item.replies.map((reply, replyIndex) => (
+                                                                <div key={replyIndex} className="reply-item">
+                                                                    <div className="admin-name">
+                                                                        <strong>{reply.responderName}</strong>
+                                                                    </div>
+                                                                    <p className="reply-text">{reply.reply}</p>
+                                                                    <span className="reply-time">{new Date(reply.timestamp).toLocaleString()}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
 
-
-
-
-                                            <br className='res-hide' />
-
-                                            <form className='reviewForm' onSubmit={addReview}>
-
-                                                <h4> Đánh giá</h4> <br />
-                                                <div className='form-group'>
-                                                    <textarea className='form-control'
-                                                        placeholder='Viết đánh giá'
-                                                        name='review'
+                                            {/* Form thêm đánh giá */}
+                                            <form className="review-form" onSubmit={addReview}>
+                                                <h4 className="form-title">Viết đánh giá</h4>
+                                                <div className="form-group">
+                                                    <textarea
+                                                        className="form-control"
+                                                        placeholder="Viết đánh giá của bạn..."
+                                                        name="review"
                                                         onChange={onChangeInput}
                                                         value={reviews.review}
-                                                    >
-
-                                                    </textarea>
+                                                    ></textarea>
                                                 </div>
-
-                                                <div className='row'>
-                                                    {/* <div className='col-md-6'>
-                                                        <div className='form-group'>
-                                                            <input type='text'
-                                                                className='form-control'
-                                                                placeholder='Name'
-                                                                name='customerName' onChange={onChangeInput} />
-                                                        </div>
-                                                    </div> */}
-
-                                                    <div className='col-md-6'>
-                                                        <div className='form-group'>
-                                                            <Rating name='rating' value={rating} precision={0.5} onChange={onChangeRating} />
+                                                <div className="row">
+                                                    <div className="col-md-6">
+                                                        <div className="form-group">
+                                                            <Rating name="rating" value={rating} precision={0.5} onChange={onChangeRating} />
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <hr />
-                                                <div className='form-group'>
-                                                    <Button type='submit' className='btn-blue btn-big btn-round  btn-lg '>{isLoading === true ? <CircularProgress color="inherit"
-                                                        className="ml-3 loader" /> : 'Thêm đánh giá'}</Button>
-                                                </div>
-
+                                                <button type="submit" className="btn btn-primary btn-lg btn-block">
+                                                    {isLoading ? <CircularProgress color="inherit" className="ml-3 loader" /> : 'Thêm đánh giá'}
+                                                </button>
                                             </form>
                                         </div>
-
-
-
-                                        {/* <div className='col-md-4 pl-5 reviewBox'>
-                                        
-
-                                    </div>   */}
                                     </div>
                                 </div>
+                            </div>
                             }
-
 
                         </div>
                     </div>

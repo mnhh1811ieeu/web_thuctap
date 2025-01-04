@@ -85,10 +85,10 @@ const Footer = () => {
 
             <hr/>
 
-            <div style={{ }}>
+            {/* <div style={{ }}>
                     <h5 style={{fontWeight: 'bold'}}>Danh mục sản phẩm</h5>
-            </div>
-            <div className='row mt-4 linksWrap'>
+            </div> */}
+            {/* <div className='row mt-4 linksWrap'>
                 
                 <div className='col'>
                     <h6>Trái cây & Rau củ</h6>
@@ -154,7 +154,7 @@ const Footer = () => {
                     </ul>
                 </div>
                
-            </div>    
+            </div>     */}
 
         </div>    
 

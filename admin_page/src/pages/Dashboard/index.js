@@ -55,7 +55,7 @@ const Dashboard = () => {
             context.setProgress(100);
         })
     }, []);
-   
+
 
     const fetchUserCount = async () => await fetchDataFromApi('/api/user/get/count');
     const fetchProductCount = async () => await fetchDataFromApi('/api/products/get/count');
@@ -177,7 +177,7 @@ const Dashboard = () => {
                     const productQuantity = order.products.reduce((sum, product) => {
                         return sum + (product.quantity || 0);
                     }, 0);
-    
+
                     return acc + productQuantity;
                 }, 0);
                 return { count: totalQuantity }; // Trả về count
@@ -188,8 +188,8 @@ const Dashboard = () => {
             return { count: 0 }; // Trả về 0 nếu lỗi
         }
     };
-    
-    
+
+
     return (
         <>
             <div className="right-content w-100">
@@ -266,7 +266,7 @@ const Dashboard = () => {
                         </div>
 
                         <h3 className="text-white font-weight-bold">{total.toLocaleString("vi-VN")} VND</h3>
-                        
+
                         <Chart
                             chartType="LineChart"
                             width="100%"
@@ -278,7 +278,7 @@ const Dashboard = () => {
 
                 </div>
                 <div className='card shadow border-0 p-3 mt-4'>
-                    <h3 className="hd">Best Selling Products</h3>
+                    <h3 className="hd">Sản phẩm </h3>
 
                     <div className="row cardFilters mt-3">
                         {/* <div className="col-md-3">
@@ -332,15 +332,15 @@ const Dashboard = () => {
                             <thead className="thead-dark">
                                 <tr>
 
-                                    <th>Product</th>
-                                    <th>Category</th>
-                                    <th>Brand</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Rating</th>
-                                    <th>Discount</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Loại sản phẩm</th>
+                                    <th>Hãng</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Đánh giá</th>
+                                    <th>Giảm giá</th>
                                     <th>Size</th>
-                                    <th>Action</th>
+                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>

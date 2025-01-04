@@ -112,7 +112,7 @@ const Checkout = () => {
       // pincode: formFields.zipCode,
       email: user.email,
     };
-    const orderReceipt = `order_rcptid_${Date.now()}`;
+    const orderReceipt = `order_rcptid_${Date.now()}`.replace(/[^0-9a-zA-Z-_.:]/g, '');
     try {
       const payload = {
         ...addressInfo,
