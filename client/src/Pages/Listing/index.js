@@ -11,6 +11,7 @@ import ProductItem from '../../Components/ProductItem/ProductItem';
 import Pagination from '@mui/material/Pagination';
 import { useParams } from "react-router-dom"
 import { fetchDataFromApi } from '../../utils/api';
+import { useSEO } from '../../SEOProvider';
 
 const Listing = () => {
 
@@ -25,29 +26,34 @@ const Listing = () => {
     setAnchorEl(null);
   };
 
-  const {name} = useParams();
+  const {id} = useParams();
+  const { setSEO } = useSEO();
+  console.log(id)
 
   useEffect( () => {
-     fetchDataFromApi(`/api/products?catName=${name}`).then( (res)=> {
+     fetchDataFromApi(`/api/products?catId=${id}`).then( (res)=> {
       setProductData(res.products)
+      setSEO(`${res.products[0]?.catName} | BHM-Store`, "Mua hàng online với mức giá cực kì hấp dẫn");
      })
-  }, [name])
+  }, [id, setSEO])
 
-  const filterData = (name) =>{
-    fetchDataFromApi(`/api/products?catName=${name}`).then( (res)=> {
+  const filterData = (id) =>{
+    fetchDataFromApi(`/api/products?catId=${id}`).then( (res)=> {
       setProductData(res.products)
+      setSEO(`${res.products[0]?.catName } | BHM-Store`, "Mua hàng online với mức giá cực kì hấp dẫn");
+      console.log(res.products)
     })
   }
 
-  const filterByPrice = (price, catName) =>{
-    fetchDataFromApi(`/api/products?minPrice=${price[0]}&maxPrice=${price[1]}&catName=${catName}`).then( (res)=> {
+  const filterByPrice = (price, catId) =>{
+    fetchDataFromApi(`/api/products?minPrice=${price[0]}&maxPrice=${price[1]}&catId=${catId}`).then( (res)=> {
       setProductData(res.products)
       console.log(res)
     })
   }
 
-  const filterByRating = (rating, catName) => {
-    fetchDataFromApi(`/api/products?rating=${rating}&catName=${catName}`).then( (res)=> {
+  const filterByRating = (rating, catId) => {
+    fetchDataFromApi(`/api/products?rating=${rating}&catId=${catId}`).then( (res)=> {
       setProductData(res.products)
     })
   }
@@ -61,6 +67,7 @@ const Listing = () => {
 
                     <div className='content_right'>
                       <div style={{ width: "940px",height: '280px',  display: 'flex', gap: '10px'}}>
+                        
                         <img src="https://bazaarvietnam.vn/wp-content/uploads/2024/03/kim-ji-won-2-1.jpg" 
                         className="w-50" style={{ borderRadius: '10px', objectFit: 'cover'}}/>
                         <img src="https://bazaarvietnam.vn/wp-content/uploads/2024/10/bazaarvietnam-yoona-girls-generation-duoc-cong-bo-la-dai-su-thuong-hieu-moi-cua-valentino-thum.jpg" 

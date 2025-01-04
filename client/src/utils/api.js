@@ -1,4 +1,5 @@
 import axios from "axios";
+
 //require('dotenv/config');
 export const fetchDataFromApi=async(url)=>{
     try{
@@ -71,3 +72,7 @@ export const deleteCartData = async (url) => {
         throw error; // Đẩy lỗi lên để xử lý phía gọi hàm
     }
 };
+
+
+
+

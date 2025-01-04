@@ -193,7 +193,7 @@ const Category = () => {
                                                     <div className="d-flex productBox">
                                                         <div className="imgWrapper">
                                                             <div className="img">
-                                                                <img className="w-100" src={item.images[0]}
+                                                                <img className="w-100" src={item.images[0]} loading="lazy" alt={item.name}
                                                                 />
                                                             </div>
                                                         </div>

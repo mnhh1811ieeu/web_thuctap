@@ -38,7 +38,7 @@ const ProductZoom = (props) => {
                                 <div className='item'>
                                     <InnerImageZoom
                                         zoomType="hover" zoomScale={1}
-                                        src={img} />
+                                        src={img} alt="img_product_zoom"/>
                                 </div>
                             </SwiperSlide>
                         )
@@ -66,7 +66,7 @@ const ProductZoom = (props) => {
                         <SwiperSlide>
                             <div className={`item ${slideIndex === index && 'item_active'}`} key={index}>
                                 <img  src={img} 
-                                className='w-100' onClick={() => goto(index)}/>
+                                className='w-100' alt="img_product_subZ" onClick={() => goto(index)}/>
                             </div>
                         </SwiperSlide>
                     )

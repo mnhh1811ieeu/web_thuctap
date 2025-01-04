@@ -9,12 +9,14 @@ import { CiShoppingCart } from "react-icons/ci";
 import { MyContext } from '../../App';
 import { deleteCartData, deleteData, editData, fetchDataFromApi, fetchDataFromApii } from '../../utils/api';
 import QuantityBox from '../../Components/QuantityBox/QuantityBox';
+import { useSEO } from '../../SEOProvider';
 
 const Cart = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [productDetails, setProductDetails] = useState({});
     const context = useContext(MyContext);
     const [cartData, setCartData] = useState([]);
+    const { setSEO } = useSEO();
 
     // useEffect(() => {
     //     const user = JSON.parse(localStorage.getItem("user"));
@@ -261,6 +263,11 @@ const Cart = () => {
         
         
     }, []);
+
+    useEffect(() => {
+        // Cập nhật tiêu đề và mô tả meta
+        setSEO("Giỏ hàng | BHM-Store", "Thỏa sức mua sắm đồ hiệu với mức giá hấp dẫn");
+      }, [setSEO]);
 
     
     return (

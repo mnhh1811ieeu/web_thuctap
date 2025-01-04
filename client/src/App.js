@@ -20,6 +20,7 @@ import { fetchDataFromApi} from "./utils/api";
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import PaymentSuccess from "./Pages/Payment Success/paymentsuccess";
+import { SEOProvider } from "./SEOProvider";
 const MyContext = createContext();
 
 function App() {
@@ -141,6 +142,7 @@ function App() {
   }
   return (
     <BrowserRouter >
+      <SEOProvider>
       <MyContext.Provider value={values}>
         {
           isHeaderFooterShow === true && <Header/>
@@ -148,7 +150,7 @@ function App() {
         
         <Routes>
           <Route path="/" exact={true} element={<Home />} />
-          <Route path="/subCat/:name" exact={true} element={<Listing />} />
+          <Route path="/subCat/:slug/:id" exact={true} element={<Listing />} />
           <Route path="/product/:id" exact={true} element={<ProductDetails/>} />
           <Route path="/cart" exact={true} element={<Cart />} />
           <Route path="/signIn" exact={true} element={<SignIn />} />
@@ -179,6 +181,7 @@ function App() {
           </Alert>
         </Snackbar>
       </MyContext.Provider> 
+      </SEOProvider>
     </BrowserRouter>
   );
 }

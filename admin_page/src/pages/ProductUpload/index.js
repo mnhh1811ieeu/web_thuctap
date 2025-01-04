@@ -52,7 +52,7 @@ const ProductUpload = () => {
     const [isLoading, setIsLoading] = useState(false);
     const productImages = useRef();
     //const imagesArr = [];
-    const [catData, setCatData] = useState([]);
+    //const [catData, setCatData] = useState([]);
     const [productSIZEData, setProductSIZEData] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
 
@@ -75,6 +75,7 @@ const ProductUpload = () => {
         price: null,
         oldPrice: null,
         catName: '',
+        catId: '',
         category: '',
         countInStock: null,
         rating: 0,
@@ -111,8 +112,9 @@ const ProductUpload = () => {
         }))
     }
    
-    const selectCat= (cat) =>{
+    const selectCat= (cat, id) =>{
         formFields.catName = cat;
+        formFields.catId = id;
     }
 
     const handleChangeisFeaturedValue = (event) => {
@@ -145,15 +147,8 @@ const ProductUpload = () => {
         window.scrollTo(0, 0);
         context.setProgress(20);
 
-        fetchDataFromApi('/api/category/').then((res) => {
-
-            setCatData(res);
-            context.setProgress(100);
-        })
-
         fetchDataFromApi('/api/productSIZE/').then((res) => {
             setProductSIZEData(res);
-
         })
 
     }, []);
@@ -197,6 +192,7 @@ const ProductUpload = () => {
         formdata.append('price', formFields.price);
         formdata.append('oldPrice', formFields.oldPrice);
         formdata.append('catName', formFields.catName);
+        formdata.append('catId', formFields.catId);
         formdata.append('category', formFields.category);
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('rating', formFields.rating);
@@ -320,6 +316,7 @@ const ProductUpload = () => {
                 price: 0,
                 oldPrice: 0,
                 catName: '',
+                catId: '',
                 category: '',
                 countInStock: 0,
                 rating: 0,
@@ -391,7 +388,7 @@ const ProductUpload = () => {
                                                     context.catData?.categoryList?.length !== 0 && context.catData?.categoryList?.map((cat, index) => {
                                                         return (
                                                             <MenuItem value={cat.id} key={index}
-                                                                onClick={ ()=> selectCat(cat.name)}
+                                                                onClick={ ()=> selectCat(cat.name, cat.id)}
                                                             >{cat.name}</MenuItem>
                                                         )
                                                     })
@@ -543,7 +540,7 @@ const ProductUpload = () => {
                                     previews?.length !== 0 && previews?.map((img, index) => {
                                         return (
                                             <div className='uploadBox' key={index}>
-                                                <img src={img} className='w-100' />
+                                                <img src={img} className='w-100' loading="lazy" alt='previ'/>
                                             </div>
                                             // <div className='uploadBox' key={index}>
                                             //     <span className='remove' onClick={() => removeImg(index, img)}><IoCloseSharp/></span>

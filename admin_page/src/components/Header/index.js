@@ -123,7 +123,7 @@ const Header = () => {
                                             <div>
                                                 <div className="userImg">
                                                     <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" alt="image dog cartoon" />
+                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" alt="image dog cartoon" loading="lazy" />
                                                     </span>
                                                 </div>
                                             </div>
@@ -148,7 +148,7 @@ const Header = () => {
                                             <div>
                                                 <div className="userImg">
                                                     <span className="rounded-circle">
-                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" />
+                                                        <img src="https://png.pngtree.com/png-clipart/20230825/original/pngtree-cute-little-beagle-dog-cartoon-sitting-picture-image_8725356.png" alt='anh cho'/>
                                                     </span>
                                                 </div>
                                             </div>

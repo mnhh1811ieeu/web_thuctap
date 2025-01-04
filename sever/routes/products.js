@@ -74,7 +74,7 @@ router.get(`/`, async (req, res) => {
     let productList=[];
 
     if( req.query.minPrice !== undefined && req.query.maxPrice !== undefined){
-        productList = await Product.find({catName: req.query.catName}).populate("category");
+        productList = await Product.find({catId: req.query.catId}).populate("category");
 
         const filteredProducts = productList.filter( product => {
             if( req.query.minPrice && product.price < parseInt(+req.query.minPrice)){
@@ -175,6 +175,7 @@ router.post('/create', upload.array('images', 10), async (req, res) => {
         brand: req.body.brand,
         price: req.body.price,
         catName: req.body.catName,
+        catId: req.body.catId,
         category: req.body.category,
         oldPrice: req.body.oldPrice,
         countInStock: req.body.countInStock,
@@ -417,6 +418,8 @@ router.put('/:id', upload.array('images', 10), async (req, res) => {
                 price: req.body.price || product.price,
                 oldPrice: req.body.oldPrice || product.oldPrice,
                 category: req.body.category || product.category,
+                catName: req.body.catName || product.catName,
+                catId: req.body.catId|| product.catId,
                 countInStock: req.body.countInStock || product.countInStock,
                 rating: req.body.rating || product.rating,
                 isFeatured: req.body.isFeatured !== undefined ? req.body.isFeatured : product.isFeatured,

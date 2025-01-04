@@ -1,3 +1,18 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
+Disallow: /*đánh lô đề*
+Disallow: /*daftar slot*
+Disallow: /*game+đổi+thưởng*
+Disallow: /*airdrop*
+Disallow: /*SOSO+CASINO*
+Disallow: /*binance*
+Disallow: /*WeChat*
+Disallow: /*telegram*
+Disallow: /*Telegram*
+Disallow: /*bleesvanos*
+Disallow: /*wibu69*
+Disallow: /*javhd*
+Disallow: /*@cryptoenthus2*
+
+Sitemap: http://localhost:4000/sitemaps/main-index.xml

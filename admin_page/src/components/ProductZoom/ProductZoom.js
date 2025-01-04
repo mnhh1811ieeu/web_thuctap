@@ -65,7 +65,7 @@ const ProductZoom = (props) => {
                         <SwiperSlide>
                             <div className={`item ${slideIndex === index && 'item_active'}`} key={index}>
                                 <img  src={img} 
-                                className='w-100' onClick={() => goto(index)}/>
+                                className='w-100' loading="lazy" onClick={() => goto(index)}/>
                             </div>
                         </SwiperSlide>
                     )

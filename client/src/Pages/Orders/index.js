@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { fetchDataFromApi, fetchDataFromApii, postDataUser } from '../../utils/api';
+import { useSEO } from '../../SEOProvider';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -15,6 +16,12 @@ const Orders = () => {
         if (orderReceipt.startsWith("order_rcptid_")) return "cod";
         return "unknown";
     };
+    const { setSEO } = useSEO();
+
+    useEffect(() => {
+        // Cập nhật tiêu đề và mô tả meta
+        setSEO("Đơn hàng của tôi | BHM-Store", "Mua sắm thời trang online với mức giá cực kì ưu đãi");
+      }, [setSEO]);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));

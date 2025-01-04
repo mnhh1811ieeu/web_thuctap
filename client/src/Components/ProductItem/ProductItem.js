@@ -6,6 +6,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import { MyContext } from '../../App';
+import { slugify } from '../../SEOProvider';
 
 
 const ProductItem = (props) => {
@@ -54,9 +55,9 @@ const ProductItem = (props) => {
         <div className={`item productItem ${props?.itemView}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}>
-
+         
             <div className='imgWrapper'>
-                <Link to={`/product/${props?.itemView==='recentlyViewed' ? props.item?.proId : props.item?.id}`}>
+                <Link to={`/product/${slugify(props.item.name)}-${props?.itemView==='recentlyViewed' ? props.item?.proId : props.item?.id}.html`}>
                     {
                         isHovered === true ?
                             <Slider {...settings} ref={sliderRef}>
@@ -65,7 +66,7 @@ const ProductItem = (props) => {
                                     props?.item?.images?.map( ( image, index) => {
                                         return (
                                             <div className='slick-slide' key={index}>
-                                                <img src={image} className='w-100' />
+                                                <img src={image} className='w-100' alt="imgproduct"/>
                                             </div>
                                         )
                                     })
@@ -99,7 +100,7 @@ const ProductItem = (props) => {
             </div>
 
             <div className='info'>
-                <Link to={`/product/${props.item?.id}`}> <h4>{props?.item.name?.length > 28 ? props.item.name.substr(0, 28) + '...' : props.item.name}</h4></Link>
+                <Link to={`/product/${slugify(props.item.name)}-${props.item?.id}.html`}> <h4>{props?.item.name?.length > 28 ? props.item.name.substr(0, 26) + '...' : props.item.name}</h4></Link>
                 <span className='text-success d-block'>Có sẵn</span>
                 <Rating className='mb-2 mt-2' name="read-only" value={props?.item?.rating} readOnly size='small' precision={0.5} />
                 <p className="d-flex">

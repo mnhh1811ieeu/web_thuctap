@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 //import { IoHomeOutline } from "react-icons/io5";
 import { FaAngleRight } from "react-icons/fa";
 import { MyContext } from '../../../App';
+import { slugify } from '../../../SEOProvider';
 
 const Navigation = () => {
     const [isOpenSidebarVal, setIsOpenSidebarVal] = useState(false);
@@ -30,7 +31,7 @@ const Navigation = () => {
                                     context.categoryData?.length !==0 && context.categoryData?.slice(0, 7).map( (item, index) => {
                                         return(
                                             <li className='list list-inline-item'>
-                                                <Link to={`/subCat/${item?.name}`}><Button>{item?.name}</Button> </Link>
+                                                <Link to={`/subCat/${slugify(item?.name)}/${item?.id}`}><Button>{item?.name}</Button> </Link>
                                                 
                                             </li>
                                         )
@@ -51,7 +52,7 @@ const Navigation = () => {
                             context.categoryData?.length !==0 && context.categoryData?.slice(0, 7).map( (item, index) => {
                                 return(
                                     <li className='list list-inline-item'>
-                                        <Link to={`/subCat/${item?.name}`}><Button>{item?.name}</Button> </Link>
+                                        <Link to={`/subCat/${slugify(item?.name)}/${item?.id}`}><Button>{item?.name}</Button> </Link>
                                         
                                     </li>
                                 )

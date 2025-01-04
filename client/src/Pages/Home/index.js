@@ -17,8 +17,9 @@ import discountSec from '../../assets/images/discountSec.png'
 import { fetchDataFromApi } from '../../utils/api'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
+
 import { MyContext } from '../../App';
+import { useSEO } from '../../SEOProvider';
 
 
 
@@ -29,7 +30,7 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [productsData, setProductsData] = useState([]);
   const [value, setValue] = useState(0);
-  const [selectedCat, setSelectedCat] = useState('váy');
+  const [selectedCat, setSelectedCat] = useState('Váy');
   const [filterData, setFilterData] = useState([]);
 
   const handleChange = (event, newValue) => {
@@ -37,6 +38,7 @@ const Home = () => {
   };
 
   const context = useContext(MyContext);
+  const { setSEO } = useSEO();
   
   const selectCat= (cat) => {
     setSelectedCat(cat);
@@ -62,6 +64,11 @@ const Home = () => {
     
 
   }, [])
+  
+  useEffect(() => {
+    // Cập nhật tiêu đề và mô tả meta
+    setSEO("Trang chủ - Thời trang online cao cấp", "Chào mừng đến với trang chủ của chúng tôi.");
+  }, [setSEO]);
 
   useEffect( () => {
     fetchDataFromApi(`/api/products?catName=${selectedCat}`).then( (res) => {
@@ -85,11 +92,11 @@ const Home = () => {
             <div className='col-md-3'>
               <div className='sticky'>
                 <div className='banner'>
-                  <img src={img1} className="cursor w-100"/>
+                  <img src={img1} className="cursor w-100" alt='banner1' />
                 </div>
 
                 <div className='banner mt-4'>
-                  <img src={banner4} className="cursor w-100"/>
+                  <img src={banner4} className="cursor w-100" alt='banner2'/>
                 </div>
               </div>
             </div> 
@@ -112,7 +119,7 @@ const Home = () => {
                     {
                       context.categoryData?.map( (item, index) => {
                         return(
-                          <Tab className='item' label={item.name} 
+                          <Tab className='item' key={index} label={item.name} 
                             onClick={ () => selectCat(item.name)}/>
                         )
                       })

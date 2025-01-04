@@ -10,7 +10,11 @@ const HomeBanner = () => {
         slidesToScroll: 1,
         arrows: true,
         autoplay: true,
-        
+        // responsive: [
+        //     {
+
+        //     }
+        // ]
       };
   return (
     <div className='homeBannerSection'>

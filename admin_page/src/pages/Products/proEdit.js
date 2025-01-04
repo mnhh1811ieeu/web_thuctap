@@ -77,6 +77,7 @@ const ProductUpload = () => {
         price: null,
         oldPrice: null,
         catName:'',
+        catId: '',
         category: '',
         countInStock: null,
         rating: 0,
@@ -178,8 +179,9 @@ const ProductUpload = () => {
     };
     
 
-    const selectCat= (cat) =>{
+    const selectCat= (cat, id) =>{
         formFields.catName = cat;
+        formFields.catId = id;
     }
 
     const handleChangeisFeaturedValue = (event) => {
@@ -232,6 +234,7 @@ const ProductUpload = () => {
                 price: res.price,
                 oldPrice: res.oldPrice,
                 catName: res.catName,
+                catId: res.catId,
                 category: res.category,
                 countInStock: res.countInStock,
                 rating: res.rating,
@@ -624,9 +627,11 @@ const ProductUpload = () => {
         const formdata = new FormData();
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
+        formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
         formdata.append('oldPrice', formFields.oldPrice);
         formdata.append('catName', formFields.catName);
+        formdata.append('catId', formFields.catId);
         formdata.append('category', formFields.category);
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('rating', formFields.rating);
@@ -693,6 +698,7 @@ const ProductUpload = () => {
                 price: 0,
                 oldPrice: 0,
                 catName: '',
+                catId: '',
                 category: '',
                 countInStock: 0,
                 rating: 0,
@@ -766,7 +772,7 @@ const ProductUpload = () => {
                                                     catData?.categoryList?.length !== 0 && catData?.categoryList?.map((cat, index) => {
                                                         return (
                                                             <MenuItem value={cat.id} key={index}
-                                                            onClick={ ()=> selectCat(cat.name)} >{cat.name}</MenuItem>
+                                                            onClick={ ()=> selectCat(cat.name, cat.id)} >{cat.name}</MenuItem>
                                                         )
                                                     })
                                                 }

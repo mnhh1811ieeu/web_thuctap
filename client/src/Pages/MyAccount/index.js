@@ -9,6 +9,7 @@ import { BiCloudUpload } from "react-icons/bi";
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { MyContext } from '../../App';
+import { useSEO } from '../../SEOProvider';
 
 
 function CustomTabPanel(props) {
@@ -56,6 +57,7 @@ const MyAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [previews, setPreviews] = useState([]);
     const [userData, setUserData] = useState([]);
+    const { setSEO } = useSEO();
 
     const formdata = new FormData();
 
@@ -115,6 +117,7 @@ const MyAccount = () => {
         window.scrollTo(0,0);
         const user = JSON.parse(localStorage.getItem("user"));
         const userId = user?.userId;
+        
 
         const token = localStorage.getItem("token");
         if(token !== '' && token !== undefined && token !== null){
@@ -138,6 +141,11 @@ const MyAccount = () => {
 
 
     }, [])
+    
+    useEffect(() => {
+        // Cập nhật tiêu đề và mô tả meta
+        setSEO("Tài khoản của tôi | BHM-Store", "");
+      }, [setSEO]);
 
     const editUser = (e) => {
         e.preventDefault();

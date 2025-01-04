@@ -8,8 +8,10 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import { postData, postDataUser } from '../../utils/api';
 
+
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { firebaseApp } from '../../firebase';
+import { useSEO } from '../../SEOProvider';
 
 const auth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
@@ -20,6 +22,8 @@ const SignUp = () => {
   const history = useNavigate();
   const context = useContext(MyContext);
   const [isLoading, setIsLoading] = useState(false);
+  const { setSEO } = useSEO();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -27,6 +31,12 @@ const SignUp = () => {
   useEffect(() => {
     context.setIsHeaderFooterShow(false);
   }, []);
+  useEffect(() => {
+    // Cập nhật tiêu đề và mô tả meta
+    setSEO("Đăng kí tài khoản | BHM-Store", "");
+  }, [setSEO]);
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",

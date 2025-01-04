@@ -901,6 +901,7 @@ footer .linksWrap ul .zalo svg{
   .scroll{
     display: flex; 
     flex-direction: column;
+    text-transform: capitalize !important;
     /* .MuiRating-root{ margin-bottom: 10px;} */
     Button{ width: 60%;}
   }
@@ -1097,6 +1098,7 @@ footer .linksWrap ul .zalo svg{
 .customTabs ul li button.active{
   background: #7a55c1 !important;
   color: #fff !important;
+  
 }
 
 .reviewsCard{margin-bottom: 25px !important;}

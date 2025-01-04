@@ -9,6 +9,7 @@ import {  postDataUser } from '../../utils/api';
 
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { firebaseApp } from '../../firebase';
+import { useSEO } from '../../SEOProvider';
 
 
 const auth = getAuth(firebaseApp);
@@ -18,9 +19,9 @@ const googleProvider = new GoogleAuthProvider();
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const context = useContext(MyContext); // Dùng context để cập nhật isLogin
- 
   const [error, setError] = useState(""); // Lưu thông báo lỗi khi đăng nhập
   //const history = useNavigate();
+  const { setSEO } = useSEO();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -79,6 +80,11 @@ const SignIn = () => {
   useEffect(() => {
     context.setIsHeaderFooterShow(false);
   }, []);
+
+   useEffect(() => {
+          // Cập nhật tiêu đề và mô tả meta
+          setSEO("Đăng nhập tài khoản | BHM-Store", "");
+        }, [setSEO]);
   
 
 

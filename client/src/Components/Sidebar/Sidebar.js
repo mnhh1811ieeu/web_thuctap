@@ -15,28 +15,28 @@ const Sidebar = (props) => {
   const [value, setValue] = useState([100, 60000000]);
   const [ value2, setValue2] =useState(0);
   const context = useContext(MyContext);
-  const [cateName, setCateName]= useState(''); 
+  const [catId, setCateId]= useState(''); 
 
   const [filterCat, setFilterCat] = React.useState('female');
 
-  const {name} =useParams();
-
+  const {id} =useParams();
+  
   const handleChange = (event) => {
     setFilterCat(event.target.value);
     props.filterData(event.target.value)
-    setCateName(event.target.value)
+    setCateId(event.target.value)
   };
 
   useEffect( () => {
-    setCateName(name)
-  }, [name])
+    setCateId(id)
+  }, [id])
 
   useEffect( () => {
-    props.filterByPrice(value, cateName)
+    props.filterByPrice(value, catId)
   }, [value])
 
   const filterByRating= (rating ) => {
-    props.filterByRating(rating, cateName)
+    props.filterByRating(rating, catId)
   }
 
   // const getNameRate = () => {
@@ -61,7 +61,7 @@ const Sidebar = (props) => {
               {
                   context.categoryData?.length !==0 && context.categoryData?.map( (item, index) => {
                       return(
-                        <FormControlLabel value={item?.name} control={<Radio />} label={item?.name}  />
+                        <FormControlLabel value={item?.id} control={<Radio />} label={item?.name}  />
                       )
                   })
               }

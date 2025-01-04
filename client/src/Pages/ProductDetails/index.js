@@ -10,6 +10,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useParams } from 'react-router-dom';
 import { MyContext } from '../../App';
 import { fetchDataFromApi, postData, postDataUser } from '../../utils/api';
+import { useSEO } from '../../SEOProvider';
 
 const ProductDetails = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +29,7 @@ const ProductDetails = () => {
 
 
     const { id } = useParams();
+    const { setSEO } = useSEO();
 
     const isActive = (index) => {
         setActiveSize(index);
@@ -41,15 +43,23 @@ const ProductDetails = () => {
         customerRating: 0
     });
 
+    const splitId = (params) => {
+        const temp = params.split('.html');
+        const temp1 = temp[0].split('-');
+        const id = temp1[temp1.length - 1]
+        return id;
+    }
+
     useEffect(() => {
         window.scrollTo(0, 0);
-        fetchDataFromApi(`/api/products/${id}`).then((res) => {
+        fetchDataFromApi(`/api/products/${splitId(id)}`).then((res) => {
             setProductData(res)
-            console.log(res)
+            setSEO(`Mua ${res.name} tại BHM-Store`, `${res.name} tại BHM-Store với giá cực tốt.Mua hàng nhanh chóng thanh toán an toàn tại BHM-Store. Mua ngay!`);
+            //console.log(splitId(id))
             fetchDataFromApi(`/api/products?catName=${res.catName}`).then((res) => {
-                const filterdData = res?.products?.filter(item => item.id !== id);
+                const filterdData = res?.products?.filter(item => item.id !== splitId(id));
                 setRelatedProductData(filterdData);
-                console.log(filterdData);
+                
             })
             // postData(`/api/products/recentlyViewed`,res).then( (res) => {
             //     fetchDataFromApi(`/api/products/recentlyViewed`).then( (response) => {
@@ -61,13 +71,13 @@ const ProductDetails = () => {
             //     })
             // })
         })
-        fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res => {
+        fetchDataFromApi(`/api/productReviews?productId=${splitId(id)}`).then((res => {
             setReviewData(res)
         }))
         if (productData?.productSIZE === undefined) {
             setActiveTabs(1);
         }
-    }, [id])
+    }, [id, setSEO])
 
     const ensureArray = (data) => {
         // Nếu data là mảng, kiểm tra từng phần tử trong mảng
@@ -100,7 +110,7 @@ const ProductDetails = () => {
                 review: "",
                 customerRating: 1
             })
-            fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res) => {
+            fetchDataFromApi(`/api/productReviews?productId=${splitId(id)}`).then((res) => {
                 setReviewData(res)
             })
         })
@@ -343,9 +353,7 @@ const ProductDetails = () => {
     const handleQuantityChange = (value) => {
         setProductQuantity(value); // Cập nhật số lượng
     };
-    const selectedItem = () => {
-
-    }
+   
 
     return (
         <>
@@ -358,7 +366,7 @@ const ProductDetails = () => {
 
 
                         <div className='col-md-7 pl-5 pr-5'>
-                            <h2 className='hd text-text-capitalize'>{productData?.name}</h2>
+                            <h1 className='hd text-text-capitalize'>{productData?.name}</h1>
                             <ul className='list list-inline'>
                                 <li className='list-inline-item'>
                                     <div className='d-flex align-items-center'>
