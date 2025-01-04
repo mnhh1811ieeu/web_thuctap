@@ -100,7 +100,8 @@ const ProductDetails = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         reviews.customerName = user?.name;
         reviews.customerId = user?.userId;
-        reviews.productId = id;
+        reviews.productId = splitId(id);
+        console.log(reviews.productId)
 
         setIsLoading(true);
         postData("/api/productReviews/add", reviews).then((res) => {
