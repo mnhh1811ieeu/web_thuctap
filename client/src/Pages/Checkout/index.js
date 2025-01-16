@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
-import {  deleteCartData, deleteData, fetchDataFromApi, postData, postDataUser } from '../../utils/api';
+import {  decQuantity, deleteCartData, deleteData, fetchDataFromApi, postData, postDataUser } from '../../utils/api';
 import { MyContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../../SEOProvider';
@@ -134,7 +134,7 @@ const Checkout = () => {
             order_receipt: response.orderId,
           };
           await postData(`/api/order`, updatedPayload);
-          window.location.href = response.shortLink;
+          window.location.href = response.payUrl;
         } else {
           console.error("Không thể tạo thanh toán online.");
           context.setAlertBox({
@@ -148,6 +148,7 @@ const Checkout = () => {
         await postData(`/api/order`, payload);
         const userId = user.userId;
         await deleteCartData(`/api/cart?userId=${userId}`);
+        
 
         context.setAlertBox({
           open: true,
@@ -156,7 +157,7 @@ const Checkout = () => {
         });
         history('/orders')
         // Xóa giỏ hàng sau khi đặt hàng thành công
-        setCartData([]);
+        //setCartData([]);
       }
     } catch (error) {
       console.error('Lỗi trong quá trình thanh toán:', error);

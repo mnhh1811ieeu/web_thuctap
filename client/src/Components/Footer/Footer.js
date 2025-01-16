@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { FaFacebook } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa6";
 import { SiZalo } from "react-icons/si";
+import momo from '../../assets/images/momo.png'
 
 const Footer = () => {
   return (
@@ -68,8 +69,8 @@ const Footer = () => {
                 </div>
                 <div className='col'>
                     <h5>Phương thức thanh toán</h5>
-                    <ul>
-                        
+                    <ul style={{ display: 'flex',alignItems: 'center',justifyContent: 'center', width: '35px', height: '35px', marginLeft:'35px'}}>
+                        <li className='momo'><Link to='#'><img src={momo} alt='momo icon'style={{ width: '100%'}}/></Link></li>
                     </ul>
                 </div>
                 <div className='col'>

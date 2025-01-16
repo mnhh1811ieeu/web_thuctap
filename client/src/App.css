@@ -20,7 +20,7 @@ button{text-transform: capitalize !important;}
     max-width: 1200px;
   }
 }
-
+.container{overflow: visible;}
 a{ color: #000;}
 
 ::-webkit-scrollbar{
@@ -73,7 +73,12 @@ a{ color: #000;}
 
 
 .container{ max-width: 85%;}
-
+.navigation{
+  position: sticky; 
+  top: 0; /* Sticks to the top of the viewport */
+  z-index: 1000; /* Ensures it stays above other elements */
+  
+}
 
 /*  */
 .headerWrapper .top-strip { padding: 8px 0px; }
@@ -238,13 +243,14 @@ nav .allCatTab .icon1 svg{
 nav .allCatTab .icon2 svg{
   font-size: 15px !important;
 }
+nav {padding-bottom: 20px;}
 
 nav .navPart1 {max-width: 20%; flex: 0 0 20%;}
 nav .navPart2 {max-width: 80%; flex: 0 0 80%;}
 
 nav .navPart1 .catWrapper{position: relative;}
 nav .navPart1 .catWrapper .sidebarNav{
-  width: 100%;
+  width: 80%;
   height: 0;
   background: #fff;
   opacity: 0;
@@ -252,12 +258,11 @@ nav .navPart1 .catWrapper .sidebarNav{
   top: 100%;
   left: 0;
   border: 1px solid rgba(0,0,0,0.1);
-  padding: 15px 0;
+  padding: 15px 1px;
   margin-top: 25px ;
-  
   transition: all 0.2s;
   visibility: hidden;
-  z-index: 100;
+  z-index: 1000;
 }
 
 nav .navPart1 .catWrapper .sidebarNav.open{
@@ -265,6 +270,7 @@ nav .navPart1 .catWrapper .sidebarNav.open{
   opacity: 1;
   visibility: inherit;
 }
+
 nav .navPart1 .catWrapper .sidebarNav ul li{
   width: 100%;
   list-style: none;
@@ -303,7 +309,7 @@ nav .navPart1 .catWrapper .sidebarNav ul li button svg{
   opacity: 0.6;
 }
 nav .navPart1 .catWrapper .sidebarNav ul li button:hover{
- 
+  
   color: #7a55c1;
 }
 
@@ -322,7 +328,8 @@ nav .navPart2 ul li button{
   align-items: center;
   padding: 10px 20px;
   transition: all 0.2s ease-in-out;
-  border-radius: 20px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.01);
   
 }
 nav .navPart2 ul li a svg{
@@ -330,11 +337,12 @@ nav .navPart2 ul li a svg{
 }
 nav .navPart2 ul li a button:hover{
     background: #f0f1f6;
-    color: #09aced;
+    color: #7a55c1;
 }
 nav .navPart2 ul li{
   position: relative;
-  padding-bottom: 20px;
+  padding-right: 10px;
+  
 }
 nav .navPart2 ul li .submenu{
   position: absolute;
@@ -439,6 +447,7 @@ nav .navPart2 ul li .submenu a button:hover{
 }
 .homeBannerSection .slick-arrow.slick-prev{
   left: 20px !important;
+  z-index: 100;
 }
 
 .slick-next:before, .slick-prev:before {
@@ -1397,6 +1406,11 @@ font-weight: bold;
 .myAccBox .form-group .MuiOutlinedInput-input{
   background: #f1f1f1 !important;
 }
+.myAccBox .form-group .showEye svg{
+  font-size: 20px;
+  color: #000;
+  
+}
 .checkoutForm .form-group{
   margin-bottom: 20px;
 }
@@ -1515,7 +1529,7 @@ button {
   padding: 8px 16px;
   cursor: pointer;
   border-radius: 4px;
-  margin-top: 10px;
+  
 }
 
 
@@ -1563,7 +1577,7 @@ button {
   padding: 8px 16px;
   cursor: pointer;
   border-radius: 4px;
-  margin-top: 10px;
+  
 }
 
 
@@ -1602,11 +1616,6 @@ div.chat-wrapper[opened="true"] {
 .tabContent {
   padding: 30px 0;
   background-color: #f9f9f9;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .reviews-title {
@@ -1687,6 +1696,66 @@ div.chat-wrapper[opened="true"] {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 40px;
+}
+
+/*-----searchBox*/
+.headerSearch {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1; 
+}
+
+.searchBox {
+  position: absolute; /* Đặt searchBox bên dưới headerSearch */
+  top: 100%; /* Đẩy xuống ngay bên dưới ô tìm kiếm */
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto; /* Thêm scroll nếu nội dung quá dài */
+  z-index: 1000; /* Đảm bảo nằm trên headerSearch */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng nổi */
+}
+
+.searchBox ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.searchBox li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.searchBox li:hover {
+  background: #f9f9f9;
+}
+
+.search-img img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.search-content h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.search-content p {
+  margin: 0;
+  font-size: 12px;
+  color: #888;
 }
 
 

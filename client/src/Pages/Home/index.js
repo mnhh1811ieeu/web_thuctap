@@ -67,7 +67,7 @@ const Home = () => {
   
   useEffect(() => {
     // Cập nhật tiêu đề và mô tả meta
-    setSEO("Trang chủ - Thời trang online cao cấp", "Chào mừng đến với trang chủ của chúng tôi.");
+    setSEO("Trang chủ - Thời trang online cao cấp", "Chào mừng đến với trang chủ của chúng tôi. Mua hàng online với vô vàn ưu đãi, thời trang sang trọng, tinh tế, chất liệu cao cấp mang đến cho người dùng những trải nghiệm tốt nhất.");
   }, [setSEO]);
 
   useEffect( () => {
@@ -99,7 +99,7 @@ const Home = () => {
                   <img src={banner4} className="cursor w-100" alt='banner2'/>
                 </div>
               </div>
-            </div> 
+            </div>
             
             <div className='col-md-9 productRow'>
               <div className='d-flex align-items-center'>

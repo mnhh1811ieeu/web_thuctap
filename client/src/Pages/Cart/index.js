@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 
 import Rating from '@mui/material/Rating';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import Button from '@mui/material/Button';
 import { CiShoppingCart } from "react-icons/ci";
@@ -13,10 +13,12 @@ import { useSEO } from '../../SEOProvider';
 
 const Cart = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isInCart, setIsInCart] = useState(false);
     const [productDetails, setProductDetails] = useState({});
     const context = useContext(MyContext);
     const [cartData, setCartData] = useState([]);
     const { setSEO } = useSEO();
+    const history = useNavigate();
 
     // useEffect(() => {
     //     const user = JSON.parse(localStorage.getItem("user"));
@@ -44,7 +46,11 @@ const Cart = () => {
             fetchDataFromApi(`/api/cart?userId=${userId}`)
                 .then((cartRes) => {
                     setCartData(cartRes); // Set cart data
-
+                    
+                    if(cartRes.length > 0){ 
+                        setIsInCart(true);
+                    }
+                    
                     // Fetch product details for each productId in the cart
                     const productIds = cartRes.map(item => item.productId);
                     
@@ -233,7 +239,6 @@ const Cart = () => {
                             
                         }
 
-
                         // Kiểm tra trạng thái giao dịch
                         return fetchDataFromApii("/api/payment/transaction-status", {
                             method: "POST",
@@ -269,6 +274,17 @@ const Cart = () => {
         setSEO("Giỏ hàng | BHM-Store", "Thỏa sức mua sắm đồ hiệu với mức giá hấp dẫn");
       }, [setSEO]);
 
+    const beforeCheckout = () => {
+        if(isInCart){
+            history('/checkout')
+        }else {
+            context.setAlertBox({
+                open: true,
+                error: true,
+                msg: "Hãy thêm sản phẩm vào giỏ hàng!",
+            });
+        }
+    }
     
     return (
         <>
@@ -364,11 +380,9 @@ const Cart = () => {
                                     </table>
                                 </div>
                                 <br />
-                                <Link to="/checkout">
-                                    <Button className="btn-blue bg-red btn-lg btn-big ml-3">
-                                        <CiShoppingCart />Thanh toán
-                                    </Button>
-                                </Link>
+                                <Button className="btn-blue bg-red btn-lg btn-big ml-3" onClick={ () => beforeCheckout()}>
+                                    <CiShoppingCart />Thanh toán
+                                </Button>
                             </div>
                         </div>
 

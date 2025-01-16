@@ -21,7 +21,7 @@ import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import PaymentSuccess from "./Pages/Payment Success/paymentsuccess";
 import { SEOProvider } from "./SEOProvider";
-import TawkWidget from "./Components/chat/chat";  // Import chat widget
+
 
 const MyContext = createContext();
 
@@ -208,8 +208,6 @@ function App() {
             {alertBox.msg}
           </Alert>
         </Snackbar>
-        {isLogin && <TawkWidget />}  {/* Render TawkWidget chỉ khi người dùng đã đăng nhập */}
-
       </MyContext.Provider> 
       </SEOProvider>
     </BrowserRouter>

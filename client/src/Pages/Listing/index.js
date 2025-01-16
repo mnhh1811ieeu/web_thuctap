@@ -116,9 +116,9 @@ const Listing = () => {
                       </div>
 
 
-                      <div className='d-flex mt-5 align-items-center justify-content-center'>
+                      {/* <div className='d-flex mt-5 align-items-center justify-content-center'>
                         <Pagination count={10} color="primary"/>
-                      </div>
+                      </div> */}
 
                     </div>
 

@@ -75,9 +75,7 @@ const ProductDetails = () => {
         fetchDataFromApi(`/api/productReviews?productId=${splitId(id)}`).then((res => {
             setReviewData(res)
         }))
-        if (productData?.productSIZE === undefined) {
-            setActiveTabs(1);
-        }
+        
     }, [id, setSEO])
 
     const ensureArray = (data) => {

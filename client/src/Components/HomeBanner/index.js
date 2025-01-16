@@ -1,5 +1,9 @@
 import React from "react"
 import Slider from "react-slick";
+import slider1 from '../../assets/images/slider1.webp'
+import slider2 from '../../assets/images/slider2.webp'
+import slider3 from '../../assets/images/slider3.webp'
+import slider4 from '../../assets/images/slider4.webp'
 
 const HomeBanner = () => {
     var settings = {
@@ -21,16 +25,16 @@ const HomeBanner = () => {
         <div className="homeBanner">
             <Slider {...settings}>
                 <div className='item'>
-                    <img src="https://cotton4u.vn/files/news/2024/11/01/b0bbefc32189310f4def5fe56d26d7ba.webp" alt='1' className='w-100'/>
+                    <img src={slider1} alt='1' className='w-100'/>
                 </div>
                 <div className='item'>
-                    <img src="https://cotton4u.vn/files/news/2024/10/29/0b318663e0d9258d09c666643c1b133f.webp" alt='b2' className='w-100'/>
+                    <img src={slider2} alt='b2' className='w-100'/>
                 </div>
                 <div className='item'>
-                    <img src="https://cotton4u.vn/files/news/2024/10/22/804e2a9952aafadd412814817f01da87.webp" alt='b3' className='w-100'/>
+                    <img src={slider3} alt='b3' className='w-100'/>
                 </div>
                 <div className='item'>
-                    <img src="https://cotton4u.vn/files/news/2024/10/30/aea806dab6ac05647f4514fe408ec924.webp" alt='b4' className='w-100'/>
+                    <img src={slider4} alt='b4' className='w-100'/>
                 </div>
             </Slider>
         </div>

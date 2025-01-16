@@ -73,9 +73,7 @@ const Orders = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ orderId }),
             });
-
-           
-
+    
             setTransactionStatus((prevStatus) => ({
                 ...prevStatus,
                 [orderId]: response.resultCode === 0 ? "Thành công" : "Giao dịch thất bại",

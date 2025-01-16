@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom"
 
 import { fetchDataFromApi } from '../../utils/api';
 import { MyContext } from '../../App';
+import { useSEO } from '../../SEOProvider';
 
 
 const SearchPage = () => {
@@ -32,7 +33,7 @@ const SearchPage = () => {
     setAnchorEl(null);
   };
 
-  const {name} = useParams();
+  const { setSEO } = useSEO();
 
   useEffect( () => {
     window.scrollTo(0,0);
@@ -44,21 +45,22 @@ const SearchPage = () => {
     }, 1000 );
   }, [context.searchData])
 
-  const filterData = (name) =>{
-    fetchDataFromApi(`/api/products?catName=${name}`).then( (res)=> {
+  const filterData = (id) =>{
+    fetchDataFromApi(`/api/products?catId=${id}`).then( (res)=> {
       setProductData(res.products)
+      setSEO(`${res.products[0]?.catName } | BHM-Store`, "Mua hàng online với mức giá cực kì hấp dẫn");
     })
   }
 
-  const filterByPrice = (price, catName) =>{
-    fetchDataFromApi(`/api/products?minPrice=${price[0]}&maxPrice=${price[1]}&catName=${catName}`).then( (res)=> {
+  const filterByPrice = (price, catId) =>{
+    fetchDataFromApi(`/api/products?minPrice=${price[0]}&maxPrice=${price[1]}&catId=${catId}`).then( (res)=> {
       setProductData(res.products)
       console.log(res)
     })
   }
 
-  const filterByRating = (rating, catName) => {
-    fetchDataFromApi(`/api/products?rating=${rating}&catName=${catName}`).then( (res)=> {
+  const filterByRating = (rating, catId) => {
+    fetchDataFromApi(`/api/products?rating=${rating}&catId=${catId}`).then( (res)=> {
       setProductData(res.products)
     })
   }
@@ -120,9 +122,9 @@ const SearchPage = () => {
                       </div>
 
 
-                      <div className='d-flex mt-5 align-items-center justify-content-center'>
+                      {/* <div className='d-flex mt-5 align-items-center justify-content-center'>
                         <Pagination count={10} color="primary"/>
-                      </div>
+                      </div> */}
 
                     </div>
 
