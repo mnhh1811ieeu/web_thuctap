@@ -117,12 +117,12 @@ const Header = () => {
 
                                                     </Link>
 
-                                                    <MenuItem onClick={handleClose}>
+                                                    {/* <MenuItem onClick={handleClose}>
                                                         <ListItemIcon>
                                                             <Settings fontSize="small" />
                                                         </ListItemIcon>
                                                         Chỉnh sửa
-                                                    </MenuItem>
+                                                    </MenuItem> */}
                                                     <MenuItem onClick={logout}>
                                                         <ListItemIcon>
                                                             <Logout fontSize="small" />

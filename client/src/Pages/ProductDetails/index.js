@@ -487,12 +487,12 @@ const ProductDetails = () => {
                                         Mô tả sản phẩm
                                     </Button>
                                 </li>
-                                <li className='list-inline-item'>
+                                {/* <li className='list-inline-item'>
                                     <Button className={` ${activeTabs === 1 && 'active'}`}
                                         onClick={() => { setActiveTabs(1) }}>
                                         Thông tin chi tiết
                                     </Button>
-                                </li>
+                                </li> */}
                                 <li className='list-inline-item'>
                                     <Button className={` ${activeTabs === 2 && 'active'}`}
                                         onClick={() => {
