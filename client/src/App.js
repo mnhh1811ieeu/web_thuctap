@@ -16,11 +16,11 @@ import Orders from "./Pages/Orders";
 import SearchPage from "./Pages/Search";
 import MyAccount from "./Pages/MyAccount"
 import Checkout from "./Pages/Checkout";
-import { fetchDataFromApi} from "./utils/api";
+import { fetchDataFromApi } from "./utils/api";
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import PaymentSuccess from "./Pages/Payment Success/paymentsuccess";
-import TawkWidget from "./Components/chat/chat";  // Import chat widget
+
 
 const MyContext = createContext();
 
@@ -54,7 +54,7 @@ function App() {
   const [user, setUser] = useState({
     name: "",
     email: "",
-    userId:""
+    userId: ""
   })
   const [alertBox, setAlertBox] = useState({
     msg: '',
@@ -65,7 +65,7 @@ function App() {
 
 
   let [cartFields, setCarFields] = useState([]);
-  
+
   const getCountry = async (url) => {
     const responsive = await axios.get(url).then((res) => {
       setCountryList(res.data.data);
@@ -75,12 +75,12 @@ function App() {
   useEffect(() => {
     getCountry("https://esgoo.net/api-tinhthanh/1/0.htm");
 
-    fetchDataFromApi("/api/category/").then( (res) => {
+    fetchDataFromApi("/api/category/").then((res) => {
       setCategoryData(res.categoryList);
       setActiveCat(res.categoryList[0]?.name)
     })
   }, []);
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -116,34 +116,34 @@ function App() {
     const token = localStorage.getItem("token");
     if (token !== null && token !== "" && token !== null) {
       setIsLogin(true);
-      const userData= JSON.parse(localStorage.getItem("user"));
+      const userData = JSON.parse(localStorage.getItem("user"));
       setUser(userData);
     } else {
       setIsLogin(false);
     }
   }, [isLogin])
- 
+
   useEffect(() => {
     if (isOpenProductModal?.id) {
-        const controller = new AbortController();
-        const signal = controller.signal;
+      const controller = new AbortController();
+      const signal = controller.signal;
 
-        fetchDataFromApi(`/api/products/${isOpenProductModal.id}`, signal)
-            .then((res) => {
-                setProductData(res);
-                console.log(isOpenProductModal.id)
-            })
-            .catch((error) => {
-                if (error.name === 'AbortError') {
-                    console.log('Fetch aborted');
-                } else {
-                    console.error('Fetch error:', error);
-                }
-            });
-        // Cleanup function để hủy request khi modal đóng
-       return () => controller.abort();
+      fetchDataFromApi(`/api/products/${isOpenProductModal.id}`, signal)
+        .then((res) => {
+          setProductData(res);
+          console.log(isOpenProductModal.id)
+        })
+        .catch((error) => {
+          if (error.name === 'AbortError') {
+            console.log('Fetch aborted');
+          } else {
+            console.error('Fetch error:', error);
+          }
+        });
+      // Cleanup function để hủy request khi modal đóng
+      return () => controller.abort();
     }
-}, [isOpenProductModal]);
+  }, [isOpenProductModal]);
 
   const values = {
     countryList,
@@ -161,7 +161,7 @@ function App() {
     setActiveCat,
     alertBox,
     setAlertBox,
-   
+
     cartFields,
     setCarFields,
     setSearchData,
@@ -171,13 +171,13 @@ function App() {
     <BrowserRouter >
       <MyContext.Provider value={values}>
         {
-          isHeaderFooterShow === true && <Header/>
+          isHeaderFooterShow === true && <Header />
         }
-        
+
         <Routes>
           <Route path="/" exact={true} element={<Home />} />
           <Route path="/subCat/:name" exact={true} element={<Listing />} />
-          <Route path="/product/:id" exact={true} element={<ProductDetails/>} />
+          <Route path="/product/:id" exact={true} element={<ProductDetails />} />
           <Route path="/cart" exact={true} element={<Cart />} />
           <Route path="/signIn" exact={true} element={<SignIn />} />
           <Route path="/signUp" exact={true} element={<SignUp />} />
@@ -190,13 +190,13 @@ function App() {
           <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
         {
-          isHeaderFooterShow === true && <Footer/>
+          isHeaderFooterShow === true && <Footer />
         }
         {
-            isOpenProductModal.open === true && <ProductModal  data={productData}/> 
+          isOpenProductModal.open === true && <ProductModal data={productData} />
         }
 
-<Snackbar open={alertBox.open} autoHideDuration={6000} onClose={handleClose}>
+        <Snackbar open={alertBox.open} autoHideDuration={6000} onClose={handleClose}>
           <Alert
             onClose={handleClose}
             severity={alertBox.error === false ? "success" : "error"}
@@ -206,12 +206,12 @@ function App() {
             {alertBox.msg}
           </Alert>
         </Snackbar>
-        {isLogin && <TawkWidget />}  {/* Render TawkWidget chỉ khi người dùng đã đăng nhập */}
 
-      </MyContext.Provider> 
+
+      </MyContext.Provider>
     </BrowserRouter>
   );
 }
 
 export default App;
-export {MyContext}
+export { MyContext }

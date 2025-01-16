@@ -244,7 +244,7 @@ const Checkout = () => {
             order_receipt: response.orderId,
           };
           await postData(`/api/order`, updatedPayload);
-          window.location.href = response.shortLink;
+          window.location.href = response.payUrl;
         } else {
           console.error("Không thể tạo thanh toán online.");
           context.setAlertBox({

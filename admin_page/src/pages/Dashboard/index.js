@@ -10,8 +10,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import { HiDotsVertical } from "react-icons/hi";
 import { Chart } from "react-google-charts";
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import { FaEye } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -21,10 +19,7 @@ import { MyContext } from "../../App";
 
 const Dashboard = () => {
     const context = useContext(MyContext);
-    const [totalQuantity, setTotalQuantity] = useState(0);
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [showBy, setshowBy] = React.useState('');
-    const [showBysetCatBy, setCatBy] = React.useState('');
     const open = Boolean(anchorEl);
     const ITEM_HEIGHT = 48;
     const [error, setError] = useState(null);
@@ -32,10 +27,14 @@ const Dashboard = () => {
     const [total, setTotal] = useState(0);
     const [data, setData] = useState([["Date", "Total Amount"]]);
     const [productList, setProductList] = useState([]);
+    const [mode, setMode] = useState("day"); // "day", "week", "month", "year"
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => {
+    const handleClose = (selectedMode = null) => {
+        if (selectedMode) {
+            setMode(selectedMode); // Cập nhật chế độ
+        }
         setAnchorEl(null);
     };
     const calculateTotal = (data) => {
@@ -47,6 +46,7 @@ const Dashboard = () => {
         });
         return total;
     };
+
     useEffect(() => {
         window.scrollTo(0, 0);
         context.setProgress(35);
@@ -55,6 +55,37 @@ const Dashboard = () => {
             context.setProgress(100);
         })
     }, []);
+    const aggregateData = (orders) => {
+        const chartData = [["Date", "Total Amount"]];
+        const aggregatedData = {};
+
+        orders.forEach((order) => {
+            let key;
+            const date = new Date(order.createdAt);
+
+            if (mode === "week") {
+                const week = `${date.getFullYear()}-W${Math.ceil(
+                    date.getDate() / 7
+                )}`;
+                key = week;
+            } else if (mode === "month") {
+                const month = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                key = month;
+            } else if (mode === "year") {
+                key = `${date.getFullYear()}`;
+            } else {
+                key = date.toLocaleDateString("vi-VN"); // Theo ngày
+            }
+
+            aggregatedData[key] = (aggregatedData[key] || 0) + order.amount;
+        });
+
+        for (const key in aggregatedData) {
+            chartData.push([key, aggregatedData[key]]);
+        }
+
+        return chartData;
+    };
 
 
     const fetchUserCount = async () => await fetchDataFromApi('/api/user/get/count');
@@ -85,34 +116,15 @@ const Dashboard = () => {
             console.error("Error deleting product:", error);
         }
     };
-
-    const handleChange = (event, value) => {
-        context.setProgress(40);
-        fetchDataFromApi(`/api/products?page=${value}`).then((res) => {
-            setProductList(res);
-            context.setProgress(100);
-        })
-    };
     useEffect(() => {
         const loadOrderData = async () => {
             try {
-                const response = await fetchDataFromApi('/api/order/all'); // Gọi API
-                const orders = response?.data; // Check 'data' an toàn
+                const response = await fetchDataFromApi("/api/order/all");
+                const orders = response?.data;
 
                 if (Array.isArray(orders)) {
-                    const chartData = [["Date", "Total Amount"]]; // Dữ liệu biểu đồ
-                    const aggregatedData = {};
-
-                    orders.forEach(order => {
-                        const date = new Date(order.createdAt).toLocaleDateString("vi-VN");
-                        aggregatedData[date] = (aggregatedData[date] || 0) + order.amount;
-                    });
-
-                    for (const date in aggregatedData) {
-                        chartData.push([date, aggregatedData[date]]);
-                    }
-
-                    setData(chartData); // Cập nhật dữ liệu cho biểu đồ
+                    setTotal(calculateTotal(orders));
+                    setData(aggregateData(orders)); // Cập nhật dữ liệu biểu đồ
                 } else {
                     console.error("Dữ liệu trả về không phải là mảng.");
                 }
@@ -122,31 +134,46 @@ const Dashboard = () => {
         };
 
         loadOrderData();
-    }, []);
+    }, [mode]); // Làm mới dữ liệu khi chế độ thay đổi
 
     const options = {
-        title: "Doanh thu theo ngày",
+        title: `Doanh thu theo ${mode === "week"
+            ? "tuần"
+            : mode === "month"
+                ? "tháng"
+                : mode === "year"
+                    ? "năm"
+                    : "ngày"
+            }`,
         backgroundColor: "#fff",
         chartArea: { width: "85%", height: "65%" },
         hAxis: {
-            title: "Ngày",
-            textStyle: { color: "#333", fontSize: 12 }, // Đổi màu và size chữ trục X
-            gridlines: { color: "#ddd" }, // Màu lưới trục X
+            title:
+                mode === "week"
+                    ? "Tuần"
+                    : mode === "month"
+                        ? "Tháng"
+                        : mode === "year"
+                            ? "Năm"
+                            : "Ngày",
+            textStyle: { color: "#333", fontSize: 12 },
+            gridlines: { color: "#ddd" },
         },
         vAxis: {
             title: "Doanh thu (VND)",
-            textStyle: { color: "#333", fontSize: 12 }, // Đổi màu và size chữ trục Y
-            gridlines: { color: "#ddd" }, // Màu lưới trục Y
+            textStyle: { color: "#333", fontSize: 12 },
+            gridlines: { color: "#ddd" },
         },
-        legend: { position: "top", alignment: "center" }, // Chú thích đặt ở trên
+        legend: { position: "top", alignment: "center" },
         series: {
             0: { color: "#ff5733", lineWidth: 3, pointShape: "circle" },
         },
         pointsVisible: true,
         pointSize: 7,
-        tooltip: { isHtml: true }, // Hiển thị tooltip chi tiết
-        colors: ["#ff5733"], // Màu chính
+        tooltip: { isHtml: true },
+        colors: ["#ff5733"],
     };
+
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -228,8 +255,7 @@ const Dashboard = () => {
                             />
                         </div>
                     </div>
-
-                    <div className="box graphBox ">
+                    <div className="box graphBox">
                         <div className="d-flex align-items-center w-100 bottomEle">
                             <h6 className="text-white mb-0 mt-0">Tổng doanh thu</h6>
                             <div className="ml-auto">
@@ -240,32 +266,37 @@ const Dashboard = () => {
                                     className="dropdown_menu"
                                     id="long-menu"
                                     MenuListProps={{
-                                        'aria-labelledby': 'long-button',
+                                        "aria-labelledby": "long-button",
                                     }}
                                     anchorEl={anchorEl}
                                     open={open}
-                                    onClose={handleClose}
+                                    onClose={handleClose} // Giữ nguyên logic đóng menu
                                     PaperProps={{
                                         style: {
                                             maxHeight: ITEM_HEIGHT * 4.5,
-                                            width: '20ch',
+                                            width: "20ch",
                                         },
                                     }}
                                 >
-                                    <MenuItem onClick={handleClose}>
+                                    <MenuItem onClick={() => handleClose("day")}>
+                                        <IoIosTimer /> Theo ngày
+                                    </MenuItem>
+                                    <MenuItem onClick={() => handleClose("week")}>
                                         <IoIosTimer /> Theo tuần
                                     </MenuItem>
-                                    <MenuItem onClick={handleClose}>
+                                    <MenuItem onClick={() => handleClose("month")}>
                                         <IoIosTimer /> Theo tháng
                                     </MenuItem>
-                                    <MenuItem onClick={handleClose}>
+                                    <MenuItem onClick={() => handleClose("year")}>
                                         <IoIosTimer /> Theo năm
                                     </MenuItem>
                                 </Menu>
                             </div>
                         </div>
 
-                        <h3 className="text-white font-weight-bold">{total.toLocaleString("vi-VN")} VND</h3>
+                        <h3 className="text-white font-weight-bold">
+                            {total.toLocaleString("vi-VN")} VND
+                        </h3>
 
                         <Chart
                             chartType="LineChart"
@@ -275,7 +306,6 @@ const Dashboard = () => {
                             options={options}
                         />
                     </div>
-
                 </div>
                 <div className='card shadow border-0 p-3 mt-4'>
                     <h3 className="hd">Sản phẩm </h3>
@@ -301,7 +331,7 @@ const Dashboard = () => {
                                 </Select>
                             </FormControl>
                         </div> */}
-                        <div className="col-md-3">
+                        {/* <div className="col-md-3">
                             <h4>Category By</h4>
                             <FormControl sx={{ m: 1, minWidth: 120 }}>
                                 <Select
@@ -324,7 +354,7 @@ const Dashboard = () => {
                                     }
                                 </Select>
                             </FormControl>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="table-responsive mt-3">
