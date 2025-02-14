@@ -18,9 +18,9 @@ const ProductDetails = () => {
     const [activeTabs, setActiveTabs] = useState(0);
     const [activeSize, setActiveSize] = useState(null);
     // const [currentProduct, setCurrentProduct] = useState({});
-    const [reviewData, setReviewData] = useState([]);
-    const [tabError, setTabError] = useState(false);
     const [addingInCart, setAddingInCart] = useState(false);
+    const [reviewData, setReviewData] = useState([])
+    const [tabError, setTabError] = useState(false);
     const context = useContext(MyContext);
     const [hasPurchased, setHasPurchased] = useState(false);
 
@@ -420,7 +420,7 @@ const ProductDetails = () => {
                                 <li className='list-inline-item'>
                                     <div className='d-flex align-items-center'>
                                         <Rating className='read-only' value={parseInt(productData?.rating)} precision={0.5} readOnly size="small" />
-                                        <span className='text-light cursor ml-2'>1 đánh giá</span>
+                                        <span className='text-light cursor ml-2'>{reviewData?.length} đánh giá</span>
                                     </div>
                                 </li>
                             </ul>

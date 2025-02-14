@@ -2,11 +2,11 @@
 
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <sitemap>
-      <loc>http://localhost:3000/sitemaps/products.xml</loc>
-      <lastmod>2004-10-01T18:23:17+00:00</lastmod>
+      <loc>https://web-bhm-store.netlify.app/sitemaps/products.xml</loc>
+      <lastmod></lastmod>
    </sitemap>
    <sitemap>
-      <loc>http://localhost:3000/sitemaps/categories.xml</loc>
-      <lastmod>2005-01-01</lastmod>
+      <loc>https://web-bhm-store.netlify.app/sitemaps/categories.xml</loc>
+      <lastmod></lastmod>
    </sitemap>
 </sitemapindex>

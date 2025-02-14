@@ -157,7 +157,7 @@ const Checkout = () => {
         });
         history('/orders')
         // Xóa giỏ hàng sau khi đặt hàng thành công
-        //setCartData([]);
+        setCartData([]);
       }
     } catch (error) {
       console.error('Lỗi trong quá trình thanh toán:', error);

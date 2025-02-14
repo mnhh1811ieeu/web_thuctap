@@ -14,5 +14,6 @@ Disallow: /*bleesvanos*
 Disallow: /*wibu69*
 Disallow: /*javhd*
 Disallow: /*@cryptoenthus2*
+Disallow: /my-account
 
-Sitemap: http://localhost:4000/sitemaps/main-index.xml
+Sitemap: https:/web-bhm-store.netlify.app/sitemaps/main-index.xml

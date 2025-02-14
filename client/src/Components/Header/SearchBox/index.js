@@ -65,7 +65,7 @@ const SearchBox = () => {
   }, [searchFields, fetchDataFromApi]);
 
   const handleProductClick = (name, productId) => {
-    //setSearchFields(""); // Xóa nội dung ô tìm kiếm
+    setSearchFields(""); // Xóa nội dung ô tìm kiếm
     setSuggestData([]); // Ẩn gợi ý
     history(`/product/${slugify(name)}-${productId}.html`)// Chuyển hướng đến chi tiết sản phẩm
     setIsFocused(false);

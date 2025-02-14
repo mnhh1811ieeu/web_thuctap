@@ -76,7 +76,7 @@ const Footer = () => {
                 <div className='col'>
                     <h5>Kết nối với chúng tôi</h5>
                     <ul style={{ display: 'flex', marginLeft:'15px'}}>
-                        <li className='facebook'><Link to='#'><FaFacebook/></Link></li>
+                        <li className='facebook'><Link to='https://m.me/451359388071173' target="_blank"><FaFacebook/></Link></li>
                         <li className='youtube'><Link to='#'><FaYoutube/></Link></li>
                         <li className='zalo'><Link to='#'><SiZalo/></Link></li>
                     </ul>

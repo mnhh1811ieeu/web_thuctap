@@ -3,7 +3,7 @@ const fs = require('fs');
 const axios = require('axios');
 const path = require('path');  // Để xử lý đường dẫn
 
-const hostname = 'http://localhost:3000';  // Sửa hostname nếu cần
+const hostname = 'https://web-bhm-store.netlify.app/';  // Sửa hostname nếu cần
 
 const slugify = (text) => {
   return text
@@ -19,7 +19,7 @@ const slugify = (text) => {
 async function fetchProductUrls() {
   try {
     // Gọi API lấy danh sách sản phẩm
-    const response = await axios.get('http://localhost:4000/api/products');
+    const response = await axios.get(`https://webbhm-server.onrender.com/api/products`);
     const products = response.data.products;
 
     // Chuyển sản phẩm thành danh sách URL
@@ -37,7 +37,7 @@ async function fetchProductUrls() {
 async function fetchCategoryUrls() {
   try {
     // Gọi API lấy danh sách sản phẩm
-    const response = await axios.get('http://localhost:4000/api/category');
+    const response = await axios.get('https://webbhm-server.onrender.com/api/category');
     const category = response.data.categoryList;
 
     // Chuyển sản phẩm thành danh sách URL

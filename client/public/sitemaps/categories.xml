@@ -5,42 +5,42 @@
     xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
     xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
     <url>
-        <loc>http://localhost:3000/product/vay/6744b36883abd5d5755da762</loc>
+        <loc>https://web-bhm-store.netlify.app/product/vay/6744b36883abd5d5755da762</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>http://localhost:3000/product/ao-phong/6744b39483abd5d5755da768</loc>
+        <loc>https://web-bhm-store.netlify.app/product/ao-phong/6744b39483abd5d5755da768</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>http://localhost:3000/product/jeans/6744b44183abd5d5755da776</loc>
+        <loc>https://web-bhm-store.netlify.app/product/jeans/6744b44183abd5d5755da776</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>http://localhost:3000/product/ao-khoac/6744cb19be1179f340670dc5</loc>
+        <loc>https://web-bhm-store.netlify.app/product/ao-khoac/6744cb19be1179f340670dc5</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>http://localhost:3000/product/ao-so-mi/67457869685992d263d4597d</loc>
+        <loc>https://web-bhm-store.netlify.app/product/ao-so-mi/67457869685992d263d4597d</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>http://localhost:3000/product/set-bo/6762856ff84cefd508af30dc</loc>
+        <loc>https://web-bhm-store.netlify.app/product/set-bo/6762856ff84cefd508af30dc</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>http://localhost:3000/product/ao-dai/676286e5f84cefd508af30ff</loc>
+        <loc>https://web-bhm-store.netlify.app/product/ao-dai/676286e5f84cefd508af30ff</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>http://localhost:3000/product/ao-len/6762882bf84cefd508af3110</loc>
+        <loc>https://web-bhm-store.netlify.app/product/ao-len/6762882bf84cefd508af3110</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>

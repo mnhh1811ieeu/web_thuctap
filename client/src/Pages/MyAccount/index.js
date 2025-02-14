@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { editData, fetchDataFromApi, postDataProduct } from '../../utils/api';
-import { useNavigate, useParams } from 'react-router-dom';
+import { editData,  fetchDataFromApi, postData } from '../../utils/api';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -45,8 +45,8 @@ const MyAccount = () => {
     const [isLogin, setIsLogin] = useState(false);
     const history = useNavigate();
     const [value, setValue] = React.useState(0);
-    const [files, setFiles] = useState([]);
-    const [imgFiles, setImgFiles] = useState();
+    
+    //const [imgFiles, setImgFiles] = useState();
     const [passwordFields, setPasswordFields] = useState({
         oldPassword: '',
         newPassword: '',
@@ -63,10 +63,9 @@ const MyAccount = () => {
     };
 
     const [isLoading, setIsLoading] = useState(false);
-    const [previews, setPreviews] = useState([]);
+    const [previews, setPreviews] = useState('https://ss-images.saostar.vn/w700/2024/5/3/pc/1714672483985/k20jz0wkdn1-6ixqpdqtdy2-8cgbaz0qe13.jpg');
     const [userData, setUserData] = useState([]);
 
-    const formdata = new FormData();
 
     const [formFields, setFormFields] = useState({
         name: '',
@@ -75,7 +74,6 @@ const MyAccount = () => {
         images: [],
     });
 
-    let { id } = useParams();
 
     const changeInput = (e) => {
         setFormFields(() => ({
@@ -84,38 +82,39 @@ const MyAccount = () => {
         }));
     }
 
-    const onChangeFile = async (e, apiEndPoint) => {
+    const onChangeFile = async (e) => {
         try {
-            const imgArr = [];
+            const user = JSON.parse(localStorage.getItem("user"));
+            const userId = user?.userId;
+            const formdata = new FormData();
             const files = e.target.files;
-            setImgFiles(e.target.files);
-            for (var i = 0; i < files.length; i++) {
-                const file = files[i];
-                imgArr.push(file);
-                formdata.append(`images`, file);
+
+            //setImgFiles(files); // Lưu tệp đã chọn vào state
+
+            // Tạo URL tạm thời cho ảnh đầu tiên (hiển thị trước khi upload)
+            if (files.length > 0) {
+                const previewURL = URL.createObjectURL(files[0]);
+                setPreviews(previewURL);
             }
-            setFiles(imgArr);
-            await postDataProduct(apiEndPoint, formdata);
+
+            // Gửi ảnh lên server
+            for (let i = 0; i < files.length; i++) {
+                formdata.append(`images`, files[i]);
+            }
+            const response = await postData(`/api/user/${userId}`, formdata);
+
+            console.log(formdata)
+            // Giả sử API trả về URL ảnh sau khi upload
+            if (response && response.data && response.data.imageUrl) {
+                setPreviews(response.data.imageUrl);
+            }
         } catch (error) {
-            console.log(error);
+            console.error("Error uploading image:", error);
         }
-    }
+    };
 
-    useEffect(() => {
-        if (!imgFiles) return;
-        let tmp = [];
-        for (let i = 0; i < imgFiles.length; i++) {
-            tmp.push(URL.createObjectURL(imgFiles[i]));
-        }
-        const objectUrls = tmp;
-        setPreviews(objectUrls);
-        for (let i = 0; i < objectUrls.length; i++) {
-            return () => {
-                URL.revokeObjectURL(objectUrls[i]);
-            }
-        }
-    }, [imgFiles]);
-
+    
+    
     useEffect(() => {
         window.scrollTo(0, 0);
         const user = JSON.parse(localStorage.getItem("user"));
@@ -131,11 +130,12 @@ const MyAccount = () => {
         fetchDataFromApi(`/api/user/${userId}`).then((res) => {
             console.log(res);
             setUserData(res);
-            setPreviews(res.images);
+            console.log(res)
             setFormFields({
                 name: res.name,
                 email: res.email,
                 phone: res.phone,
+                
             });
             console.log(formFields);
         });
@@ -148,10 +148,12 @@ const MyAccount = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const userId = user?.userId;
 
+        const formdata = new FormData();
         formdata.append('name', formFields.name);
         formdata.append('email', formFields.email);
         formdata.append('phone', formFields.phone);
         formdata.append('images', formFields.images);
+        console.log(formdata)
 
         if (formFields.name !== '' && formFields.email !== '' && formFields.phone !== '') {
             setIsLoading(true);
@@ -163,7 +165,7 @@ const MyAccount = () => {
                 context.setAlertBox({
                     open: true,
                     error: false,
-                    msg: 'Người dùng đã cập nhật thành công!'
+                    msg: 'Thông tin đã cập nhật thành công!'
                 });
             });
         }
@@ -279,10 +281,11 @@ const MyAccount = () => {
                             <div className='row'>
                                 <div className='col-md-4'>
                                     <div className='userImage'>
-                                        <img src="https://ss-images.saostar.vn/w700/2024/5/3/pc/1714672483985/k20jz0wkdn1-6ixqpdqtdy2-8cgbaz0qe13.jpg" alt="image" />
+                                        <img src={previews} alt="User Avatar" />
+                                        
                                         <div className='overlay d-flex justify-content-center align-items-center'>
                                             <BiCloudUpload />
-                                            <input type="file" multiple onChange={(e) => onChangeFile(e, '/api/user/upload')} name='images' />
+                                            <input type="file" multiple onChange={(e) => onChangeFile(e)} name='images' />
                                         </div>
                                     </div>
                                 </div>

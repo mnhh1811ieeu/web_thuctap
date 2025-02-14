@@ -201,7 +201,7 @@ router.put('/:id', async (req, res) => {
         );
 
         res.status(200).json({
-            message: "Xóa sản phẩm thành công",
+            
             data: updatedUser, // Dữ liệu người dùng đã cập nhật, nếu cần
         });
     } catch (error) {

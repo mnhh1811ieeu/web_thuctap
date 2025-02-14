@@ -1158,7 +1158,14 @@ footer .linksWrap ul .zalo svg{
  
   overflow: hidden;
 }
-
+.table td, .table th{
+  vertical-align: middle;
+  text-align: center;
+}
+.table thead th{
+  vertical-align: middle;
+  text-align: center;
+}
 .cartPage .table thead th{
   border: 1px !important;
 }

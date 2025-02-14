@@ -131,36 +131,6 @@ const Orders = () => {
         }
     };
 
-    // const updatedOrders = response.data.map((order) => {
-    //     if (order.paymentMethod === 'MoMo' && !order.paymentSuccess) {
-    //         return { ...order, transactionStatus: 'failed' };
-    //     }
-    //     return { ...order, transactionStatus: order.transactionStatus || 'success' };
-    // });
-    // const handleStatusChange = async (orderReceipt) => {
-    //     try {
-    //         const response = await postDataUser("/api/order/update-status", {
-    //             orderReceipt,
-    //             newStatus: "delivered",
-    //         });
-
-    //         if (response && response.success) {
-    //             setOrders((prevOrders) =>
-    //                 prevOrders.map((order) =>
-    //                     order.order_receipt === orderReceipt
-    //                         ? { ...order, orderStatus: "delivered" }
-    //                         : order
-    //                 )
-    //             );
-    //             alert("Đơn hàng đã được xác nhận là đã nhận!");
-    //         } else {
-    //             alert(`Cập nhật thất bại: ${response.message || "Lỗi không xác định."}`);
-    //         }
-    //     } catch (error) {
-    //         console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error.message);
-    //         alert("Đã xảy ra lỗi khi kết nối đến server. Vui lòng thử lại sau.");
-    //     }
-    // };
     const handleStatusChange = async (orderReceipt, newStatus) => {
         try {
             const response = await postDataUser("/api/order/update-status", {
